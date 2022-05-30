@@ -32,7 +32,7 @@ const Login = ({ navigation }) => {
             <TouchableOpacity
                 style={styles.button}
                 onPress={() => {
-                    navigation.navigate('Home')
+                    navigation.navigate('TabBarNavigation')
                 }}
             >
                 <Text style={styles.textButton}>Đăng nhập</Text>

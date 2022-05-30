@@ -1,7 +1,7 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, TextInput, ScrollView, TouchableOpacity } from 'react-native'
 import React from 'react'
-import Icon from 'react-native-vector-icons/FontAwesome5'
-const AddProduct = () => {
+import Icon from 'react-native-vector-icons/Ionicons'
+const AddProduct = ({ navigation }) => {
     return (
         <View style={styles.container}>
             <View
@@ -14,33 +14,59 @@ const AddProduct = () => {
                     borderBottomColor: '#E8E8E8'
                 }}
             >
-                <Icon style={styles.icon} name='times' />
+                <Icon style={styles.icon} name='close-outline' />
                 <Text style={styles.text}>Thêm sản phẩm</Text>
-                <Icon style={styles.icon} name='check' />
+                <Icon style={styles.icon} name='checkmark-outline' />
             </View>
-            <View style={styles.addImage}>
-                <Icon style={styles.iconImage} name='camera' />
-            </View>
-            <View style={styles.viewProblems}>
-                <View style={styles.problems}>
-                    <Text style={styles.textProblems}>Tên sản phẩm</Text>
-                    <View style={styles.barCode}>
-                        <Text style={styles.textProblems1}>Mã sản phẩm</Text>
-                        <Icon style={styles.iconImage} name='barcode' />
-                    </View>
-                    <View style={styles.barCode}>
-                        <Text style={styles.textProblems1}>Barcode</Text>
-                        <Icon style={styles.iconImage} name='barcode' />
-                    </View>
-                    <View style={styles.problems1}>
-                        <Text style={styles.textProblems2}>Khối lượng (0)</Text>
-                        <Text style={styles.textProblems2}>Đơn vị tính</Text>
+            <ScrollView>
+                <View style={styles.addImage}>
+                    <Icon style={styles.iconImage} name='camera-outline' />
+                </View>
+                <View style={styles.viewProblems}>
+                    <View style={styles.problems}>
+                        <TextInput style={styles.textProblems}>Tên sản phẩm</TextInput>
+                        <View style={styles.barCode}>
+                            <TextInput style={styles.textProblems1}>Mã sản phẩm</TextInput>
+                            <Icon style={styles.iconImage} name='barcode-outline' />
+                        </View>
+                        <View style={styles.barCode}>
+                            <TextInput style={styles.textProblems1}>Barcode</TextInput>
+                            <Icon style={styles.iconImage} name='barcode-outline' />
+                        </View>
+                        <View style={styles.problems1}>
+                            <TextInput style={styles.textProblems2}>Khối lượng (0)</TextInput>
+                            <TextInput style={styles.textProblems2}>Đơn vị tính</TextInput>
+                        </View>
                     </View>
                 </View>
-            </View>
-            <View>
-                
-            </View>
+                <View style={styles.ViewProblems1}>
+                    <View style={styles.problems1}>
+                        <TextInput style={styles.textProblems2}>Tồn kho ban đầu</TextInput>
+                        <TextInput style={styles.textProblems2}>Giá vốn</TextInput>
+                    </View>
+                    <View style={styles.problems1}>
+                        <TextInput style={styles.textProblems2}>Giá bán lẻ</TextInput>
+                        <TextInput style={styles.textProblems2}>Giá bán buôn</TextInput>
+                    </View>
+                    <View style={styles.problems1}>
+                        <TextInput style={styles.textProblems2}>Giá nhập</TextInput>
+                    </View>
+                </View>
+                <View style={styles.ViewProblems1}>
+                    <View style={styles.problems}>
+                        <TextInput style={styles.textProblems}>Giá nhập</TextInput>
+                        <TextInput style={styles.textProblems}>Mô tả</TextInput>
+                    </View>
+                </View>
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => {
+                        navigation.navigate('ProductDetail')
+                    }}
+                >
+                    <Text style={styles.textButton}>Lưu</Text>
+                </TouchableOpacity>
+            </ScrollView>
         </View>
     )
 }
@@ -60,7 +86,7 @@ const styles = StyleSheet.create({
         color: '#666',
         fontSize: 14,
         fontWeight: 'bold',
-        paddingHorizontal: 85
+        paddingHorizontal: 100
     },
     addImage: {
         backgroundColor: '#fff',
@@ -123,5 +149,29 @@ const styles = StyleSheet.create({
         borderBottomColor: '#E8E8E8',
         marginHorizontal: 10,
         marginRight: 50
+    },
+    ViewProblems1: {
+        backgroundColor: '#fff',
+        borderRadius: 5,
+        marginTop: 10,
+        paddingVertical: 10,
+        marginHorizontal: 10
+    },
+    problems3: {
+        flexDirection: 'row'
+    },
+    button: {
+        backgroundColor: '#3C7BF4',
+        marginHorizontal: 16,
+        borderRadius: 15,
+        height: 51,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginVertical: 20
+    },
+    textButton: {
+        color: '#fff',
+        fontSize: 15,
+        fontWeight: 'bold'
     }
 })

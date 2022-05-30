@@ -59,11 +59,25 @@ const Home = ({ navigation }) => {
             </View>
             <View style={styles.viewContent}>
                 <View style={styles.order}>
-                    <Icon name='cart-plus' size={25} color='#3C7BF4' />
+                    <Icon
+                        name='cart-plus'
+                        size={25}
+                        color='#3C7BF4'
+                        onPress={() => {
+                            navigation.navigate('AddOrders')
+                        }}
+                    />
                     <Text style={styles.textOrder}>Tạo đơn</Text>
                 </View>
                 <View style={styles.order}>
-                    <Icon name='cube' size={25} color='#C92424' />
+                    <Icon
+                        name='cube'
+                        size={25}
+                        color='#C92424'
+                        onPress={() => {
+                            navigation.navigate('Products')
+                        }}
+                    />
                     <Text style={styles.textOrder}>Sản phẩm</Text>
                 </View>
                 <View style={styles.order}>
@@ -71,7 +85,7 @@ const Home = ({ navigation }) => {
                     <Text style={styles.textOrder}>Kho hàng</Text>
                 </View>
                 <View style={styles.order}>
-                    <Icon name='basket-shopping-simple' size={25} color='#C92424' />
+                    <Icon name='home' size={25} color='#C92424' />
                     <Text style={styles.textOrder}>Đơn hàng</Text>
                 </View>
             </View>
@@ -89,7 +103,7 @@ const Home = ({ navigation }) => {
                     <Text style={styles.textOrder}>Quà tặng</Text>
                 </View>
                 <View style={styles.order}>
-                    <Icon name='basket-shopping-simple' size={25} color='#C92424' />
+                    <Icon name='home' size={25} color='#C92424' />
                     <Text style={styles.textOrder}>Xem thêm</Text>
                 </View>
             </View>
