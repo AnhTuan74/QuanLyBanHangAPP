@@ -1,7 +1,9 @@
 apply plugin: "com.android.application"
+apply plugin: 'com.google.gms.google-services' // <- Add this line
 
 import com.android.build.OutputFile
 import org.apache.tools.ant.taskdefs.condition.Os
+
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
 
 /**

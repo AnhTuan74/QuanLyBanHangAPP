@@ -1,14 +1,79 @@
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { CheckBox } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/Ionicons'
+import auth from '@react-native-firebase/auth'
+import { useNavigation } from '@react-navigation/native'
+import firestore from '@react-native-firebase/firestore'
 
-const Register = ({ navigation }) => {
+const validateEmail = (email) => {
+    var re =
+        /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    return re.test(String(email).toLowerCase())
+}
+
+const Register = () => {
+    const navigation = useNavigation()
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [check1, setCheck1] = useState(false)
     const [check, setCheck] = useState(true)
+
+    const handleOnClickRegister = () => {
+        if (!name) {
+            Alert.alert('Thông báo', 'Vui lòng nhập tên')
+        } else if (email == '') {
+            Alert.alert('Thông báo', 'Vui lòng nhập email')
+        } else if (!validateEmail(email.trim())) {
+            Alert.alert('Thông báo', 'Email không hợp lệ')
+        } else if (password.length < 6) {
+            Alert.alert('Thông báo', 'Mật khẩu phải có ít nhất 6 ký tự')
+        } else if (!check1) {
+            Alert.alert('Thông báo', 'Vui lòng đồng ý điều khoản')
+        } else {
+            handleOnRegister()
+        }
+    }
+
+    const handleOnRegister = () => {
+        auth()
+            .createUserWithEmailAndPassword(email.trim(), password)
+            .then(() => {
+                Alert.alert('Thông báo', 'Đăng ký thành công')
+                handleUpdateUser()
+                navigation.navigate('Login')
+            })
+            .catch((error) => {
+                if (error.code === 'auth/email-already-in-use') {
+                    Alert.alert('Thông báo', 'Email đã được sử dụng')
+                }
+                if (error.code === 'auth/invalid-email') {
+                    Alert.alert('Thông báo', 'Email không hợp lệ')
+                }
+            })
+    }
+
+    const handleUpdateUser = () => {
+        const user = auth().currentUser
+        if (user) {
+            firestore()
+                .collection('users')
+                .doc(user.uid)
+                .set({
+                    name: name,
+                    uid: user.uid,
+                    email: email.trim(),
+                    password: password
+                })
+                .then(() => {
+                    console.log('Đã thêm thành công')
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+        }
+    }
     return (
         <View style={styles.container}>
             <View style={styles.viewText}>
@@ -25,7 +90,7 @@ const Register = ({ navigation }) => {
                 style={styles.inputName}
                 onChangeText={setName}
                 value={name}
-                placeholder='Tên đăng nhập'
+                placeholder='Họ và tên'
                 placeholderTextColor={'#BDBDBD'}
             />
             <TextInput
@@ -56,7 +121,7 @@ const Register = ({ navigation }) => {
                 checked={check1}
                 onPress={() => setCheck1(!check1)}
             />
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.button} onPress={() => handleOnClickRegister()}>
                 <Text style={styles.textButton}>Đăng ký</Text>
             </TouchableOpacity>
             <Text style={styles.textForgotPassword}>Quên mật khẩu?</Text>

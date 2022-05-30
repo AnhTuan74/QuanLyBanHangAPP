@@ -1,10 +1,57 @@
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native'
 import React, { useState } from 'react'
+import auth from '@react-native-firebase/auth'
+import { useNavigation } from '@react-navigation/native'
 
-const Login = ({ navigation }) => {
-    const [text, onChangeText] = useState('')
-    const [pass, onChangePass] = useState('')
+const validateEmail = (email) => {
+    var re =
+        /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    return re.test(String(email).toLowerCase())
+}
+
+const Login = () => {
+    const navigation = useNavigation()
+    const [text, onChangeText] = useState('cu@cai.nho')
+    const [pass, onChangePass] = useState('123456')
     const [check, setCheck] = useState(true)
+
+    const handleOnClickLogin = () => {
+        if (!text) {
+            Alert.alert('Thông báo', 'Vui lòng nhập email')
+        } else if (!validateEmail(text.trim())) {
+            Alert.alert('Thông báo', 'Email không hợp lệ')
+        } else if (pass.length < 6) {
+            Alert.alert('Thông báo', 'Mật khẩu phải có ít nhất 6 ký tự')
+        } else {
+            handleOnLogin()
+        }
+    }
+
+    const handleOnLogin = () => {
+        auth()
+            .signInWithEmailAndPassword(text.trim(), pass)
+            .then(() => {
+                Alert.alert('Thông báo', 'Đăng nhập thành công', [
+                    {
+                        text: 'OK',
+                        onPress: () => {
+                            navigation.reset({
+                                index: 0,
+                                routes: [{ name: 'TabBarNavigation' }]
+                            })
+                        }
+                    }
+                ])
+            })
+            .catch((error) => {
+                if (error.code === 'auth/user-not-found') {
+                    Alert.alert('Thông báo', 'Email không tồn tại')
+                }
+                if (error.code === 'auth/wrong-password') {
+                    Alert.alert('Thông báo', 'Mật khẩu không đúng')
+                }
+            })
+    }
     return (
         <View style={styles.container}>
             <Text style={styles.text}>Đăng nhập</Text>
@@ -32,7 +79,7 @@ const Login = ({ navigation }) => {
             <TouchableOpacity
                 style={styles.button}
                 onPress={() => {
-                    navigation.navigate('TabBarNavigation')
+                    handleOnClickLogin()
                 }}
             >
                 <Text style={styles.textButton}>Đăng nhập</Text>
