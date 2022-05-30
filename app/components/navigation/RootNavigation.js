@@ -9,6 +9,7 @@ import TabBarNavigation from './TabBarNavigation'
 import ProductDetail from './../home/Product/ProductDetail'
 import Products from './../home/Product/Products'
 import AddOrders from './../home/Orders/AddOrders'
+import Scan from './../scan/Scan'
 
 const Stack = createNativeStackNavigator()
 
@@ -27,6 +28,7 @@ const RootNavigation = () => {
             <Stack.Screen name='ProductDetail' component={ProductDetail} />
             <Stack.Screen name='Products' component={Products} />
             <Stack.Screen name='AddOrders' component={AddOrders} />
+            <Stack.Screen name='Scan' component={Scan} />
         </Stack.Navigator>
     )
 }

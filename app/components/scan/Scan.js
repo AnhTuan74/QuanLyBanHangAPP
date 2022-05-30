@@ -11,46 +11,54 @@ import {
 } from 'react-native'
 import { RNCamera } from 'react-native-camera'
 import Constant from '../../controller/Constant'
-// import Ionicons from 'react-native-vector-icons/Ionicons'
-// import RNProgressHud from 'progress-hud'
+import Icon from 'react-native-vector-icons/Ionicons'
+
 import { StackActions, useNavigation, useRoute } from '@react-navigation/core'
-// import Util from '../../controller/Utli'
 
 const bgColor = 'rgba(0, 0, 0, 0.2)'
-
-const FunctionItem = ({ source, title, onPress }) => {
-    return (
-        <TouchableOpacity onPress={onPress} style={styles.funcView}>
-            <Image source={source} style={styles.funcIcon} />
-            <View style={{ flex: 1 }} />
-            <Text style={styles.funcTitle}>{title}</Text>
-        </TouchableOpacity>
-    )
-}
 
 const Scan = () => {
     const navigation = useNavigation()
     const cameraRef = useRef()
     const route = useRoute()
     const isScanning = useRef(true)
-
+    const screen = useRef(route?.params?.screen)
+    console.log('screen', screen.current)
     const _onBarCodeRead = (event) => {
-        if (!isScanning.current) {
-            return
-        }
         try {
-            const data = JSON.parse(event?.data ?? {})
-            if (data?.type != null) {
-                handleQRCodeData(data)
-                isScanning.current = false
+            // const data = JSON.parse(event?.data ?? {})
+            if (!isScanning.current) {
                 return
             }
+            Alert.alert('Thông báo', event?.data)
+            navigation.navigate('Home')
+            isScanning.current = false
         } catch (error) {
-            console.log('error')
+            console.log('error', error)
         }
     }
 
     const _onStatusChange = (event) => {}
+    useEffect(() => {
+        navigation.addListener('focus', () => {
+            isScanning.current = true
+        })
+    }, [])
+
+    const didClickBack = () => {
+        if (screen.current === 'Barcode') {
+            navigation.navigate('TabBarNavigation', { screen: 'Home' })
+            return
+        }
+        navigation.goBack()
+    }
+
+    useEffect(() => {
+        BackHandler.addEventListener('hardwareBackPress', () => {
+            didClickBack()
+            return true
+        })
+    }, [])
 
     return (
         <View style={{ flex: 1 }}>
@@ -66,18 +74,21 @@ const Scan = () => {
                     buttonNegative: 'Hủy'
                 }}
                 onBarCodeRead={_onBarCodeRead}
-                onStatusChange={_onStatusChange}
+                // onStatusChange={_onStatusChange}
             >
                 <View style={styles.cameraView}>
                     <View style={styles.backView}>
                         <TouchableOpacity
-                            // onPress={didClickBack}
                             style={{
                                 ...styles.closeButton
-                                // paddingTop: Util.getTopSafeArea() > 0 ? Util.getTopSafeArea() : 23,
+                            }}
+                            onPress={() => {
+                                if (screen.current === 'Barcode') {
+                                    navigation.navigate('TabBarNavigation', { screen: 'Home' })
+                                }
                             }}
                         >
-                            {/* <Image source={Constant.icons.back} /> */}
+                            <Icon name='arrow-back-outline' size={30} color='#fff' />
                             <Text style={styles.scanText}>Scan</Text>
                         </TouchableOpacity>
                     </View>
@@ -91,7 +102,7 @@ const Scan = () => {
                             <View style={{ flex: 1, backgroundColor: bgColor }} />
                             <View style={styles.contentView}>
                                 <Image style={styles.scanFrameImg} />
-                                <Text style={styles.titleText}>Nexus Point Scan</Text>
+                                <Text style={styles.titleText}>Quản lý bán hàng</Text>
                             </View>
                             <View style={{ flex: 1, backgroundColor: bgColor }} />
                         </View>
@@ -108,8 +119,8 @@ export default Scan
 
 const styles = StyleSheet.create({
     scanFrameImg: {
-        width: Constant.screen.width - 120,
-        height: Constant.screen.width - 120
+        width: Constant.screen.width - 32,
+        height: Constant.screen.width - 160
     },
     closeButton: {
         paddingLeft: 12,

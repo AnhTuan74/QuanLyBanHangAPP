@@ -1,12 +1,15 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useNavigation } from '@react-navigation/native'
 
 const Barcode = () => {
-    return (
-        <View>
-            <Text>Barcode</Text>
-        </View>
-    )
+    const navigation = useNavigation()
+    useEffect(() => {
+        navigation.addListener('focus', () => {
+            navigation.navigate('Scan', { screen: 'Barcode' })
+        })
+    }, [])
+    return <View />
 }
 
 export default Barcode

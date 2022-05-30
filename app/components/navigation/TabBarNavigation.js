@@ -3,7 +3,7 @@ import React from 'react'
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs'
 import Home from './../home/Home'
 import Report from './../report/Report'
-// import Barcode from './../barcode/Barcode'
+import Barcode from './../barcode/Barcode'
 import Profile from './../home/Profile'
 import Icon from 'react-native-vector-icons/Ionicons'
 import Scan from './../scan/Scan'
@@ -30,22 +30,11 @@ const TabBarNavigation = () => {
                     }
                     return <Icon name={iconName} size={25} color={focusedColor} />
                 }
-                // tabBarStyle: {
-                //     backgroundColor: '#000'
-                // },
-                // headerStyle: {
-                //     elevation: 0,
-                //     shadowOpacity: 0
-                // },
-                // headerTitleStyle: {
-                //     fontSize: 16
-                // },
-                // tabBarShowLabel: false
             })}
         >
             <Tab.Screen name='Home' component={Home} />
             <Tab.Screen name='Report' component={Report} />
-            <Tab.Screen name='Barcode' component={Scan} />
+            <Tab.Screen name='Barcode' component={Barcode} />
             <Tab.Screen name='Profile' component={Profile} />
         </Tab.Navigator>
     )
