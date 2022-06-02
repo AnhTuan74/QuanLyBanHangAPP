@@ -154,7 +154,7 @@ const Home = ({ navigation }) => {
                 </TouchableOpacity>
                 <Text style={styles.handling}>ĐƠN HÀNG CHỜ XỬ LÝ</Text>
                 {list.map((item, index) => (
-                    <TouchableOpacity>
+                    <TouchableOpacity key={index}>
                         <View style={styles.viewHandling}>
                             <Text style={styles.textHandling}>{item.name}</Text>
 

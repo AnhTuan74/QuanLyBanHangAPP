@@ -65,9 +65,86 @@ const OrderDetail = () => {
                     </View>
                 </View>
             </View>
-            <View>
-                
+            <View style={styles.viewAbate}>
+                <View style={styles.Abate}>
+                    <Text>Tổng tiền hàng</Text>
+                    <Text>250,000</Text>
+                </View>
+                <View style={styles.Abate}>
+                    <Text>Thuế</Text>
+                    <Text>0</Text>
+                </View>
+                <View style={styles.Abate}>
+                    <Text>Chiết khấu</Text>
+                    <Text>0</Text>
+                </View>
+                <View style={styles.Abate}>
+                    <Text>Phí giao hàng</Text>
+                    <Text>0</Text>
+                </View>
+                <View style={styles.Abate}>
+                    <Text
+                        style={{
+                            fontWeight: 'bold'
+                        }}
+                    >
+                        Khách hàng phải trả
+                    </Text>
+                    <Text
+                        style={{
+                            fontWeight: 'bold'
+                        }}
+                    >
+                        250,000
+                    </Text>
+                </View>
             </View>
+            <View style={styles.viewPrice}>
+                <View style={styles.Price}>
+                    <Icon style={styles.iconCheck} name='checkmark-circle-outline' />
+                    <Text
+                        style={{
+                            fontWeight: 'bold',
+                            fontSize: 15,
+                            marginLeft: 10
+                        }}
+                    >
+                        Đã thanh toán
+                    </Text>
+                </View>
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        marginTop: 10
+                    }}
+                >
+                    <View style={styles.Price2}>
+                        <Text
+                            style={{
+                                fontWeight: 'bold',
+                                marginBottom: 5
+                            }}
+                        >
+                            Tiền mặt
+                        </Text>
+                        <Text>24/4/2022</Text>
+                    </View>
+                    <View style={styles.Price3}>
+                        <Text
+                            style={{
+                                fontWeight: 'bold'
+                            }}
+                        >
+                            250,000
+                        </Text>
+                    </View>
+                </View>
+            </View>
+            <TouchableOpacity style={styles.button}>
+                <Text style={styles.textButton}>Xóa đơn hàng</Text>
+            </TouchableOpacity>
         </View>
     )
 }
@@ -102,5 +179,50 @@ const styles = StyleSheet.create({
     informationProducts: {
         flex: 1,
         marginLeft: 5
+    },
+    viewAbate: {
+        padding: 20,
+        backgroundColor: '#fff',
+        marginTop: 20,
+        borderBottomWidth: 1,
+        borderBottomColor: '#E8E8E8'
+    },
+    Abate: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 10
+    },
+    iconCheck: {
+        color: '#3C7BF4',
+        fontSize: 25
+    },
+    viewPrice: {
+        padding: 20,
+        backgroundColor: '#fff',
+        marginTop: 20
+    },
+    Price: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderBottomWidth: 1,
+        borderBottomColor: '#E8E8E8',
+        paddingBottom: 10
+    },
+    button: {
+        backgroundColor: '#fff',
+        marginHorizontal: 111,
+        borderRadius: 15,
+        height: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginVertical: 20,
+        width: 153,
+        alignContent: 'center',
+        borderWidth: 1,
+        borderColor: '#f44'
+    },
+    textButton: {
+        color: '#f44',
+        fontSize: 15
     }
 })
