@@ -26,12 +26,14 @@ const Scan = () => {
     console.log('screen', screen.current)
     const _onBarCodeRead = (event) => {
         try {
-            // const data = JSON.parse(event?.data ?? {})
             if (!isScanning.current) {
                 return
             }
-            Alert.alert('Thông báo', event?.data)
-            navigation.navigate('Home')
+            if (screen.current == 'AddProduct') {
+                navigation.navigate('AddProduct', {
+                    barcode: event?.data
+                })
+            }
             isScanning.current = false
         } catch (error) {
             console.log('error', error)

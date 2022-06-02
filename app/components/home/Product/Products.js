@@ -1,9 +1,33 @@
-import { StyleSheet, Text, View, TouchableOpacity, TextInput } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, FlatList } from 'react-native'
+import React, { useState, useEffect } from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useNavigation } from '@react-navigation/native'
 const Products = () => {
     const navigation = useNavigation()
+    const [listProduct, setListProduct] = useState([
+        {
+            name: '11111',
+            barcode: '1111',
+            priceCapital: '1000',
+            priceSale: '2000',
+            description: 'Moo ta'
+        },
+        {
+            name: '2222',
+            barcode: '2222',
+            priceCapital: '1000',
+            priceSale: '2000',
+            description: 'Moo ta'
+        },
+        {
+            name: '3333',
+            barcode: '3333',
+            priceCapital: '1000',
+            priceSale: '2000',
+            description: 'Moo ta'
+        }
+    ])
+
     return (
         <View style={styles.container}>
             <View
@@ -41,7 +65,21 @@ const Products = () => {
                     </TouchableOpacity>
                 </View>
             </View>
-            <Text style={styles.text2}>0 sản phẩm</Text>
+            {listProduct.length == 0 ? (
+                <Text style={styles.text2}>0 sản phẩm</Text>
+            ) : (
+                <View style={styles.listProduct}>
+                    <FlatList
+                        data={listProduct}
+                        keyExtractor={(item) => item.barcode}
+                        renderItem={({ item }) => (
+                            <View style={styles.itemProduct}>
+                                <Text>{item.name}</Text>
+                            </View>
+                        )}
+                    />
+                </View>
+            )}
         </View>
     )
 }

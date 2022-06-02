@@ -1,7 +1,18 @@
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native'
+import {
+    StyleSheet,
+    Text,
+    View,
+    TextInput,
+    TouchableOpacity,
+    Alert,
+    ToastAndroid
+} from 'react-native'
 import React, { useState } from 'react'
 import auth from '@react-native-firebase/auth'
 import { useNavigation } from '@react-navigation/native'
+import { getProfileUser } from '../../controller/Firebase'
+import { setInfoUser } from '../../redux/userSlice'
+import { useDispatch } from 'react-redux'
 
 const validateEmail = (email) => {
     var re =
@@ -11,6 +22,7 @@ const validateEmail = (email) => {
 
 const Login = () => {
     const navigation = useNavigation()
+    const dispatch = useDispatch()
     const [text, onChangeText] = useState('tuan@gmail.com')
     const [pass, onChangePass] = useState('123123')
     const [check, setCheck] = useState(true)
@@ -31,25 +43,31 @@ const Login = () => {
         auth()
             .signInWithEmailAndPassword(text.trim(), pass)
             .then(() => {
-                Alert.alert('Thông báo', 'Đăng nhập thành công', [
-                    {
-                        text: 'OK',
-                        onPress: () => {
-                            navigation.reset({
-                                index: 0,
-                                routes: [{ name: 'TabBarNavigation' }]
-                            })
+                // lấy thông tin user từ database
+                console.log('dđ')
+                ToastAndroid.show('Đăng nhập thành công', ToastAndroid.SHORT)
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'TabBarNavigation' }]
+                })
+                getProfileUser(auth().currentUser.uid)
+                    .then((data) => {
+                        if (data) {
+                            // lưu data vào data redux
+                            dispatch(setInfoUser(data))
                         }
-                    }
-                ])
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                    })
             })
             .catch((error) => {
                 if (error.code === 'auth/user-not-found') {
                     Alert.alert('Thông báo', 'Email không tồn tại')
-                }
-                if (error.code === 'auth/wrong-password') {
+                } else if (error.code === 'auth/wrong-password') {
                     Alert.alert('Thông báo', 'Mật khẩu không đúng')
                 }
+                ToastAndroid.show('Đăng nhập không thành công', ToastAndroid.SHORT)
             })
     }
     return (
