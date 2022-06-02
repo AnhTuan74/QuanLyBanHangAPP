@@ -1,8 +1,10 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native'
 import React from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome5'
+import { useNavigation } from '@react-navigation/native'
 
 const ProductDetail = () => {
+    const navigation = useNavigation()
     return (
         <View style={styles.container}>
             <View
@@ -15,9 +17,17 @@ const ProductDetail = () => {
                     borderBottomColor: '#E8E8E8'
                 }}
             >
-                <Icon style={styles.icon} name='times' />
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Icon style={styles.icon} name='times' />
+                </TouchableOpacity>
                 <Text style={styles.text}>Chi tiết sản phẩm</Text>
-                <Icon style={styles.icon} name='edit' />
+                <TouchableOpacity
+                    onPress={() => {
+                        navigation.navigate('EditProduct')
+                    }}
+                >
+                    <Icon style={styles.icon} name='edit' />
+                </TouchableOpacity>
             </View>
             <View style={styles.addImage}>
                 <Icon style={styles.iconImage} name='camera' />

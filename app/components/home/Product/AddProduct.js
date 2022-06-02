@@ -14,7 +14,9 @@ const AddProduct = ({ navigation }) => {
                     borderBottomColor: '#E8E8E8'
                 }}
             >
-                <Icon style={styles.icon} name='close-outline' />
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Icon style={styles.icon} name='close-outline' />
+                </TouchableOpacity>
                 <Text style={styles.text}>Thêm sản phẩm</Text>
                 <Icon style={styles.icon} name='checkmark-outline' />
             </View>
@@ -24,49 +26,97 @@ const AddProduct = ({ navigation }) => {
                 </View>
                 <View style={styles.viewProblems}>
                     <View style={styles.problems}>
-                        <TextInput style={styles.textProblems}>Tên sản phẩm</TextInput>
+                        <TextInput
+                            style={styles.textProblems}
+                            placeholder='Tên sản phẩm'
+                            placeholderTextColor={'#666'}
+                        />
                         <View style={styles.barCode}>
-                            <TextInput style={styles.textProblems1}>Mã sản phẩm</TextInput>
+                            <TextInput
+                                style={styles.textProblems1}
+                                placeholder='SKU'
+                                placeholderTextColor={'#666'}
+                            />
                             <Icon style={styles.iconImage} name='barcode-outline' />
                         </View>
                         <View style={styles.barCode}>
-                            <TextInput style={styles.textProblems1}>Barcode</TextInput>
+                            <TextInput
+                                style={styles.textProblems1}
+                                placeholder='BarCode'
+                                placeholderTextColor={'#666'}
+                            />
                             <Icon style={styles.iconImage} name='barcode-outline' />
                         </View>
                         <View style={styles.problems1}>
-                            <TextInput style={styles.textProblems2}>Khối lượng (0)</TextInput>
-                            <TextInput style={styles.textProblems2}>Đơn vị tính</TextInput>
+                            <TextInput
+                                style={styles.textProblems2}
+                                placeholder='Khối lượng'
+                                placeholderTextColor={'#666'}
+                            />
+                            <TextInput
+                                style={styles.textProblems2}
+                                placeholder='Đơn vị tính'
+                                placeholderTextColor={'#666'}
+                            />
                         </View>
                     </View>
                 </View>
                 <View style={styles.ViewProblems1}>
                     <View style={styles.problems1}>
-                        <TextInput style={styles.textProblems2}>Tồn kho ban đầu</TextInput>
-                        <TextInput style={styles.textProblems2}>Giá vốn</TextInput>
+                        <TextInput
+                            style={styles.textProblems2}
+                            placeholder='Tồn kho ban đầu'
+                            placeholderTextColor={'#666'}
+                        />
+                        <TextInput
+                            style={styles.textProblems2}
+                            placeholder='Giá vốn'
+                            placeholderTextColor={'#666'}
+                        />
                     </View>
                     <View style={styles.problems1}>
-                        <TextInput style={styles.textProblems2}>Giá bán lẻ</TextInput>
-                        <TextInput style={styles.textProblems2}>Giá bán buôn</TextInput>
+                        <TextInput
+                            style={styles.textProblems2}
+                            placeholder='Giá bán lẻ              '
+                            placeholderTextColor={'#666'}
+                        />
+                        <TextInput
+                            style={styles.textProblems2}
+                            placeholder='Giá bán buôn'
+                            placeholderTextColor={'#666'}
+                        />
                     </View>
                     <View style={styles.problems1}>
-                        <TextInput style={styles.textProblems2}>Giá nhập</TextInput>
+                        <TextInput
+                            style={styles.textProblems2}
+                            placeholder='Giá nhập        '
+                            placeholderTextColor={'#666'}
+                        />
                     </View>
                 </View>
                 <View style={styles.ViewProblems1}>
                     <View style={styles.problems}>
-                        <TextInput style={styles.textProblems}>Giá nhập</TextInput>
-                        <TextInput style={styles.textProblems}>Mô tả</TextInput>
+                        <TextInput
+                            style={styles.textProblems}
+                            placeholder='Danh mục sản phẩm'
+                            placeholderTextColor={'#666'}
+                        />
+                        <TextInput
+                            style={styles.textProblems}
+                            placeholder='Mô tả'
+                            placeholderTextColor={'#666'}
+                        />
                     </View>
                 </View>
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={() => {
-                        navigation.navigate('ProductDetail')
-                    }}
-                >
-                    <Text style={styles.textButton}>Lưu</Text>
-                </TouchableOpacity>
             </ScrollView>
+            <TouchableOpacity
+                style={styles.button}
+                onPress={() => {
+                    navigation.navigate('ProductDetail')
+                }}
+            >
+                <Text style={styles.textButton}>Lưu</Text>
+            </TouchableOpacity>
         </View>
     )
 }
@@ -80,7 +130,7 @@ const styles = StyleSheet.create({
     },
     icon: {
         color: '#666',
-        fontSize: 15
+        fontSize: 25
     },
     text: {
         color: '#666',

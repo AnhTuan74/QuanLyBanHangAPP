@@ -11,8 +11,8 @@ const validateEmail = (email) => {
 
 const Login = () => {
     const navigation = useNavigation()
-    const [text, onChangeText] = useState('cu@cai.nho')
-    const [pass, onChangePass] = useState('123456')
+    const [text, onChangeText] = useState('tuan@gmail.com')
+    const [pass, onChangePass] = useState('123123')
     const [check, setCheck] = useState(true)
 
     const handleOnClickLogin = () => {

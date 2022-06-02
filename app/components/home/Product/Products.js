@@ -1,28 +1,45 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, TextInput } from 'react-native'
 import React from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome5'
+import { useNavigation } from '@react-navigation/native'
 const Products = () => {
+    const navigation = useNavigation()
     return (
         <View style={styles.container}>
             <View
                 style={{
-                    padding: 35,
+                    padding: 25,
                     backgroundColor: '#fff',
                     borderBottomWidth: 1,
                     borderBottomColor: '#E8E8E8'
                 }}
             >
                 <View style={styles.viewHeader}>
-                    <Icon style={styles.icon} name='arrow-left' />
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
+                        <Icon style={styles.icon} name='arrow-left' />
+                    </TouchableOpacity>
                     <Text style={styles.text}>Sản phẩm</Text>
-                    <Icon style={styles.icon} name='ellipsis-v' />
+                    <TouchableOpacity
+                        onPress={() => {
+                            navigation.navigate('AddProduct')
+                        }}
+                    >
+                        <Icon style={styles.icon} name='plus' />
+                    </TouchableOpacity>
                 </View>
-                <TouchableOpacity style={styles.button}>
-                    <Icon style={styles.icon1} name='search' />
-                    <Text style={styles.text1}>Tên, Barcode</Text>
-
-                    <Icon style={styles.icon1} name='barcode' />
-                </TouchableOpacity>
+                <View style={styles.look}>
+                    <TouchableOpacity>
+                        <Icon style={styles.icon1} name='search' />
+                    </TouchableOpacity>
+                    <TextInput
+                        style={styles.text1}
+                        placeholder='Tìm kiếm'
+                        placeholderTextColor={'#BDBDBD'}
+                    />
+                    <TouchableOpacity>
+                        <Icon style={styles.icon1} name='barcode' />
+                    </TouchableOpacity>
+                </View>
             </View>
             <Text style={styles.text2}>0 sản phẩm</Text>
         </View>
@@ -68,5 +85,27 @@ const styles = StyleSheet.create({
         fontSize: 14,
         paddingHorizontal: 10,
         paddingVertical: 5
+    },
+    text1: {
+        // borderColor: '#E8E8E8',
+        // backgroundColor: '#F6F6F6',
+        borderRadius: 5,
+        flex: 1,
+        marginHorizontal: 16,
+        paddingLeft: 16,
+        color: '#000'
+    },
+    look: {
+        // flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderColor: '#E8E8E8',
+        backgroundColor: '#F6F6F6',
+        justifyContent: 'space-between',
+        marginHorizontal: 10,
+        borderRadius: 20,
+        paddingHorizontal: 20,
+        marginVertical: 10,
+        marginTop: 15
     }
 })

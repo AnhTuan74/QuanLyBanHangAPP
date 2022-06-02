@@ -1,8 +1,29 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import React from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { Avatar } from 'react-native-elements'
-
+const list = [
+    {
+        id: 1,
+        name: 'Đóng góp ý kiến'
+    },
+    {
+        id: 2,
+        name: 'Về ứng dụng'
+    },
+    {
+        id: 3,
+        name: 'Quy chế hoạt động'
+    },
+    {
+        id: 4,
+        name: 'Chính sách bảo mật'
+    },
+    {
+        id: 4,
+        name: 'Giải quyết khiếu nại'
+    }
+]
 const Profile = ({ navigation: { goBack }, navigation }) => {
     return (
         <View style={styles.container}>
@@ -38,28 +59,31 @@ const Profile = ({ navigation: { goBack }, navigation }) => {
                 <View style={styles.viewText}>
                     <Text style={styles.text1}>TuanAT</Text>
                     <Text style={styles.text2}>0363520471</Text>
-                    <Text style={styles.text3}>Chỉnh sửa thông tin</Text>
+                    <TouchableOpacity>
+                        <Text style={styles.text3}>Chỉnh sửa thông tin</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
-            <View style={styles.problem}>
-                <Text style={styles.textProblems}>Đóng góp ý kiến</Text>
-
-                <Text style={styles.textProblems}>Về ứng dụng</Text>
-                <Text style={styles.textProblems}>Quy chế hoạt động</Text>
-                <Text style={styles.textProblems}>Chính sách bảo mật</Text>
-                <Text style={styles.textProblems}>Giới thiệu ứng dụng</Text>
-                <Text style={styles.textProblems1}>Giải quyết khiếu nại</Text>
-            </View>
-            <View style={styles.problem}>
-                <Text
-                    style={styles.textProblems1}
-                    onPress={() => {
-                        navigation.navigate('Login')
-                    }}
-                >
-                    Đăng xuất
-                </Text>
-            </View>
+            {list.map((item, index) => (
+                <TouchableOpacity>
+                    <View style={styles.problem}>
+                        <Text style={styles.textProblems}>{item.name}</Text>
+                        <Icon style={styles.iconHandling} name='angle-right' size={15} />
+                    </View>
+                </TouchableOpacity>
+            ))}
+            <TouchableOpacity>
+                <View style={styles.problems1}>
+                    <Text
+                        style={styles.textProblems1}
+                        onPress={() => {
+                            navigation.navigate('Login')
+                        }}
+                    >
+                        Đăng xuất
+                    </Text>
+                </View>
+            </TouchableOpacity>
         </View>
     )
 }
@@ -89,7 +113,8 @@ const styles = StyleSheet.create({
         marginTop: -20,
         flexDirection: 'row',
         alignItems: 'center',
-        paddingHorizontal: 15
+        paddingHorizontal: 15,
+        marginBottom: 20
     },
     viewText: {
         paddingHorizontal: 20
@@ -111,28 +136,35 @@ const styles = StyleSheet.create({
         marginVertical: 2
     },
     problem: {
+        flexDirection: 'row',
         backgroundColor: '#fff',
         borderRadius: 5,
-        marginTop: 10,
+        marginHorizontal: 20,
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingHorizontal: 15,
+        paddingVertical: 15,
+        borderBottomWidth: 1,
+        borderBottomColor: '#E8E8E8'
+    },
+    problems1: {
+        flexDirection: 'row',
+        backgroundColor: '#fff',
+        borderRadius: 5,
         paddingVertical: 5,
-        marginHorizontal: 20
+        marginHorizontal: 20,
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingHorizontal: 15,
+        paddingVertical: 15,
+        marginTop: 15
     },
     textProblems: {
         color: '#000',
-        fontSize: 14,
-        borderBottomWidth: 1,
-        borderBottomColor: '#E8E8E8',
-        paddingHorizontal: 10,
-        paddingVertical: 10,
-        marginLeft: 10,
-        marginRight: 10
+        fontSize: 14
     },
     textProblems1: {
         color: '#000',
-        fontSize: 14,
-        paddingHorizontal: 10,
-        paddingVertical: 10,
-        marginLeft: 10,
-        marginRight: 10
+        fontSize: 14
     }
 })

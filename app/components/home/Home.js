@@ -2,7 +2,24 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import React from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { Avatar } from 'react-native-elements'
-
+const list = [
+    {
+        id: 1,
+        name: 'Tổng số lượng'
+    },
+    {
+        id: 2,
+        name: 'Tổng tiền hàng'
+    },
+    {
+        id: 3,
+        name: 'Chiết khấu'
+    },
+    {
+        id: 4,
+        name: 'Phí giao hàng'
+    }
+]
 const Home = ({ navigation }) => {
     return (
         <View style={styles.container}>
@@ -55,57 +72,75 @@ const Home = ({ navigation }) => {
                         <Text style={styles.textItemPrice}>0 </Text>
                     </View>
                 </View>
-                <Text style={styles.textReport}>Báo cáo lãi lỗ</Text>
+                <TouchableOpacity>
+                    <Text style={styles.textReport}>Báo cáo lãi lỗ</Text>
+                </TouchableOpacity>
             </View>
+
             <View style={styles.viewContent}>
-                <View style={styles.order}>
-                    <Icon
-                        name='cart-plus'
-                        size={25}
-                        color='#3C7BF4'
-                        onPress={() => {
-                            navigation.navigate('AddOrders')
-                        }}
-                    />
-                    <Text style={styles.textOrder}>Tạo đơn</Text>
-                </View>
-                <View style={styles.order}>
-                    <Icon
-                        name='cube'
-                        size={25}
-                        color='#C92424'
-                        onPress={() => {
-                            navigation.navigate('Products')
-                        }}
-                    />
-                    <Text style={styles.textOrder}>Sản phẩm</Text>
-                </View>
-                <View style={styles.order}>
-                    <Icon name='warehouse' size={25} color='#23874B' />
-                    <Text style={styles.textOrder}>Kho hàng</Text>
-                </View>
-                <View style={styles.order}>
-                    <Icon name='home' size={25} color='#C92424' />
-                    <Text style={styles.textOrder}>Đơn hàng</Text>
-                </View>
+                <TouchableOpacity
+                    onPress={() => {
+                        navigation.navigate('AddOrders')
+                    }}
+                >
+                    <View style={styles.order}>
+                        <Icon name='cart-plus' size={25} color='#3C7BF4' />
+                        <Text style={styles.textOrder}>Tạo đơn</Text>
+                    </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => {
+                        navigation.navigate('Products')
+                    }}
+                >
+                    <View style={styles.order}>
+                        <Icon name='cube' size={25} color='#C92424' />
+                        <Text style={styles.textOrder}>Sản phẩm</Text>
+                    </View>
+                </TouchableOpacity>
+                <TouchableOpacity>
+                    <View style={styles.order}>
+                        <Icon name='warehouse' size={25} color='#23874B' />
+                        <Text style={styles.textOrder}>Kho hàng</Text>
+                    </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => {
+                        navigation.navigate('Order')
+                    }}
+                >
+                    <View style={styles.order}>
+                        <Icon name='home' size={25} color='#C92424' />
+                        <Text style={styles.textOrder}>Đơn hàng</Text>
+                    </View>
+                </TouchableOpacity>
             </View>
+
             <View style={styles.viewContent}>
-                <View style={styles.order}>
-                    <Icon name='cart-plus' size={25} color='#3C7BF4' />
-                    <Text style={styles.textOrder}>Báo cáo</Text>
-                </View>
-                <View style={styles.order}>
-                    <Icon name='cube' size={25} color='#C92424' />
-                    <Text style={styles.textOrder}>Khách hàng</Text>
-                </View>
-                <View style={styles.order}>
-                    <Icon name='warehouse' size={25} color='#C92424' />
-                    <Text style={styles.textOrder}>Quà tặng</Text>
-                </View>
-                <View style={styles.order}>
-                    <Icon name='home' size={25} color='#C92424' />
-                    <Text style={styles.textOrder}>Xem thêm</Text>
-                </View>
+                <TouchableOpacity>
+                    <View style={styles.order}>
+                        <Icon name='cart-plus' size={25} color='#3C7BF4' />
+                        <Text style={styles.textOrder}>Báo cáo</Text>
+                    </View>
+                </TouchableOpacity>
+                <TouchableOpacity>
+                    <View style={styles.order}>
+                        <Icon name='cube' size={25} color='#C92424' />
+                        <Text style={styles.textOrder}>Khách hàng</Text>
+                    </View>
+                </TouchableOpacity>
+                <TouchableOpacity>
+                    <View style={styles.order}>
+                        <Icon name='warehouse' size={25} color='#C92424' />
+                        <Text style={styles.textOrder}>Quà tặng</Text>
+                    </View>
+                </TouchableOpacity>
+                <TouchableOpacity>
+                    <View style={styles.order}>
+                        <Icon name='home' size={25} color='#C92424' />
+                        <Text style={styles.textOrder}>Xem thêm</Text>
+                    </View>
+                </TouchableOpacity>
             </View>
             <View>
                 <TouchableOpacity
@@ -118,12 +153,15 @@ const Home = ({ navigation }) => {
                     <Text style={styles.textAddProduct}>Thêm sản phẩm</Text>
                 </TouchableOpacity>
                 <Text style={styles.handling}>ĐƠN HÀNG CHỜ XỬ LÝ</Text>
-                <View style={styles.viewHandling}>
-                    <Text style={styles.textHandling}>Chờ duyệt</Text>
-                    <Text style={styles.textHandling}>Chờ thanh toán</Text>
-                    <Text style={styles.textHandling}>Chờ lấy hàng</Text>
-                    <Text style={styles.textHandling1}>Đang giao hàng</Text>
-                </View>
+                {list.map((item, index) => (
+                    <TouchableOpacity>
+                        <View style={styles.viewHandling}>
+                            <Text style={styles.textHandling}>{item.name}</Text>
+
+                            <Icon style={styles.iconHandling} name='angle-right' size={15} />
+                        </View>
+                    </TouchableOpacity>
+                ))}
             </View>
         </View>
     )
@@ -226,25 +264,26 @@ const styles = StyleSheet.create({
         color: '#000',
         fontSize: 14,
         marginTop: 15,
-        marginLeft: 25
+        marginLeft: 25,
+        marginBottom: 10
     },
     viewHandling: {
+        flexDirection: 'row',
         backgroundColor: '#fff',
         borderRadius: 5,
-        marginTop: 10,
         paddingVertical: 5,
-        marginRight: 25,
-        marginLeft: 25
+        marginHorizontal: 20,
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        borderBottomWidth: 1,
+        borderBottomColor: '#E8E8E8',
+        paddingHorizontal: 10,
+        paddingVertical: 13
     },
     textHandling: {
         color: '#000',
         fontSize: 14,
-        borderBottomWidth: 1,
-        borderBottomColor: '#E8E8E8',
-        paddingHorizontal: 10,
-        paddingVertical: 10,
-        marginLeft: 10,
-        marginRight: 10
+        flex: 1
     },
     textHandling1: {
         color: '#000',

@@ -10,6 +10,9 @@ import ProductDetail from './../home/Product/ProductDetail'
 import Products from './../home/Product/Products'
 import AddOrders from './../home/Orders/AddOrders'
 import Scan from './../scan/Scan'
+import EditProduct from './../home/Product/EditProduct'
+import Order from './../home/Orders/Order'
+import OrderDetail from './../home/Orders/OrderDetail';
 
 const Stack = createNativeStackNavigator()
 
@@ -29,6 +32,9 @@ const RootNavigation = () => {
             <Stack.Screen name='Products' component={Products} />
             <Stack.Screen name='AddOrders' component={AddOrders} />
             <Stack.Screen name='Scan' component={Scan} />
+            <Stack.Screen name='EditProduct' component={EditProduct} />
+            <Stack.Screen name='Order' component={Order} />
+            <Stack.Screen name='OrderDetail' component={OrderDetail} />
         </Stack.Navigator>
     )
 }
