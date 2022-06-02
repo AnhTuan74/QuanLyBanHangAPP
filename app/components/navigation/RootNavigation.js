@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import Login from './../auth/Login'
 import Register from './../auth/Register'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Home from './../home/Home'
 import profile from './../home/Profile'
 import AddProduct from './../home/Product/AddProduct'
@@ -12,30 +12,61 @@ import AddOrders from './../home/Orders/AddOrders'
 import Scan from './../scan/Scan'
 import EditProduct from './../home/Product/EditProduct'
 import Order from './../home/Orders/Order'
-import OrderDetail from './../home/Orders/OrderDetail';
+import OrderDetail from './../home/Orders/OrderDetail'
+import { NavigationContainer } from '@react-navigation/native'
+import { useDispatch } from 'react-redux'
+import StorageManager from '../../controller/StorageManager'
+import { setInfoUser } from '../../redux/userSlice'
 
 const Stack = createNativeStackNavigator()
 
 const RootNavigation = () => {
+    const dispatch = useDispatch()
+    const [initialRouteName, setInitialRouteName] = useState('TabBarNavigation')
+    const [initial, setInitial] = useState(true)
+
+    const getData = async () => {
+        // lấy thông tin user từ local
+        await StorageManager.getData('user').then((user) => {
+            if (user) {
+                dispatch(setInfoUser(user)) // set thông tin user vào redux
+                setInitialRouteName('TabBarNavigation') // chuyển về tabbar nếu đã đăng nhập
+            } else {
+                setInitialRouteName('Login') // chuyển về login nếu chưa đăng nhập
+            }
+        })
+        if (initial) {
+            setInitial(false)
+        }
+    }
+    useEffect(() => {
+        getData()
+    }, [])
+
+    if (initial) {
+        return null
+    }
     return (
-        <Stack.Navigator
-            screenOptions={{
-                headerShown: false
-            }}
-            initialRouteName='Login'
-        >
-            <Stack.Screen name='TabBarNavigation' component={TabBarNavigation} />
-            <Stack.Screen name='Login' component={Login} />
-            <Stack.Screen name='Register' component={Register} />
-            <Stack.Screen name='AddProduct' component={AddProduct} />
-            <Stack.Screen name='ProductDetail' component={ProductDetail} />
-            <Stack.Screen name='Products' component={Products} />
-            <Stack.Screen name='AddOrders' component={AddOrders} />
-            <Stack.Screen name='Scan' component={Scan} />
-            <Stack.Screen name='EditProduct' component={EditProduct} />
-            <Stack.Screen name='Order' component={Order} />
-            <Stack.Screen name='OrderDetail' component={OrderDetail} />
-        </Stack.Navigator>
+        <NavigationContainer>
+            <Stack.Navigator
+                screenOptions={{
+                    headerShown: false
+                }}
+                initialRouteName={initialRouteName}
+            >
+                <Stack.Screen name='TabBarNavigation' component={TabBarNavigation} />
+                <Stack.Screen name='Login' component={Login} />
+                <Stack.Screen name='Register' component={Register} />
+                <Stack.Screen name='AddProduct' component={AddProduct} />
+                <Stack.Screen name='ProductDetail' component={ProductDetail} />
+                <Stack.Screen name='Products' component={Products} />
+                <Stack.Screen name='AddOrders' component={AddOrders} />
+                <Stack.Screen name='Scan' component={Scan} />
+                <Stack.Screen name='EditProduct' component={EditProduct} />
+                <Stack.Screen name='Order' component={Order} />
+                <Stack.Screen name='OrderDetail' component={OrderDetail} />
+            </Stack.Navigator>
+        </NavigationContainer>
     )
 }
 

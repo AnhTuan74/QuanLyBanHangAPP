@@ -1,7 +1,13 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Alert, ToastAndroid } from 'react-native'
 import React from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { Avatar } from 'react-native-elements'
+import { useNavigation } from '@react-navigation/native'
+import firestore from '@react-native-firebase/firestore'
+import auth from '@react-native-firebase/auth'
+import { setInfoUser } from '../../redux/userSlice'
+import { useDispatch } from 'react-redux'
+
 const list = [
     {
         id: 1,
@@ -24,7 +30,40 @@ const list = [
         name: 'Giải quyết khiếu nại'
     }
 ]
-const Profile = ({ navigation: { goBack }, navigation }) => {
+
+const Profile = () => {
+    const navigation = useNavigation()
+    const dispatch = useDispatch()
+
+    const handleOnClickLogout = () => {
+        Alert.alert('Thông báo', 'Bạn có chắc chắn muốn đăng xuất?', [
+            {
+                text: 'Cancel',
+                onPress: () => {
+                    console.log('Cancel Pressed')
+                }
+            },
+            {
+                text: 'OK',
+                onPress: () => {
+                    handleOnLogout()
+                }
+            }
+        ])
+    }
+
+    const handleOnLogout = () => {
+        auth()
+            .signOut()
+            .then(() => {
+                ToastAndroid.show('Đăng xuất thành công', ToastAndroid.SHORT)
+            })
+        navigation.reset({
+            index: 0,
+            routes: [{ name: 'Login' }]
+        })
+        dispatch(setInfoUser(null))
+    }
     return (
         <View style={styles.container}>
             <View
@@ -35,12 +74,6 @@ const Profile = ({ navigation: { goBack }, navigation }) => {
                     alignItems: 'center'
                 }}
             >
-                <Icon
-                    style={styles.icon}
-                    name='arrow-left'
-                    onPress={() => goBack()}
-                    title='Go back from Home'
-                />
                 <Text style={styles.text}>Thông tin cá nhân</Text>
             </View>
             <View style={styles.viewInformation}>
@@ -50,9 +83,6 @@ const Profile = ({ navigation: { goBack }, navigation }) => {
                             uri: 'https://cdn.pixabay.com/photo/2019/11/03/20/11/portrait-4599553__340.jpg'
                         }}
                         rounded
-                        onPress={() => {
-                            navigation.navigate('Profile')
-                        }}
                         size={40}
                     />
                 </View>
@@ -65,23 +95,20 @@ const Profile = ({ navigation: { goBack }, navigation }) => {
                 </View>
             </View>
             {list.map((item, index) => (
-                <TouchableOpacity>
+                <TouchableOpacity key={index}>
                     <View style={styles.problem}>
                         <Text style={styles.textProblems}>{item.name}</Text>
                         <Icon style={styles.iconHandling} name='angle-right' size={15} />
                     </View>
                 </TouchableOpacity>
             ))}
-            <TouchableOpacity>
+            <TouchableOpacity
+                onPress={() => {
+                    handleOnClickLogout()
+                }}
+            >
                 <View style={styles.problems1}>
-                    <Text
-                        style={styles.textProblems1}
-                        onPress={() => {
-                            navigation.navigate('Login')
-                        }}
-                    >
-                        Đăng xuất
-                    </Text>
+                    <Text style={styles.textProblems1}>Đăng xuất</Text>
                 </View>
             </TouchableOpacity>
         </View>
