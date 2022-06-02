@@ -1,25 +1,71 @@
-import { StyleSheet, Text, View, TextInput, ScrollView, TouchableOpacity } from 'react-native'
-import React from 'react'
+import {
+    StyleSheet,
+    Text,
+    View,
+    TextInput,
+    ScrollView,
+    TouchableOpacity,
+    ToastAndroid,
+    Alert
+} from 'react-native'
+import React, { useState, useEffect } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons'
-const AddProduct = ({ navigation }) => {
+import { useNavigation } from '@react-navigation/native'
+import firestore from '@react-native-firebase/firestore'
+import Header from './components/Header'
+const AddProduct = ({ route }) => {
+    const navigation = useNavigation()
+    const [name, setName] = useState('')
+    const [barcode, setBarcode] = useState('')
+    const [description, setDescription] = useState('')
+    const [image, setImage] = useState('')
+    const [priceCapital, setPriceCapital] = useState('')
+    const [priceSale, setPriceSale] = useState('')
+
+    useEffect(() => {
+        setBarcode(route?.params?.barcode || '')
+    }, [route])
+
+    const handleOnSave = () => {
+        const product = {
+            name,
+            barcode,
+            priceCapital,
+            priceSale,
+            description
+        }
+        firestore()
+            .collection('products')
+            .where('barcode', '==', barcode)
+            .get()
+            .then((querySnapshot) => {
+                if (querySnapshot.size > 0) {
+                    Alert.alert('Thông báo', 'Sản phẩm đã tồn tại')
+                } else {
+                    handleAddProduct(product)
+                }
+            })
+            .catch((error) => {
+                console.log('Error getting documents: ', error)
+            })
+    }
+
+    const handleAddProduct = (product) => {
+        firestore()
+            .collection('products')
+            .doc(barcode)
+            .set(product)
+            .then(() => {
+                ToastAndroid.show('Thêm sản phẩm thành công', ToastAndroid.SHORT)
+                navigation.navigate('Home')
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+    }
     return (
         <View style={styles.container}>
-            <View
-                style={{
-                    padding: 25,
-                    backgroundColor: '#fff',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    borderBottomWidth: 1,
-                    borderBottomColor: '#E8E8E8'
-                }}
-            >
-                <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <Icon style={styles.icon} name='close-outline' />
-                </TouchableOpacity>
-                <Text style={styles.text}>Thêm sản phẩm</Text>
-                <Icon style={styles.icon} name='checkmark-outline' />
-            </View>
+            <Header title={'Thêm sản phẩm'} />
             <ScrollView>
                 <View style={styles.addImage}>
                     <Icon style={styles.iconImage} name='camera-outline' />
@@ -29,82 +75,52 @@ const AddProduct = ({ navigation }) => {
                         <TextInput
                             style={styles.textProblems}
                             placeholder='Tên sản phẩm'
-                            placeholderTextColor={'#666'}
+                            value={name}
+                            onChangeText={setName}
+                            placeholderTextColor='#e5e5e5'
                         />
                         <View style={styles.barCode}>
                             <TextInput
                                 style={styles.textProblems1}
-                                placeholder='SKU'
-                                placeholderTextColor={'#666'}
+                                placeholder='Mã sản phẩm'
+                                value={barcode}
+                                onChangeText={setBarcode}
+                                placeholderTextColor='#e5e5e5'
                             />
-                            <Icon style={styles.iconImage} name='barcode-outline' />
-                        </View>
-                        <View style={styles.barCode}>
-                            <TextInput
-                                style={styles.textProblems1}
-                                placeholder='BarCode'
-                                placeholderTextColor={'#666'}
-                            />
-                            <Icon style={styles.iconImage} name='barcode-outline' />
-                        </View>
-                        <View style={styles.problems1}>
-                            <TextInput
-                                style={styles.textProblems2}
-                                placeholder='Khối lượng'
-                                placeholderTextColor={'#666'}
-                            />
-                            <TextInput
-                                style={styles.textProblems2}
-                                placeholder='Đơn vị tính'
-                                placeholderTextColor={'#666'}
-                            />
+                            <TouchableOpacity
+                                onPress={() => {
+                                    navigation.navigate('Scan', { screen: 'AddProduct' })
+                                }}
+                            >
+                                <Icon style={styles.iconImage} name='barcode-outline' />
+                            </TouchableOpacity>
                         </View>
                     </View>
                 </View>
                 <View style={styles.ViewProblems1}>
-                    <View style={styles.problems1}>
-                        <TextInput
-                            style={styles.textProblems2}
-                            placeholder='Tồn kho ban đầu'
-                            placeholderTextColor={'#666'}
-                        />
-                        <TextInput
-                            style={styles.textProblems2}
-                            placeholder='Giá vốn'
-                            placeholderTextColor={'#666'}
-                        />
-                    </View>
-                    <View style={styles.problems1}>
-                        <TextInput
-                            style={styles.textProblems2}
-                            placeholder='Giá bán lẻ              '
-                            placeholderTextColor={'#666'}
-                        />
-                        <TextInput
-                            style={styles.textProblems2}
-                            placeholder='Giá bán buôn'
-                            placeholderTextColor={'#666'}
-                        />
-                    </View>
-                    <View style={styles.problems1}>
-                        <TextInput
-                            style={styles.textProblems2}
-                            placeholder='Giá nhập        '
-                            placeholderTextColor={'#666'}
-                        />
-                    </View>
+                    <TextInput
+                        style={styles.textProblems2}
+                        placeholder='Giá nhập'
+                        value={priceCapital}
+                        onChangeText={setPriceCapital}
+                        placeholderTextColor='#e5e5e5'
+                    />
+                    <TextInput
+                        style={styles.textProblems2}
+                        placeholder='Giá bán'
+                        value={priceSale}
+                        onChangeText={setPriceSale}
+                        placeholderTextColor='#e5e5e5'
+                    />
                 </View>
                 <View style={styles.ViewProblems1}>
                     <View style={styles.problems}>
                         <TextInput
                             style={styles.textProblems}
-                            placeholder='Danh mục sản phẩm'
-                            placeholderTextColor={'#666'}
-                        />
-                        <TextInput
-                            style={styles.textProblems}
                             placeholder='Mô tả'
-                            placeholderTextColor={'#666'}
+                            value={description}
+                            onChangeText={setDescription}
+                            placeholderTextColor='#e5e5e5'
                         />
                     </View>
                 </View>
@@ -112,7 +128,7 @@ const AddProduct = ({ navigation }) => {
             <TouchableOpacity
                 style={styles.button}
                 onPress={() => {
-                    navigation.navigate('ProductDetail')
+                    handleOnSave()
                 }}
             >
                 <Text style={styles.textButton}>Lưu</Text>
@@ -127,16 +143,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#F0F2F8'
-    },
-    icon: {
-        color: '#666',
-        fontSize: 25
-    },
-    text: {
-        color: '#666',
-        fontSize: 14,
-        fontWeight: 'bold',
-        paddingHorizontal: 100
     },
     addImage: {
         backgroundColor: '#fff',
@@ -161,13 +167,12 @@ const styles = StyleSheet.create({
     },
     textProblems: {
         color: '#666',
-        fontSize: 13,
+        fontSize: 16,
         borderBottomWidth: 1,
         borderBottomColor: '#E8E8E8',
         paddingHorizontal: 10,
         paddingVertical: 5,
-        marginHorizontal: 10,
-        marginVertical: 10
+        margin: 10
     },
     barCode: {
         flexDirection: 'row',
@@ -180,7 +185,7 @@ const styles = StyleSheet.create({
     },
     textProblems1: {
         color: '#666',
-        fontSize: 13,
+        fontSize: 16,
         paddingHorizontal: 10,
         paddingVertical: 5,
         marginVertical: 5
@@ -191,7 +196,7 @@ const styles = StyleSheet.create({
     },
     textProblems2: {
         color: '#666',
-        fontSize: 13,
+        fontSize: 16,
         paddingHorizontal: 10,
         paddingVertical: 5,
         marginVertical: 10,
@@ -221,7 +226,7 @@ const styles = StyleSheet.create({
     },
     textButton: {
         color: '#fff',
-        fontSize: 15,
+        fontSize: 16,
         fontWeight: 'bold'
     }
 })
