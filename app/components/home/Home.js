@@ -247,18 +247,19 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         marginTop: 15,
         paddingVertical: 10,
-        marginLeft: 200,
+        alignSelf: 'flex-end',
         marginRight: 30,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        justifyContent: 'space-evenly'
+        paddingHorizontal: 20
     },
     textAddProduct: {
         color: '#fff',
         fontSize: 14,
         fontWeight: 'bold',
-        textAlign: 'center'
+        textAlign: 'center',
+        paddingLeft: 5
     },
     handling: {
         color: '#000',
