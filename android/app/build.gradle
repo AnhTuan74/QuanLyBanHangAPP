@@ -139,6 +139,7 @@ android {
 
     defaultConfig {
         applicationId "com.quanlybanhang"
+        vectorDrawables.useSupportLibrary = true
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

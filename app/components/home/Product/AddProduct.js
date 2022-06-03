@@ -6,33 +6,82 @@ import {
     ScrollView,
     TouchableOpacity,
     ToastAndroid,
-    Alert
+    Alert,
+    LogBox,
+    Image
 } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { useNavigation } from '@react-navigation/native'
 import firestore from '@react-native-firebase/firestore'
 import Header from './components/Header'
+import ActionSheet from 'react-native-actionsheet'
+import ImagePicker from 'react-native-image-crop-picker'
+import storage from '@react-native-firebase/storage'
+import auth from '@react-native-firebase/auth'
+import RNProgressHud from 'progress-hud'
+
+LogBox.ignoreLogs(['Animated: `useNativeDriver`', 'componentWillReceiveProps'])
+
 const AddProduct = ({ route }) => {
     const navigation = useNavigation()
     const [name, setName] = useState('')
     const [barcode, setBarcode] = useState('')
     const [description, setDescription] = useState('')
-    const [image, setImage] = useState('')
+    const [image, setImage] = useState()
     const [priceCapital, setPriceCapital] = useState('')
     const [priceSale, setPriceSale] = useState('')
+    const [quantity, setQuantity] = useState('')
+
+    const _refActionSheet = useRef()
+
+    const onShowImageActionSheet = () => {
+        _refActionSheet.current?.show(true)
+    }
 
     useEffect(() => {
         setBarcode(route?.params?.barcode || '')
     }, [route])
 
-    const handleOnSave = () => {
+    const handleOnSave = async () => {
+        if (!name) {
+            ToastAndroid.show('Vui lòng nhập tên sản phẩm', ToastAndroid.SHORT)
+            return
+        }
+        if (!barcode) {
+            ToastAndroid.show('Vui lòng nhập mã sản phẩm', ToastAndroid.SHORT)
+            return
+        }
+        if (!description) {
+            ToastAndroid.show('Vui lòng nhập mô tả sản phẩm', ToastAndroid.SHORT)
+            return
+        }
+        if (!priceCapital) {
+            ToastAndroid.show('Vui lòng nhập giá nhập', ToastAndroid.SHORT)
+            return
+        }
+        if (!priceSale) {
+            ToastAndroid.show('Vui lòng nhập giá bán', ToastAndroid.SHORT)
+            return
+        }
+        if (!image) {
+            ToastAndroid.show('Vui lòng chọn ảnh sản phẩm', ToastAndroid.SHORT)
+            return
+        }
+        if (!quantity) {
+            ToastAndroid.show('Vui lòng nhập số lượng', ToastAndroid.SHORT)
+            return
+        }
+        RNProgressHud.show()
+        let url = await addImageToStorage(image?.path)
         const product = {
             name,
             barcode,
             priceCapital,
             priceSale,
-            description
+            description,
+            quantity,
+            image: url
         }
         firestore()
             .collection('products')
@@ -48,10 +97,23 @@ const AddProduct = ({ route }) => {
             .catch((error) => {
                 console.log('Error getting documents: ', error)
             })
+            .finally(() => {
+                RNProgressHud.dismiss()
+            })
+    }
+
+    const addImageToStorage = async (uri) => {
+        const imageName = `${Date.now()}`
+        const imageRef = storage().ref(`images/${imageName}`)
+        await imageRef.putFile(uri)
+        let url = await storage().ref(`images/${imageName}`).getDownloadURL()
+        return url
     }
 
     const handleAddProduct = (product) => {
         firestore()
+            .collection('users')
+            .doc(auth().currentUser.uid)
             .collection('products')
             .doc(barcode)
             .set(product)
@@ -63,12 +125,54 @@ const AddProduct = ({ route }) => {
                 console.log(error)
             })
     }
+
+    const openCamera = () => {
+        ImagePicker.openCamera({
+            mediaType: 'photo',
+            width: 1000,
+            height: 1000,
+            cropping: true
+        })
+            .then((image) => {
+                setImage(image)
+            })
+            .catch((err) => {
+                alert(err)
+            })
+    }
+
+    const openLibrary = () => {
+        ImagePicker.openPicker({
+            mediaType: 'photo',
+            width: 1000,
+            height: 1000,
+            cropping: true
+        })
+            .then((image) => {
+                setImage(image)
+            })
+            .catch((err) => {
+                alert(err)
+            })
+    }
+
+    const handlePickerImage = (index) => {
+        if (index == 0) {
+            openCamera()
+        } else if (index == 1) {
+            openLibrary()
+        }
+    }
+
     return (
         <View style={styles.container}>
             <Header title={'Thêm sản phẩm'} />
             <ScrollView>
-                <View style={styles.addImage}>
-                    <Icon style={styles.iconImage} name='camera-outline' />
+                <View style={styles.viewImage}>
+                    <TouchableOpacity style={styles.addImage} onPress={onShowImageActionSheet}>
+                        <Icon style={styles.iconImage} name='camera-outline' />
+                    </TouchableOpacity>
+                    <Image style={styles.image} source={{ uri: image?.path }} />
                 </View>
                 <View style={styles.viewProblems}>
                     <View style={styles.problems}>
@@ -102,14 +206,24 @@ const AddProduct = ({ route }) => {
                         style={styles.textProblems2}
                         placeholder='Giá nhập'
                         value={priceCapital}
+                        keyboardType='numeric'
                         onChangeText={setPriceCapital}
                         placeholderTextColor='#e5e5e5'
                     />
                     <TextInput
                         style={styles.textProblems2}
                         placeholder='Giá bán'
+                        keyboardType='numeric'
                         value={priceSale}
                         onChangeText={setPriceSale}
+                        placeholderTextColor='#e5e5e5'
+                    />
+                    <TextInput
+                        style={styles.textProblems2}
+                        placeholder='Số lượng sản phẩm'
+                        keyboardType='numeric'
+                        value={quantity}
+                        onChangeText={setQuantity}
                         placeholderTextColor='#e5e5e5'
                     />
                 </View>
@@ -133,6 +247,13 @@ const AddProduct = ({ route }) => {
             >
                 <Text style={styles.textButton}>Lưu</Text>
             </TouchableOpacity>
+            <ActionSheet
+                ref={_refActionSheet}
+                title={'Chọn ảnh'}
+                options={['Camera', 'Thư viện ảnh', 'Huỷ']}
+                cancelButtonIndex={2}
+                onPress={handlePickerImage}
+            />
         </View>
     )
 }
@@ -144,6 +265,10 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#F0F2F8'
     },
+    viewImage: {
+        flexDirection: 'row',
+        marginTop: 10
+    },
     addImage: {
         backgroundColor: '#fff',
         paddingVertical: 20,
@@ -151,12 +276,17 @@ const styles = StyleSheet.create({
         width: 60,
         height: 60,
         alignItems: 'center',
-        marginTop: 10,
+
         marginHorizontal: 10
     },
     iconImage: {
         color: '#3C7BF4',
-        fontSize: 18
+        fontSize: 20
+    },
+    image: {
+        width: 60,
+        height: 60,
+        borderRadius: 10
     },
     viewProblems: {
         backgroundColor: '#fff',
