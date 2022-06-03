@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, FlatList } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, FlatList, Image } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useNavigation } from '@react-navigation/native'
@@ -65,16 +65,62 @@ const Products = () => {
                     </TouchableOpacity>
                 </View>
             </View>
-            {listProduct.length == 0 ? (
-                <Text style={styles.text2}>0 sản phẩm</Text>
+            {false ? (
+                <View style={styles.noProducts}>
+                    <Text style={styles.textNoProduct}>Chưa có sản phẩm</Text>
+                    <TouchableOpacity
+                        style={styles.addProduct}
+                        onPress={() => {
+                            navigation.navigate('AddProduct')
+                        }}
+                    >
+                        <Icon name='plus' size={13} color='#fff' />
+                        <Text style={styles.textAddProduct}>Thêm sản phẩm</Text>
+                    </TouchableOpacity>
+                </View>
             ) : (
                 <View style={styles.listProduct}>
+                    <Text
+                        style={{
+                            fontSize: 15,
+                            padding: 10
+                        }}
+                    >
+                        3 sản phẩm
+                    </Text>
                     <FlatList
                         data={listProduct}
                         keyExtractor={(item) => item.barcode}
                         renderItem={({ item }) => (
                             <View style={styles.itemProduct}>
-                                <Text>{item.name}</Text>
+                                <View style={styles.viewImage}>
+                                    <Image
+                                        style={styles.image}
+                                        source={{
+                                            uri: 'https://th.bing.com/th/id/R.149244a480a45a0736cdba574ba9147e?rik=mYWnOVTopKTpCw&pid=ImgRaw&r=0'
+                                        }}
+                                    />
+                                </View>
+                                <View style={styles.viewInformation}>
+                                    <Text style={styles.nameProduct}>{item.name}</Text>
+                                    <View
+                                        style={{
+                                            flexDirection: 'row',
+                                            alignItems: 'center'
+                                        }}
+                                    >
+                                        <Text style={styles.priceCapital}>
+                                            {item.priceSale} VNĐ
+                                        </Text>
+                                        <Text
+                                            style={{
+                                                color: '#3C7BF4'
+                                            }}
+                                        >
+                                            Tồn kho: 10
+                                        </Text>
+                                    </View>
+                                </View>
                             </View>
                         )}
                     />
@@ -145,5 +191,58 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         marginVertical: 10,
         marginTop: 15
+    },
+    addProduct: {
+        backgroundColor: '#3C7BF4',
+        borderRadius: 20,
+        marginTop: 15,
+        paddingVertical: 10,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingHorizontal: 20
+    },
+    textAddProduct: {
+        color: '#fff',
+        fontSize: 14,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        paddingLeft: 5
+    },
+    noProducts: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    textNoProduct: {
+        color: '#666',
+        fontSize: 18,
+        textAlign: 'center'
+    },
+    image: {
+        width: 60,
+        height: 60,
+        resizeMode: 'contain'
+    },
+    itemProduct: {
+        padding: 20,
+        backgroundColor: '#fff',
+        flexDirection: 'row',
+        borderBottomWidth: 1,
+        borderBottomColor: '#E8E8E8'
+    },
+    priceCapital: {
+        paddingRight: 10,
+        color: '#F44336'
+    },
+    viewInformation: {
+        flex: 1,
+        marginLeft: 10
+    },
+    nameProduct: {
+        fontSize: 15,
+        fontWeight: 'bold',
+        color: '#000',
+        marginBottom: 5
     }
 })
