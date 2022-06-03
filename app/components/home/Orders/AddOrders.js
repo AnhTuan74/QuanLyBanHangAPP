@@ -7,7 +7,8 @@ import {
     TextInput,
     ScrollView
 } from 'react-native'
-import React from 'react'
+
+import React, { useState } from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useNavigation } from '@react-navigation/native'
 
@@ -35,6 +36,15 @@ const list = [
 ]
 const AddOrders = () => {
     const navigation = useNavigation()
+    const [listProduct, setListProduct] = useState([
+        {
+            name: '11111',
+            barcode: '1111',
+            priceCapital: '1000',
+            priceSale: '2000',
+            description: 'Moo ta'
+        }
+    ])
     return (
         <View style={styles.container}>
             <View
@@ -66,18 +76,57 @@ const AddOrders = () => {
                 </View>
             </View>
             <ScrollView>
-                <View style={styles.pickProduct}>
-                    <Image
-                        style={styles.image}
-                        source={{
-                            uri: 'https://scontent.fdad3-4.fna.fbcdn.net/v/t1.15752-9/278540589_4997073913748529_122472978450654907_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=ae9488&_nc_ohc=4S0vsamRQgYAX-vNWSy&_nc_ht=scontent.fdad3-4.fna&oh=03_AVIl1J_zjkQSn6x6DFiuZupSJebHBndzUV1yKLDiN7hPEw&oe=62BA4C02'
-                        }}
-                    />
-                    <Text style={styles.text3}>Đơn hàng của bạn chưa có sản phẩm nào!</Text>
-                    <TouchableOpacity>
-                        <Text style={styles.text4}>Chọn sản phẩm</Text>
-                    </TouchableOpacity>
-                </View>
+                {false ? (
+                    <View style={styles.pickProduct}>
+                        <Image
+                            style={styles.image}
+                            source={{
+                                uri: 'https://scontent.fdad3-4.fna.fbcdn.net/v/t1.15752-9/278540589_4997073913748529_122472978450654907_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=ae9488&_nc_ohc=4S0vsamRQgYAX-vNWSy&_nc_ht=scontent.fdad3-4.fna&oh=03_AVIl1J_zjkQSn6x6DFiuZupSJebHBndzUV1yKLDiN7hPEw&oe=62BA4C02'
+                            }}
+                        />
+                        <Text style={styles.text3}>Đơn hàng của bạn chưa có sản phẩm nào!</Text>
+                        <TouchableOpacity>
+                            <Text style={styles.text4}>Chọn sản phẩm</Text>
+                        </TouchableOpacity>
+                    </View>
+                ) : (
+                    <View style={styles.listProduct}>
+                        <View style={styles.textList}>
+                            <Text
+                                style={{
+                                    fontSize: 16,
+                                    fontWeight: 'bold',
+                                    color: '#000',
+                                    marginBottom: 10
+                                }}
+                            >
+                                Áo Hoodie
+                            </Text>
+                            <Text
+                                style={{
+                                    color: '#666'
+                                }}
+                            >
+                                Mã:123
+                            </Text>
+                            <Text>250,000</Text>
+                        </View>
+                        <View style={styles.viewAmount}>
+                            <View style={styles.amount}>
+                                <TouchableOpacity>
+                                    <Icon name='minus' />
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.buttonAmount}>
+                                    <Text style={styles.text2}>1</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity>
+                                    <Icon name='plus' />
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </View>
+                )}
+
                 <View style={styles.viewInformation}>
                     <View style={styles.Information}>
                         <Icon style={styles.icon2} name='gift'></Icon>
@@ -265,6 +314,28 @@ const styles = StyleSheet.create({
     },
     buttonAdd: {
         flexDirection: 'row',
+        alignItems: 'center'
+    },
+    listProduct: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: 15,
+        backgroundColor: '#fff'
+    },
+    amount: {
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    buttonAmount: {
+        borderWidth: 1,
+        borderColor: '#E8E8E8',
+        borderRadius: 10,
+        width: 40,
+        height: 20,
+        marginHorizontal: 5,
+        backgroundColor: '#fff',
+        justifyContent: 'center',
         alignItems: 'center'
     }
 })

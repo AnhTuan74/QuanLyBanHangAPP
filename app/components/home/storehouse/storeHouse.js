@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, TouchableOpacity, TextInput, FlatList, Image } 
 import React, { useState, useEffect } from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useNavigation } from '@react-navigation/native'
-const Products = () => {
+const storeHouse = () => {
     const navigation = useNavigation()
     const [listProduct, setListProduct] = useState([
         {
@@ -42,7 +42,7 @@ const Products = () => {
                     <TouchableOpacity onPress={() => navigation.goBack()}>
                         <Icon style={styles.icon} name='arrow-left' />
                     </TouchableOpacity>
-                    <Text style={styles.text}>Sản phẩm</Text>
+                    <Text style={styles.text}>Kho hàng</Text>
                     <TouchableOpacity
                         onPress={() => {
                             navigation.navigate('AddProduct')
@@ -102,22 +102,18 @@ const Products = () => {
                                     />
                                 </View>
                                 <View style={styles.viewInformation}>
-                                    <Text style={styles.nameProduct}>{item.name}</Text>
-                                    <View
-                                        style={{
-                                            flexDirection: 'row',
-                                            alignItems: 'center'
-                                        }}
-                                    >
-                                        <Text style={styles.priceCapital}>
-                                            {item.priceSale} VNĐ
-                                        </Text>
+                                    <View>
+                                        <Text style={styles.nameProduct}>{item.name}</Text>
+                                        <Text style={styles.nameProduct}>{item.name}</Text>
+                                    </View>
+                                    <View>
+                                        <Text>123</Text>
                                         <Text
                                             style={{
                                                 color: '#3C7BF4'
                                             }}
                                         >
-                                            Tồn kho: 10
+                                            Số lượng: 10
                                         </Text>
                                     </View>
                                 </View>
@@ -130,7 +126,7 @@ const Products = () => {
     )
 }
 
-export default Products
+export default storeHouse
 
 const styles = StyleSheet.create({
     container: {
@@ -237,7 +233,10 @@ const styles = StyleSheet.create({
     },
     viewInformation: {
         flex: 1,
-        marginLeft: 10
+        marginLeft: 10,
+        justifyContent: 'space-between',
+        flexDirection: 'row',
+        alignItems: 'center'
     },
     nameProduct: {
         fontSize: 15,

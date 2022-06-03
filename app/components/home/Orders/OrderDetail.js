@@ -210,16 +210,15 @@ const styles = StyleSheet.create({
     },
     button: {
         backgroundColor: '#fff',
-        marginHorizontal: 111,
         borderRadius: 15,
         height: 50,
         justifyContent: 'center',
         alignItems: 'center',
         marginVertical: 20,
         width: 153,
-        alignContent: 'center',
         borderWidth: 1,
-        borderColor: '#f44'
+        borderColor: '#f44',
+        alignSelf: 'center'
     },
     textButton: {
         color: '#f44',

@@ -1,23 +1,23 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native'
 import React from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { Avatar } from 'react-native-elements'
 const list = [
     {
         id: 1,
-        name: 'Tổng số lượng'
+        name: 'Chờ duyệt'
     },
     {
         id: 2,
-        name: 'Tổng tiền hàng'
+        name: 'Chờ thanh toán'
     },
     {
         id: 3,
-        name: 'Chiết khấu'
+        name: 'Chờ lấy hàng'
     },
     {
         id: 4,
-        name: 'Phí giao hàng'
+        name: 'Chờ giao hàng'
     }
 ]
 const Home = ({ navigation }) => {
@@ -76,7 +76,6 @@ const Home = ({ navigation }) => {
                     <Text style={styles.textReport}>Báo cáo lãi lỗ</Text>
                 </TouchableOpacity>
             </View>
-
             <View style={styles.viewContent}>
                 <TouchableOpacity
                     onPress={() => {
@@ -98,7 +97,11 @@ const Home = ({ navigation }) => {
                         <Text style={styles.textOrder}>Sản phẩm</Text>
                     </View>
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => {
+                        navigation.navigate('storeHouse')
+                    }}
+                >
                     <View style={styles.order}>
                         <Icon name='warehouse' size={25} color='#23874B' />
                         <Text style={styles.textOrder}>Kho hàng</Text>
@@ -152,6 +155,13 @@ const Home = ({ navigation }) => {
                     <Icon name='plus' size={13} color='#fff' />
                     <Text style={styles.textAddProduct}>Thêm sản phẩm</Text>
                 </TouchableOpacity>
+            </View>
+            <View
+                style={{
+                    flex: 1,
+                    justifyContent: 'center'
+                }}
+            >
                 <Text style={styles.handling}>ĐƠN HÀNG CHỜ XỬ LÝ</Text>
                 {list.map((item, index) => (
                     <TouchableOpacity key={index}>
@@ -176,12 +186,12 @@ const styles = StyleSheet.create({
     },
     text: {
         color: '#fff',
-        fontSize: 14,
+        fontSize: 16,
         fontWeight: 'bold'
     },
     text1: {
         color: '#fff',
-        fontSize: 12
+        fontSize: 14
     },
     viewHeader: {
         marginHorizontal: 10
@@ -198,7 +208,7 @@ const styles = StyleSheet.create({
     },
     textReport: {
         color: '#000',
-        fontSize: 14,
+        fontSize: 16,
         marginLeft: 10,
         textAlign: 'center',
         marginVertical: 10
@@ -214,21 +224,21 @@ const styles = StyleSheet.create({
     },
     textItemReport: {
         color: '#666666',
-        paddingHorizontal: 10
+        paddingHorizontal: 10,
+        fontSize: 16
     },
     textItemPrice: {
         color: '#3C7BF4',
-        textAlign: 'center'
+        textAlign: 'center',
+        fontSize: 16
     },
     order: {
         backgroundColor: '#fff',
-        borderRadius: 5,
         marginTop: 15,
-        paddingVertical: 20,
+        padding: 15,
+        height: 70,
         alignItems: 'center',
         justifyContent: 'center',
-        width: 70,
-        height: 70,
         borderRadius: 10
     },
     viewContent: {
@@ -238,7 +248,7 @@ const styles = StyleSheet.create({
     },
     textOrder: {
         color: '#666666',
-        fontSize: 12,
+        fontSize: 14,
         marginVertical: 5,
         textAlign: 'center'
     },
@@ -256,14 +266,14 @@ const styles = StyleSheet.create({
     },
     textAddProduct: {
         color: '#fff',
-        fontSize: 14,
+        fontSize: 16,
         fontWeight: 'bold',
         textAlign: 'center',
         paddingLeft: 5
     },
     handling: {
         color: '#000',
-        fontSize: 14,
+        fontSize: 16,
         marginTop: 15,
         marginLeft: 25,
         marginBottom: 10
@@ -272,23 +282,22 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         backgroundColor: '#fff',
         borderRadius: 5,
-        paddingVertical: 5,
         marginHorizontal: 20,
         alignItems: 'center',
         justifyContent: 'space-between',
         borderBottomWidth: 1,
         borderBottomColor: '#E8E8E8',
-        paddingHorizontal: 10,
-        paddingVertical: 13
+        paddingHorizontal: 15,
+        paddingVertical: 15
     },
     textHandling: {
-        color: '#000',
-        fontSize: 14,
+        color: '#666',
+        fontSize: 16,
         flex: 1
     },
     textHandling1: {
         color: '#000',
-        fontSize: 14,
+        fontSize: 16,
         paddingHorizontal: 10,
         paddingVertical: 10,
         marginLeft: 10,
