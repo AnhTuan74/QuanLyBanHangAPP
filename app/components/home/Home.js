@@ -2,6 +2,9 @@ import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-nati
 import React from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { Avatar } from 'react-native-elements'
+import { useNavigation } from '@react-navigation/native'
+import { useSelector } from 'react-redux'
+
 const list = [
     {
         id: 1,
@@ -20,7 +23,10 @@ const list = [
         name: 'Chờ giao hàng'
     }
 ]
-const Home = ({ navigation }) => {
+const Home = () => {
+    const navigation = useNavigation()
+
+    const infoUser = useSelector((state) => state.user.data)
     return (
         <View style={styles.container}>
             <View
@@ -46,8 +52,8 @@ const Home = ({ navigation }) => {
                         />
                     </View>
                     <View style={styles.viewHeader}>
-                        <Text style={styles.text}>Lê Anh Tuấn</Text>
-                        <Text style={styles.text1}>TuanAT</Text>
+                        <Text style={styles.text}>{infoUser.name}</Text>
+                        <Text style={styles.text1}>{infoUser.phone}</Text>
                     </View>
                 </View>
                 <View style={styles.viewIcon}>

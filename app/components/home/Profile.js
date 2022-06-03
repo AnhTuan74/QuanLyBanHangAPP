@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native'
 import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth'
 import { setInfoUser } from '../../redux/userSlice'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 const list = [
     {
@@ -34,6 +34,7 @@ const list = [
 const Profile = () => {
     const navigation = useNavigation()
     const dispatch = useDispatch()
+    const infoUser = useSelector((state) => state.user.data)
 
     const handleOnClickLogout = () => {
         Alert.alert('Thông báo', 'Bạn có chắc chắn muốn đăng xuất?', [
@@ -64,6 +65,7 @@ const Profile = () => {
         })
         dispatch(setInfoUser(null))
     }
+
     return (
         <View style={styles.container}>
             <View
@@ -87,8 +89,8 @@ const Profile = () => {
                     />
                 </View>
                 <View style={styles.viewText}>
-                    <Text style={styles.text1}>TuanAT</Text>
-                    <Text style={styles.text2}>0363520471</Text>
+                    <Text style={styles.text1}>{infoUser.name}</Text>
+                    <Text style={styles.text2}>{infoUser.phone}</Text>
                     <TouchableOpacity>
                         <Text style={styles.text3}>Chỉnh sửa thông tin</Text>
                     </TouchableOpacity>
