@@ -121,7 +121,7 @@ const Home = () => {
                             navigation.navigate(item.screen)
                         }}
                     >
-                        <Icon name={item.icon} size={20} color={item.color} />
+                        <Icon name={item.icon} size={24} color={item.color} />
                         <Text style={styles.textOrder} numberOfLines={1}>
                             {item.name}
                         </Text>
