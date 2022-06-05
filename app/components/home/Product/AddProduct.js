@@ -136,9 +136,7 @@ const AddProduct = ({ route }) => {
             .then((image) => {
                 setImage(image)
             })
-            .catch((err) => {
-                alert(err)
-            })
+            .catch((err) => {})
     }
 
     const openLibrary = () => {
@@ -151,9 +149,7 @@ const AddProduct = ({ route }) => {
             .then((image) => {
                 setImage(image)
             })
-            .catch((err) => {
-                alert(err)
-            })
+            .catch((err) => {})
     }
 
     const handlePickerImage = (index) => {
@@ -181,7 +177,7 @@ const AddProduct = ({ route }) => {
                             placeholder='Tên sản phẩm'
                             value={name}
                             onChangeText={setName}
-                            placeholderTextColor='#e5e5e5'
+                            placeholderTextColor='#A9A9A9'
                         />
                         <View style={styles.barCode}>
                             <TextInput
@@ -189,7 +185,7 @@ const AddProduct = ({ route }) => {
                                 placeholder='Mã sản phẩm'
                                 value={barcode}
                                 onChangeText={setBarcode}
-                                placeholderTextColor='#e5e5e5'
+                                placeholderTextColor='#A9A9A9'
                             />
                             <TouchableOpacity
                                 onPress={() => {
@@ -208,7 +204,7 @@ const AddProduct = ({ route }) => {
                         value={priceCapital}
                         keyboardType='numeric'
                         onChangeText={setPriceCapital}
-                        placeholderTextColor='#e5e5e5'
+                        placeholderTextColor='#A9A9A9'
                     />
                     <TextInput
                         style={styles.textProblems2}
@@ -216,7 +212,7 @@ const AddProduct = ({ route }) => {
                         keyboardType='numeric'
                         value={priceSale}
                         onChangeText={setPriceSale}
-                        placeholderTextColor='#e5e5e5'
+                        placeholderTextColor='#A9A9A9'
                     />
                     <TextInput
                         style={styles.textProblems2}
@@ -224,7 +220,7 @@ const AddProduct = ({ route }) => {
                         keyboardType='numeric'
                         value={quantity}
                         onChangeText={setQuantity}
-                        placeholderTextColor='#e5e5e5'
+                        placeholderTextColor='#A9A9A9'
                     />
                 </View>
                 <View style={styles.ViewProblems1}>
@@ -234,7 +230,7 @@ const AddProduct = ({ route }) => {
                             placeholder='Mô tả'
                             value={description}
                             onChangeText={setDescription}
-                            placeholderTextColor='#e5e5e5'
+                            placeholderTextColor='#A9A9A9'
                         />
                     </View>
                 </View>
@@ -332,8 +328,7 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         borderBottomWidth: 1,
         borderBottomColor: '#E8E8E8',
-        marginHorizontal: 10,
-        marginRight: 50
+        marginHorizontal: 10
     },
     ViewProblems1: {
         backgroundColor: '#fff',
