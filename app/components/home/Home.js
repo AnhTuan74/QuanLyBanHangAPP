@@ -105,7 +105,7 @@ const Home = () => {
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={() => {
-                        navigation.navigate('storeHouse')
+                        navigation.navigate('WareHouse')
                     }}
                 >
                     <View style={styles.order}>

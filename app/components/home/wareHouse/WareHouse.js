@@ -2,7 +2,8 @@ import { StyleSheet, Text, View, TouchableOpacity, TextInput, FlatList, Image } 
 import React, { useState, useEffect } from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useNavigation } from '@react-navigation/native'
-const storeHouse = () => {
+
+const WareHouse = () => {
     const navigation = useNavigation()
     const [listProduct, setListProduct] = useState([
         {
@@ -126,7 +127,7 @@ const storeHouse = () => {
     )
 }
 
-export default storeHouse
+export default WareHouse
 
 const styles = StyleSheet.create({
     container: {
