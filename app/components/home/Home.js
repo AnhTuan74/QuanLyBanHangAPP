@@ -57,7 +57,7 @@ const listBody = [
     {
         id: 5,
         name: 'Thống kê',
-        screen: 'AddOrders',
+        screen: 'Report',
         icon: 'chart-bar',
         color: '#64A476'
     },
