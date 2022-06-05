@@ -162,7 +162,7 @@ const AddProduct = ({ route }) => {
 
     return (
         <View style={styles.container}>
-            <HeaderAdd title={'Thêm sản phẩm'} />
+            <HeaderAdd title={'Thêm sản phẩm'} icon='plus' />
             <ScrollView>
                 <View style={styles.viewImage}>
                     <TouchableOpacity style={styles.addImage} onPress={onShowImageActionSheet}>

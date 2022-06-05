@@ -33,6 +33,10 @@ const Scan = () => {
                 navigation.navigate('AddProduct', {
                     barcode: event?.data
                 })
+            } else if (screen.current == 'AddOrders') {
+                navigation.navigate('AddOrders', {
+                    barcode: event?.data
+                })
             }
             isScanning.current = false
         } catch (error) {

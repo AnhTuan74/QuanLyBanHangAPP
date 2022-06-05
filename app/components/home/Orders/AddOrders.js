@@ -8,78 +8,99 @@ import {
     ScrollView
 } from 'react-native'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useNavigation } from '@react-navigation/native'
+import Header from './../Product/components/Header'
+import { formatPrice } from './../Product/Products'
+import firestore from '@react-native-firebase/firestore'
+import auth from '@react-native-firebase/auth'
+import RNProgressHud from 'progress-hud'
 
-const list = [
-    {
-        id: 1,
-        name: 'Tổng số lượng',
-        count: 0
-    },
-    {
-        id: 2,
-        name: 'Tổng tiền hàng',
-        count: 0
-    },
-    {
-        id: 3,
-        name: 'Chiết khấu',
-        count: 0
-    },
-    {
-        id: 4,
-        name: 'Phí giao hàng',
-        count: 0
-    }
-]
-const AddOrders = () => {
+const AddOrders = ({ route }) => {
     const navigation = useNavigation()
-    const [listProduct, setListProduct] = useState([
-        {
-            name: '11111',
-            barcode: '1111',
-            priceCapital: '1000',
-            priceSale: '2000',
-            description: 'Moo ta'
+    const [listProduct, setListProduct] = useState([])
+
+    const findProduct = async () => {
+        let barcodeProduct = route?.params?.barcode
+        if (barcodeProduct) {
+            if (listProduct.some((item) => item.barcode == barcodeProduct)) {
+                RNProgressHud.showErrorWithStatus('Sản phẩm đã có trong danh sách')
+                setTimeout(() => {
+                    RNProgressHud.dismiss()
+                }, 1000)
+                return
+            }
+            RNProgressHud.show()
+            await firestore()
+                .collection(`users/${auth().currentUser.uid}/products`)
+                .where('barcode', '==', barcodeProduct)
+                .get()
+                .then((querySnapshot) => {
+                    if (querySnapshot.docs.length > 0) {
+                        let product = querySnapshot.docs[0].data()
+                        setListProduct([
+                            ...listProduct,
+                            {
+                                ...product,
+                                count: 1
+                            }
+                        ])
+                    } else {
+                        alert('Không tìm thấy sản phẩm')
+                    }
+                })
+            RNProgressHud.dismiss()
         }
-    ])
+    }
+    useEffect(() => {
+        findProduct()
+    }, [route])
+
+    const totalPrice = () => {
+        return listProduct.reduce((total, item) => {
+            return total + Number(item.priceSale) * item.count
+        }, 0)
+    }
+
+    const creatOrderSuccess = (order) => {
+        RNProgressHud.showSuccessWithStatus('Tạo đơn hàng thành công')
+        setTimeout(() => {
+            RNProgressHud.dismiss()
+            navigation.navigate('OrderDetail', { order })
+        }, 1000)
+    }
+
+    const handleOnCreatOrdersProduct = () => {
+        RNProgressHud.show()
+        let user = auth().currentUser
+        let order = {
+            listProduct,
+            totalPrice: totalPrice(),
+            status: 'Hoàn thành',
+            createdAt: new Date()
+        }
+        firestore()
+            .collection(`users/${user.uid}/orders`)
+            .doc(`DON${(Math.random() + 1).toString(36).substring(7)}`)
+            .set(order)
+            .then(() => {
+                creatOrderSuccess(order)
+            })
+            .catch(() => {
+                RNProgressHud.dismiss()
+                alert('Có lỗi xảy ra')
+            })
+    }
+
     return (
         <View style={styles.container}>
-            <View
-                style={{
-                    padding: 20,
-                    backgroundColor: '#fff',
-                    borderBottomWidth: 1,
-                    borderBottomColor: '#E8E8E8'
-                }}
-            >
-                <View style={styles.viewHeader}>
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <Icon style={styles.icon} name='arrow-left' />
-                    </TouchableOpacity>
-                    <View style={styles.look}>
-                        <TouchableOpacity>
-                            <Icon style={styles.icon1} name='search' />
-                        </TouchableOpacity>
-                        <TextInput
-                            style={styles.text1}
-                            placeholder='Tìm kiếm'
-                            placeholderTextColor={'#BDBDBD'}
-                        />
-                        <TouchableOpacity>
-                            <Icon style={styles.icon1} name='barcode' />
-                        </TouchableOpacity>
-                    </View>
-                    <Icon style={styles.icon} name='ellipsis-v' />
-                </View>
-            </View>
+            <Header title='Tạo đơn hàng' icon='barcode' screen='AddOrders' />
             <ScrollView>
-                {false ? (
+                {listProduct.length == 0 ? (
                     <View style={styles.pickProduct}>
                         <Image
-                            style={styles.image}
+                            style={styles.imageNoProduct}
                             source={{
                                 uri: 'https://scontent.fdad3-4.fna.fbcdn.net/v/t1.15752-9/278540589_4997073913748529_122472978450654907_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=ae9488&_nc_ohc=4S0vsamRQgYAX-vNWSy&_nc_ht=scontent.fdad3-4.fna&oh=03_AVIl1J_zjkQSn6x6DFiuZupSJebHBndzUV1yKLDiN7hPEw&oe=62BA4C02'
                             }}
@@ -91,92 +112,88 @@ const AddOrders = () => {
                     </View>
                 ) : (
                     <View style={styles.listProduct}>
-                        <View style={styles.textList}>
-                            <Text
-                                style={{
-                                    fontSize: 16,
-                                    fontWeight: 'bold',
-                                    color: '#000',
-                                    marginBottom: 10
-                                }}
-                            >
-                                Áo Hoodie
-                            </Text>
-                            <Text
-                                style={{
-                                    color: '#666'
-                                }}
-                            >
-                                Mã:123
-                            </Text>
-                            <Text>250,000</Text>
-                        </View>
-                        <View style={styles.viewAmount}>
-                            <View style={styles.amount}>
-                                <TouchableOpacity>
-                                    <Icon name='minus' />
-                                </TouchableOpacity>
-                                <TouchableOpacity style={styles.buttonAmount}>
-                                    <Text style={styles.text2}>1</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity>
-                                    <Icon name='plus' />
-                                </TouchableOpacity>
+                        <Text style={styles.titleListProduct}>Danh sách sản phẩm</Text>
+                        {listProduct.map((item) => (
+                            <View style={styles.itemProduct} key={item.barcode}>
+                                <Image
+                                    style={styles.image}
+                                    source={{
+                                        uri: item.image
+                                    }}
+                                />
+                                <View style={styles.viewInformation}>
+                                    <Text style={styles.nameProduct}>{item.name}</Text>
+                                    <View
+                                        style={{
+                                            flexDirection: 'row',
+                                            alignItems: 'center'
+                                        }}
+                                    >
+                                        <Text style={styles.priceCapital}>
+                                            {formatPrice(Number(item.priceSale))} VNĐ
+                                        </Text>
+                                    </View>
+                                </View>
+                                <View style={styles.viewCount}>
+                                    <TouchableOpacity
+                                        style={styles.btnAdd}
+                                        onPress={() => {
+                                            if (item.count > 1) {
+                                                item.count--
+                                                setListProduct([...listProduct])
+                                            } else if (item.count == 1) {
+                                                setListProduct(
+                                                    listProduct.filter(
+                                                        (i) => i.barcode !== item.barcode
+                                                    )
+                                                )
+                                            }
+                                        }}
+                                    >
+                                        <Icon name='minus' size={20} color='#000' />
+                                    </TouchableOpacity>
+                                    <Text style={styles.textCountProduct}>{item.count}</Text>
+                                    <TouchableOpacity
+                                        style={styles.btnAdd}
+                                        onPress={() => {
+                                            if (Number(item.quantity) > Number(item.count)) {
+                                                item.count++
+                                                setListProduct([...listProduct])
+                                            }
+                                        }}
+                                    >
+                                        <Icon name='plus' size={20} color='#000' />
+                                    </TouchableOpacity>
+                                </View>
                             </View>
-                        </View>
+                        ))}
                     </View>
                 )}
-
-                <View style={styles.viewInformation}>
-                    <View style={styles.Information}>
-                        <Icon style={styles.icon2} name='gift'></Icon>
-                        <Text style={styles.text4}>Áp dụng khuyến mãi</Text>
-                    </View>
-                    {list.map((item, index) => (
-                        <View key={index} style={styles.Information2}>
-                            <Text style={styles.text5}>{item.name}</Text>
-                            <Text style={styles.text5}>{item.count}</Text>
-                        </View>
-                    ))}
+                <View style={{ ...styles.totalPrice, marginTop: 20 }}>
+                    <Text style={styles.textTotalPrice}>Tổng tiền:</Text>
+                    <Text style={styles.countTotalPrice}>{formatPrice(totalPrice())} VNĐ</Text>
                 </View>
-                <View style={styles.viewInformation}>
-                    <View style={styles.Information3}>
-                        <Text>Khách hàng</Text>
-                    </View>
-                    <View style={styles.Information4}>
-                        <TouchableOpacity style={styles.buttonAdd}>
-                            <Icon style={styles.icon2} name='user' />
-
-                            <Text style={styles.textUser}>Thêm khách hàng</Text>
-
-                            <Icon style={styles.icon3} name='angle-right' />
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.Information4}>
-                        <TouchableOpacity style={styles.buttonAdd}>
-                            <Icon style={styles.icon2} name='tag' />
-                            <Text style={styles.textUser}>Giá bán lẻ</Text>
-                            <Icon style={styles.icon3} name='angle-right' />
-                        </TouchableOpacity>
-                    </View>
-                </View>
-                <View style={styles.viewInformation}>
-                    <View style={styles.Information5}>
-                        <TouchableOpacity style={styles.buttonAdd}>
-                            <Icon style={styles.icon2} name='tag' />
-                            <Text style={styles.textSell}>Chọn phương thức thanh toán</Text>
-                            <Icon style={styles.icon3} name='angle-right' />
-                        </TouchableOpacity>
-                    </View>
+                <View style={styles.totalPrice}>
+                    <Text style={styles.textTotalPrice}>Phí giao:</Text>
+                    <Text style={styles.countTotalPrice}>0 VNĐ</Text>
                 </View>
             </ScrollView>
-            <View style={styles.viewInformation}>
+            <View style={styles.footer}>
+                <View style={{ ...styles.totalPrice, paddingHorizontal: 0 }}>
+                    <Text style={styles.textTotalPrice}>Tạm tính:</Text>
+                    <Text style={styles.countTotalPrice}>{formatPrice(totalPrice())} VNĐ</Text>
+                </View>
                 <View style={styles.Information6}>
-                    <View style={styles.calculate}>
-                        <Text>Tạm tính</Text>
-                        <Text>0</Text>
-                    </View>
-                    <TouchableOpacity style={styles.button}>
+                    <TouchableOpacity
+                        style={{
+                            ...styles.button,
+                            backgroundColor: listProduct.length == 0 ? '#999' : '#3c7bf4'
+                        }}
+                        onPress={() => {
+                            handleOnCreatOrdersProduct()
+                        }}
+                        disabled={listProduct.length == 0}
+                    >
                         <Text style={styles.textButton}>Tạo đơn</Text>
                     </TouchableOpacity>
                 </View>
@@ -202,15 +219,6 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: 'bold'
     },
-    viewHeader: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-    },
-    icon1: {
-        color: '#666',
-        fontSize: 15
-    },
     text2: {
         color: '#666',
         fontSize: 14,
@@ -223,27 +231,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: '#E8E8E8'
     },
-    text1: {
-        // borderColor: '#E8E8E8',
-        // backgroundColor: '#F6F6F6',
-        borderRadius: 5,
-        flex: 1,
-        marginHorizontal: 16,
-        paddingLeft: 16,
-        color: '#000'
-    },
-    look: {
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-        borderColor: '#E8E8E8',
-        backgroundColor: '#F6F6F6',
-        justifyContent: 'space-between',
-        marginHorizontal: 25,
-        borderRadius: 20,
-        paddingHorizontal: 20
-    },
-    image: {
+    imageNoProduct: {
         width: 150,
         height: 100,
         resizeMode: 'contain',
@@ -260,42 +248,18 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     },
     viewInformation: {
+        flex: 1,
+        backgroundColor: 'red',
+        justifyContent: 'center',
         backgroundColor: '#fff',
-        padding: 20,
-        marginVertical: 10
+        marginLeft: 10
     },
     Information: {
         flexDirection: 'row',
         alignItems: 'center'
     },
-    icon2: {
-        color: '#3C7BF4',
-        marginRight: 10
-    },
-    Information2: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginTop: 15
-    },
-    Information4: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingVertical: 10
-    },
-    textUser: {
-        color: '#3C7BF4',
-        flex: 1
-    },
-    Information5: {
-        flexDirection: 'row',
-        alignItems: 'center'
-    },
-    textSell: {
-        color: '#3C7BF4',
-        flex: 1
-    },
     button: {
+        marginTop: 10,
         backgroundColor: '#5FC1F9',
         paddingVertical: 10,
         paddingHorizontal: 20,
@@ -312,16 +276,15 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         paddingVertical: 5
     },
-    buttonAdd: {
-        flexDirection: 'row',
-        alignItems: 'center'
-    },
     listProduct: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: 15,
+        paddingVertical: 10,
         backgroundColor: '#fff'
+    },
+    titleListProduct: {
+        paddingHorizontal: 20,
+        paddingBottom: 10,
+        fontSize: 16,
+        color: '#000'
     },
     amount: {
         flexDirection: 'row',
@@ -337,5 +300,64 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    viewCount: {
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    textCountProduct: {
+        fontSize: 16,
+        color: '#000',
+        marginHorizontal: 8,
+        fontWeight: 'bold'
+    },
+    totalPrice: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 20,
+        marginTop: 10
+    },
+    textTotalPrice: {
+        fontSize: 18,
+        color: '#000',
+        flex: 1,
+        fontWeight: 'bold'
+    },
+    countTotalPrice: {
+        fontSize: 14,
+        color: 'red',
+        fontWeight: 'bold'
+    },
+    image: {
+        width: 60,
+        height: 60,
+        borderRadius: 4,
+        resizeMode: 'contain'
+    },
+    textTitle: {
+        fontSize: 15,
+        padding: 10,
+        paddingHorizontal: 20
+    },
+    itemProduct: {
+        paddingHorizontal: 20,
+        marginBottom: 10,
+        backgroundColor: '#fff',
+        flexDirection: 'row'
+    },
+    priceCapital: {
+        paddingRight: 10,
+        color: '#F44336'
+    },
+    nameProduct: {
+        fontSize: 15,
+        fontWeight: 'bold',
+        color: '#000',
+        marginBottom: 5
+    },
+    footer: {
+        backgroundColor: '#fff',
+        paddingHorizontal: 20,
+        paddingBottom: 10
     }
 })

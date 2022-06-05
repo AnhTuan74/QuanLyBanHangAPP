@@ -8,6 +8,10 @@ import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth'
 import RNProgressHud from 'progress-hud'
 
+export const formatPrice = (price) => {
+    return price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')
+}
+
 const Products = () => {
     const navigation = useNavigation()
     const [totalCount, setTotalCount] = useState(0)
@@ -39,10 +43,6 @@ const Products = () => {
             getListsProduct()
         })
     }, [])
-
-    const formatPrice = (price) => {
-        return price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')
-    }
 
     return (
         <View style={styles.container}>
