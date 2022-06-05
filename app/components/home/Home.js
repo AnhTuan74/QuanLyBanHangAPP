@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5'
 import { Avatar } from 'react-native-elements'
 import { useNavigation } from '@react-navigation/native'
 import { useSelector } from 'react-redux'
+import Header from './components/Header'
 
 const list = [
     {
@@ -27,40 +28,10 @@ const Home = () => {
     const navigation = useNavigation()
 
     const infoUser = useSelector((state) => state.user.data)
+
     return (
         <View style={styles.container}>
-            <View
-                style={{
-                    padding: 30,
-                    backgroundColor: '#3C7BF4',
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center'
-                }}
-            >
-                <View style={{ flexDirection: 'row' }}>
-                    <View style={styles.avatar}>
-                        <Avatar
-                            source={{
-                                uri: 'https://cdn.pixabay.com/photo/2019/11/03/20/11/portrait-4599553__340.jpg'
-                            }}
-                            rounded
-                            onPress={() => {
-                                navigation.navigate('Profile')
-                            }}
-                            size={40}
-                        />
-                    </View>
-                    <View style={styles.viewHeader}>
-                        <Text style={styles.text}>{infoUser.name}</Text>
-                        <Text style={styles.text1}>{infoUser.phone}</Text>
-                    </View>
-                </View>
-                <View style={styles.viewIcon}>
-                    <Icon name='comment' size={20} color='#fff' style={{ marginHorizontal: 10 }} />
-                    <Icon name='bell' size={20} color='#fff' />
-                </View>
-            </View>
+            <Header />
             <View style={styles.report}>
                 <View style={styles.viewReport}>
                     <View
@@ -189,21 +160,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#F0F2F8'
-    },
-    text: {
-        color: '#fff',
-        fontSize: 16,
-        fontWeight: 'bold'
-    },
-    text1: {
-        color: '#fff',
-        fontSize: 14
-    },
-    viewHeader: {
-        marginHorizontal: 10
-    },
-    viewIcon: {
-        flexDirection: 'row'
     },
     report: {
         backgroundColor: '#fff',

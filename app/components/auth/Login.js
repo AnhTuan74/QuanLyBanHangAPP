@@ -13,6 +13,7 @@ import { useNavigation } from '@react-navigation/native'
 import { getProfileUser } from '../../controller/Firebase'
 import { setInfoUser } from '../../redux/userSlice'
 import { useDispatch } from 'react-redux'
+import RNProgressHud from 'progress-hud'
 
 const validateEmail = (email) => {
     var re =
@@ -40,28 +41,31 @@ const Login = () => {
     }
 
     const handleOnLogin = () => {
+        RNProgressHud.show()
         auth()
             .signInWithEmailAndPassword(text.trim(), pass)
-            .then(() => {
+            .then(async () => {
                 // lấy thông tin user từ database
-                console.log('dđ')
-                ToastAndroid.show('Đăng nhập thành công', ToastAndroid.SHORT)
-                navigation.reset({
-                    index: 0,
-                    routes: [{ name: 'TabBarNavigation' }]
-                })
-                getProfileUser(auth().currentUser.uid)
+                await getProfileUser(auth().currentUser.uid)
                     .then((data) => {
                         if (data) {
                             // lưu data vào data redux
                             dispatch(setInfoUser(data))
+                            ToastAndroid.show('Đăng nhập thành công', ToastAndroid.SHORT)
+                            navigation.reset({
+                                index: 0,
+                                routes: [{ name: 'TabBarNavigation' }]
+                            })
+                            RNProgressHud.dismiss()
                         }
                     })
                     .catch((error) => {
                         console.log(error)
+                        RNProgressHud.dismiss()
                     })
             })
             .catch((error) => {
+                RNProgressHud.dismiss()
                 if (error.code === 'auth/user-not-found') {
                     Alert.alert('Thông báo', 'Email không tồn tại')
                 } else if (error.code === 'auth/wrong-password') {
