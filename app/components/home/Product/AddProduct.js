@@ -228,6 +228,7 @@ const AddProduct = ({ route }) => {
                         <TextInput
                             style={styles.textProblems}
                             placeholder='Mô tả'
+                            multiline={true}
                             value={description}
                             onChangeText={setDescription}
                             placeholderTextColor='#A9A9A9'
