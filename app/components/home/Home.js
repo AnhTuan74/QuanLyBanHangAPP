@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Dimensions } from 'react-native'
 import React from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { Avatar } from 'react-native-elements'
@@ -24,13 +24,72 @@ const list = [
         name: 'Chờ giao hàng'
     }
 ]
+
+const listBody = [
+    {
+        id: 1,
+        name: 'Tạo đơn',
+        screen: 'AddOrders',
+        icon: 'cart-plus',
+        color: '#000'
+    },
+    {
+        id: 2,
+        name: 'Sản phẩm',
+        screen: 'Products',
+        icon: 'cube',
+        color: '#000'
+    },
+    {
+        id: 3,
+        name: 'Kho hàng',
+        screen: 'WareHouse',
+        icon: 'warehouse',
+        color: '#000'
+    },
+    {
+        id: 4,
+        name: 'Đơn Hàng',
+        screen: 'Order',
+        icon: 'home',
+        color: '#000'
+    },
+    {
+        id: 5,
+        name: 'Báo cáo',
+        screen: 'AddOrders',
+        icon: 'cart-plus',
+        color: '#000'
+    },
+    {
+        id: 6,
+        name: 'Khách hàng',
+        screen: 'Products',
+        icon: 'cube',
+        color: '#000'
+    },
+    {
+        id: 7,
+        name: 'Quà tặng',
+        screen: 'WareHouse',
+        icon: 'warehouse',
+        color: '#000'
+    },
+    {
+        id: 8,
+        name: 'Xem thêm',
+        screen: 'Order',
+        icon: 'home',
+        color: '#000'
+    }
+]
+
 const Home = () => {
     const navigation = useNavigation()
-
     const infoUser = useSelector((state) => state.user.data)
 
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <Header />
             <View style={styles.report}>
                 <View style={styles.viewReport}>
@@ -54,73 +113,20 @@ const Home = () => {
                 </TouchableOpacity>
             </View>
             <View style={styles.viewContent}>
-                <TouchableOpacity
-                    onPress={() => {
-                        navigation.navigate('AddOrders')
-                    }}
-                >
-                    <View style={styles.order}>
-                        <Icon name='cart-plus' size={25} color='#3C7BF4' />
-                        <Text style={styles.textOrder}>Tạo đơn</Text>
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() => {
-                        navigation.navigate('Products')
-                    }}
-                >
-                    <View style={styles.order}>
-                        <Icon name='cube' size={25} color='#C92424' />
-                        <Text style={styles.textOrder}>Sản phẩm</Text>
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() => {
-                        navigation.navigate('WareHouse')
-                    }}
-                >
-                    <View style={styles.order}>
-                        <Icon name='warehouse' size={25} color='#23874B' />
-                        <Text style={styles.textOrder}>Kho hàng</Text>
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() => {
-                        navigation.navigate('Order')
-                    }}
-                >
-                    <View style={styles.order}>
-                        <Icon name='home' size={25} color='#C92424' />
-                        <Text style={styles.textOrder}>Đơn hàng</Text>
-                    </View>
-                </TouchableOpacity>
-            </View>
-
-            <View style={styles.viewContent}>
-                <TouchableOpacity>
-                    <View style={styles.order}>
-                        <Icon name='cart-plus' size={25} color='#3C7BF4' />
-                        <Text style={styles.textOrder}>Báo cáo</Text>
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity>
-                    <View style={styles.order}>
-                        <Icon name='cube' size={25} color='#C92424' />
-                        <Text style={styles.textOrder}>Khách hàng</Text>
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity>
-                    <View style={styles.order}>
-                        <Icon name='warehouse' size={25} color='#C92424' />
-                        <Text style={styles.textOrder}>Quà tặng</Text>
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity>
-                    <View style={styles.order}>
-                        <Icon name='home' size={25} color='#C92424' />
-                        <Text style={styles.textOrder}>Xem thêm</Text>
-                    </View>
-                </TouchableOpacity>
+                {listBody.map((item) => (
+                    <TouchableOpacity
+                        key={item.id}
+                        style={styles.itemContent}
+                        onPress={() => {
+                            navigation.navigate(item.screen)
+                        }}
+                    >
+                        <Icon name={item.icon} size={20} color={item.color} />
+                        <Text style={styles.textOrder} numberOfLines={1}>
+                            {item.name}
+                        </Text>
+                    </TouchableOpacity>
+                ))}
             </View>
             <View>
                 <TouchableOpacity
@@ -133,24 +139,20 @@ const Home = () => {
                     <Text style={styles.textAddProduct}>Thêm sản phẩm</Text>
                 </TouchableOpacity>
             </View>
-            <View
-                style={{
-                    flex: 1,
-                    justifyContent: 'center'
-                }}
-            >
+            <View style={{}}>
                 <Text style={styles.handling}>ĐƠN HÀNG CHỜ XỬ LÝ</Text>
-                {list.map((item, index) => (
-                    <TouchableOpacity key={index}>
-                        <View style={styles.viewHandling}>
-                            <Text style={styles.textHandling}>{item.name}</Text>
-
-                            <Icon style={styles.iconHandling} name='angle-right' size={15} />
-                        </View>
-                    </TouchableOpacity>
-                ))}
+                <View style={styles.viewList}>
+                    {list.map((item, index) => (
+                        <TouchableOpacity key={index}>
+                            <View style={styles.viewHandling}>
+                                <Text style={styles.textHandling}>{item.name}</Text>
+                                <Icon style={styles.iconHandling} name='angle-right' size={15} />
+                            </View>
+                        </TouchableOpacity>
+                    ))}
+                </View>
             </View>
-        </View>
+        </ScrollView>
     )
 }
 
@@ -171,47 +173,50 @@ const styles = StyleSheet.create({
     textReport: {
         color: '#000',
         fontSize: 16,
-        marginLeft: 10,
         textAlign: 'center',
-        marginVertical: 10
+        marginTop: 10
     },
-
     viewReport: {
         flexDirection: 'row',
-        paddingHorizontal: 35,
+        paddingHorizontal: 10,
         borderBottomWidth: 1,
         borderBottomColor: '#E8E8E8',
         justifyContent: 'space-between',
         paddingVertical: 14
     },
+    itemReport: {
+        flex: 1
+    },
     textItemReport: {
-        color: '#666666',
-        paddingHorizontal: 10,
-        fontSize: 16
+        textAlign: 'center',
+        color: '#000',
+        paddingHorizontal: 10
     },
     textItemPrice: {
         color: '#3C7BF4',
         textAlign: 'center',
         fontSize: 16
     },
-    order: {
-        backgroundColor: '#fff',
-        marginTop: 15,
-        padding: 15,
-        height: 70,
+    viewContent: {
+        paddingHorizontal: 20,
+        paddingRight: 10,
+        flexDirection: 'row',
+        flexWrap: 'wrap'
+    },
+    itemContent: {
         alignItems: 'center',
         justifyContent: 'center',
+        width: (Dimensions.get('window').width - 70) / 4,
+        height: (Dimensions.get('window').width - 70) / 4,
+        marginRight: 10,
+        marginTop: 10,
+        backgroundColor: '#fff',
         borderRadius: 10
-    },
-    viewContent: {
-        flexDirection: 'row',
-        paddingHorizontal: 20,
-        justifyContent: 'space-evenly'
     },
     textOrder: {
         color: '#666666',
-        fontSize: 14,
-        marginVertical: 5,
+        fontSize: 12,
+        marginTop: 6,
         textAlign: 'center'
     },
     addProduct: {
@@ -220,7 +225,7 @@ const styles = StyleSheet.create({
         marginTop: 15,
         paddingVertical: 10,
         alignSelf: 'flex-end',
-        marginRight: 30,
+        marginRight: 20,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
@@ -240,29 +245,23 @@ const styles = StyleSheet.create({
         marginLeft: 25,
         marginBottom: 10
     },
-    viewHandling: {
-        flexDirection: 'row',
+    viewList: {
         backgroundColor: '#fff',
         borderRadius: 5,
         marginHorizontal: 20,
+        marginBottom: 20
+    },
+    viewHandling: {
+        flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         borderBottomWidth: 1,
         borderBottomColor: '#E8E8E8',
-        paddingHorizontal: 15,
-        paddingVertical: 15
+        padding: 15
     },
     textHandling: {
-        color: '#666',
-        fontSize: 16,
-        flex: 1
-    },
-    textHandling1: {
         color: '#000',
         fontSize: 16,
-        paddingHorizontal: 10,
-        paddingVertical: 10,
-        marginLeft: 10,
-        marginRight: 10
+        flex: 1
     }
 })
