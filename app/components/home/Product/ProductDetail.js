@@ -44,7 +44,12 @@ const ProductDetail = ({ route }) => {
     }
     return (
         <View style={styles.container}>
-            <Header screen='productDetail' title='Chi tiết sản phẩm' dataProduct={product} />
+            <Header
+                screen='productDetail'
+                title='Chi tiết sản phẩm'
+                dataProduct={product}
+                icon='edit'
+            />
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={styles.viewImage}>
                     <Image style={styles.image} source={{ uri: product.image }} />

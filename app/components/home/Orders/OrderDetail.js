@@ -1,27 +1,14 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
 import Icon from 'react-native-vector-icons/Ionicons'
+import Header from './components/Header'
 
-const OrderDetail = () => {
+const OrderDetail = ({ route }) => {
+    const order = route?.params?.order
+
     return (
         <View style={styles.container}>
-            <View
-                style={{
-                    padding: 25,
-                    backgroundColor: '#fff',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    borderBottomWidth: 1,
-                    borderBottomColor: '#E8E8E8',
-                    justifyContent: 'space-between'
-                }}
-            >
-                <TouchableOpacity>
-                    <Icon style={styles.icon} name='close-outline' />
-                </TouchableOpacity>
-                <Text style={styles.text}>DON00001</Text>
-                <Icon style={styles.icon} name='checkmark-outline' />
-            </View>
+            <Header />
             <View style={styles.viewProducts}>
                 <Text
                     style={{

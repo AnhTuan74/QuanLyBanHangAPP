@@ -208,6 +208,7 @@ const EditProduct = ({ route }) => {
                             style={styles.textProblems}
                             placeholder='Mô tả'
                             value={description}
+                            multiline={true}
                             onChangeText={setDescription}
                             placeholderTextColor='#A9A9A9'
                         />

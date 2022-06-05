@@ -162,7 +162,7 @@ const AddProduct = ({ route }) => {
 
     return (
         <View style={styles.container}>
-            <HeaderAdd title={'Thêm sản phẩm'} />
+            <HeaderAdd title={'Thêm sản phẩm'} icon='plus' />
             <ScrollView>
                 <View style={styles.viewImage}>
                     <TouchableOpacity style={styles.addImage} onPress={onShowImageActionSheet}>
@@ -228,6 +228,7 @@ const AddProduct = ({ route }) => {
                         <TextInput
                             style={styles.textProblems}
                             placeholder='Mô tả'
+                            multiline={true}
                             value={description}
                             onChangeText={setDescription}
                             placeholderTextColor='#A9A9A9'
