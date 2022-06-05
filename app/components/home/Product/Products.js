@@ -46,7 +46,7 @@ const Products = () => {
 
     return (
         <View style={styles.container}>
-            <Header />
+            <Header screen='product' />
             {listProduct.length == 0 ? (
                 <View style={styles.noProducts}>
                     <Text style={styles.textNoProduct}>Chưa có sản phẩm</Text>

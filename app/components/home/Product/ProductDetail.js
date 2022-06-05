@@ -1,10 +1,19 @@
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'react-native'
+import {
+    StyleSheet,
+    Text,
+    View,
+    TextInput,
+    TouchableOpacity,
+    Image,
+    ScrollView
+} from 'react-native'
 import React from 'react'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { useNavigation } from '@react-navigation/native'
 import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth'
 import RNProgressHud from 'progress-hud'
+import Header from './components/Header'
 
 const ProductDetail = ({ route }) => {
     const { product } = route?.params || {}
@@ -35,65 +44,63 @@ const ProductDetail = ({ route }) => {
     }
     return (
         <View style={styles.container}>
-            <View
-                style={{
-                    padding: 25,
-                    backgroundColor: '#fff',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    borderBottomWidth: 1,
-                    borderBottomColor: '#E8E8E8'
-                }}
-            >
-                <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <Icon style={styles.icon} name='close' />
-                </TouchableOpacity>
-                <Text style={styles.text}>Chi tiết sản phẩm</Text>
-                <TouchableOpacity
-                    onPress={() => {
-                        navigation.navigate('EditProduct')
-                    }}
-                >
-                    <Icon style={styles.icon} name='create-outline' />
-                </TouchableOpacity>
-            </View>
-            <View style={styles.viewImage}>
-                <TouchableOpacity style={styles.addImage}>
-                    <Icon style={styles.iconImage} name='camera-outline' />
-                </TouchableOpacity>
-                <Image style={styles.image} source={{ uri: product.image }} />
-            </View>
-            <View style={styles.viewInformation}>
-                <View style={styles.information}>
-                    <Text style={styles.textInformation}>{product.name}</Text>
+            <Header screen='productDetail' title='Chi tiết sản phẩm' dataProduct={product} />
+            <ScrollView showsVerticalScrollIndicator={false}>
+                <View style={styles.viewImage}>
+                    <Image style={styles.image} source={{ uri: product.image }} />
                 </View>
-                <View style={styles.information1}>
-                    <Text style={styles.textInformation1}>SKU:{product.barcode}</Text>
-                </View>
-                <View style={styles.information1}>
-                    <Text style={styles.textInformation1}>Barcode:{product.barcode}</Text>
-                </View>
-            </View>
-            <View style={styles.viewInformation}>
-                <View style={styles.information2}>
-                    <Text style={styles.textInformation2}>Kho hàng</Text>
-                    <View style={styles.info}>
-                        <Text style={styles.textInformation2}>Tồn kho:{product.quantity}</Text>
-                        <Text style={styles.textInformation2}>Có thể bán:{product.quantity}</Text>
+                <View style={styles.viewProblems} pointerEvents='none'>
+                    <View style={styles.problems}>
+                        <Text style={styles.textTitle}>Tên sản phẩm:</Text>
+                        <TextInput
+                            style={styles.textProblems}
+                            placeholder='Tên sản phẩm'
+                            value={product.name}
+                            placeholderTextColor='#A9A9A9'
+                        />
+                        <Text style={styles.textTitle}>Mã sản phẩm:</Text>
+                        <View style={styles.barCode} pointerEvents='none'>
+                            <TextInput
+                                style={styles.textProblems1}
+                                placeholder='Mã sản phẩm'
+                                value={product.barcode}
+                                placeholderTextColor='#A9A9A9'
+                            />
+                        </View>
                     </View>
                 </View>
-                <View style={styles.information3}>
-                    <View style={styles.info2}>
-                        <Text style={styles.textInformation3}>Giá bán lẻ</Text>
-                        <Text style={styles.textInformation3}>{product.priceCapital}</Text>
+                <View style={styles.ViewProblems1} pointerEvents='none'>
+                    <Text style={styles.textTitle}>Giá nhập:</Text>
+
+                    <TextInput
+                        style={styles.textProblems}
+                        placeholder='Giá nhập'
+                        value={product.priceCapital}
+                        keyboardType='numeric'
+                        placeholderTextColor='#A9A9A9'
+                    />
+                    <Text style={styles.textTitle}>Giá bán:</Text>
+                    <TextInput
+                        style={styles.textProblems}
+                        placeholder='Giá bán'
+                        keyboardType='numeric'
+                        value={product.priceSale}
+                        placeholderTextColor='#A9A9A9'
+                    />
+                </View>
+                <View style={styles.ViewProblems1}>
+                    <Text style={styles.textTitle}>Mô tả:</Text>
+                    <View style={styles.problems} pointerEvents='none'>
+                        <TextInput
+                            style={styles.textProblems}
+                            placeholder='Mô tả'
+                            value={product.description}
+                            multiline={true}
+                            placeholderTextColor='#A9A9A9'
+                        />
                     </View>
                 </View>
-                <View style={styles.information4}>
-                    <Text style={styles.textInformation4}>Giá nhập</Text>
-                    <Text style={styles.textInformation4}>{product.priceSale}</Text>
-                </View>
-            </View>
+            </ScrollView>
             <TouchableOpacity style={styles.button} onPress={() => handleOnDeleteProduct()}>
                 <Text style={styles.textButton}>Xóa sản phẩm</Text>
             </TouchableOpacity>
@@ -108,32 +115,20 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#F0F2F8'
     },
-    icon: {
-        color: '#666',
-        fontSize: 20
-    },
-    image: {
-        width: 60,
-        height: 60,
-        borderRadius: 10
-    },
-    text: {
-        color: '#666',
-        fontSize: 18,
-        fontWeight: 'bold',
-        paddingHorizontal: 100
-    },
     viewImage: {
         flexDirection: 'row',
-        marginTop: 10
+        marginTop: 10,
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     addImage: {
         backgroundColor: '#fff',
         paddingVertical: 20,
         borderRadius: 10,
-        width: 60,
-        height: 60,
+        width: 100,
+        height: 100,
         alignItems: 'center',
+
         marginHorizontal: 10
     },
     iconImage: {
@@ -141,70 +136,76 @@ const styles = StyleSheet.create({
         fontSize: 20
     },
     image: {
-        width: 60,
-        height: 60,
+        width: 100,
+        height: 100,
         borderRadius: 10
     },
-    viewInformation: {
+    viewProblems: {
         backgroundColor: '#fff',
         borderRadius: 5,
         marginTop: 10,
+        paddingVertical: 10,
         marginHorizontal: 10
     },
-    information: {
-        paddingHorizontal: 10,
-        paddingVertical: 10
-    },
-    textInformation: {
-        color: '#000',
-        fontSize: 18,
-        fontWeight: 'bold'
-    },
-    information1: {
-        flexDirection: 'row',
-        paddingHorizontal: 10,
-        paddingVertical: 5
-    },
-    textInformation1: {
-        color: '#666'
-    },
-    information2: {
-        flexDirection: 'row',
-        paddingVertical: 10,
-        justifyContent: 'space-between',
-        marginHorizontal: 10,
-        alignItems: 'center',
-        borderBottomWidth: 1,
-        borderBottomColor: '#E8E8E8'
-    },
-    info: {
-        marginHorizontal: 30
-    },
-    textInformation2: {
+    textProblems: {
         color: '#666',
-        fontSize: 14
-    },
-    information3: {
-        flexDirection: 'row',
-        paddingHorizontal: 10,
-        paddingVertical: 10,
-        justifyContent: 'space-between'
-    },
-    info3: {
-        marginHorizontal: 30,
-        borderBottomWidth: 1,
-        borderBottomColor: '#E8E8E8'
-    },
-    information4: {
-        paddingVertical: 10,
+        fontSize: 16,
         borderBottomWidth: 1,
         borderBottomColor: '#E8E8E8',
-        marginBottom: 20,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        margin: 10,
+        marginTop: 6
+    },
+    barCode: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        borderBottomWidth: 1,
+        borderBottomColor: '#E8E8E8',
+        marginHorizontal: 10,
+        marginVertical: 5
+    },
+    textProblems1: {
+        color: '#666',
+        fontSize: 16,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        marginVertical: 5
+    },
+    problems1: {
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+    },
+    ViewProblems1: {
+        backgroundColor: '#fff',
+        borderRadius: 5,
+        marginTop: 10,
+        paddingVertical: 10,
         marginHorizontal: 10
     },
-    info2: {
-        borderBottomWidth: 1,
-        borderBottomColor: '#E8E8E8'
+    problems3: {
+        flexDirection: 'row'
+    },
+    button: {
+        backgroundColor: '#3C7BF4',
+        marginHorizontal: 16,
+        borderRadius: 15,
+        height: 51,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginVertical: 20
+    },
+    textButton: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold'
+    },
+    textTitle: {
+        fontSize: 16,
+        color: '#000',
+        paddingHorizontal: 20,
+        marginTop: 10
     },
     button: {
         backgroundColor: '#fff',

@@ -3,17 +3,25 @@ import React from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useNavigation } from '@react-navigation/native'
 
-const Header = () => {
+const Header = ({ title = 'Sản phẩm', screen, dataProduct }) => {
     const navigation = useNavigation()
 
     return (
         <View style={styles.header}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
-                <Icon size={15} name='arrow-left' color='#666' />
+                <Icon size={20} name='arrow-left' color='#666' />
             </TouchableOpacity>
-            <Text style={styles.text}>Sản phẩm</Text>
-            <TouchableOpacity onPress={() => navigation.navigate('AddProduct')}>
-                <Icon size={15} name='plus' color='#666' />
+            <Text style={styles.text}>{title}</Text>
+            <TouchableOpacity
+                onPress={() => {
+                    if (screen == 'product') {
+                        navigation.navigate('AddProduct')
+                    } else if (screen == 'productDetail') {
+                        navigation.navigate('EditProduct', { product: dataProduct })
+                    }
+                }}
+            >
+                <Icon size={20} name={screen == 'product' ? 'plus' : 'edit'} color='#666' />
             </TouchableOpacity>
         </View>
     )

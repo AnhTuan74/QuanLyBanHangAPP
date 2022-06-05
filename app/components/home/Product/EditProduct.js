@@ -24,24 +24,22 @@ import RNProgressHud from 'progress-hud'
 LogBox.ignoreLogs(['Animated: `useNativeDriver`', 'componentWillReceiveProps'])
 
 const EditProduct = ({ route }) => {
+    const product = route?.params?.product || {}
     const navigation = useNavigation()
-    const [name, setName] = useState('')
-    const [barcode, setBarcode] = useState('')
-    const [description, setDescription] = useState('')
-    const [image, setImage] = useState()
-    const [priceCapital, setPriceCapital] = useState('')
-    const [priceSale, setPriceSale] = useState('')
-    const [quantity, setQuantity] = useState('')
+    const [name, setName] = useState(product.name)
+    const [barcode, setBarcode] = useState(product.barcode)
+    const [description, setDescription] = useState(product.description)
+    const [image, setImage] = useState({
+        path: product.image
+    })
+    const [priceCapital, setPriceCapital] = useState(product.priceCapital)
+    const [priceSale, setPriceSale] = useState(product.priceSale)
 
     const _refActionSheet = useRef()
 
     const onShowImageActionSheet = () => {
         _refActionSheet.current?.show(true)
     }
-
-    useEffect(() => {
-        setBarcode(route?.params?.barcode || '')
-    }, [route])
 
     const handleOnSave = async () => {
         if (!name) {
@@ -68,38 +66,21 @@ const EditProduct = ({ route }) => {
             ToastAndroid.show('Vui lòng chọn ảnh sản phẩm', ToastAndroid.SHORT)
             return
         }
-        if (!quantity) {
-            ToastAndroid.show('Vui lòng nhập số lượng', ToastAndroid.SHORT)
-            return
-        }
         RNProgressHud.show()
-        let url = await addImageToStorage(image?.path)
+        if (!image.path.includes('firebasestorage')) {
+            var url = await addImageToStorage(image?.path)
+        } else {
+            var url = image.path
+        }
         const product = {
             name,
             barcode,
             priceCapital,
             priceSale,
             description,
-            quantity,
             image: url
         }
-        firestore()
-            .collection('products')
-            .where('barcode', '==', barcode)
-            .get()
-            .then((querySnapshot) => {
-                if (querySnapshot.size > 0) {
-                    Alert.alert('Thông báo', 'Sản phẩm đã tồn tại')
-                } else {
-                    handleAddProduct(product)
-                }
-            })
-            .catch((error) => {
-                console.log('Error getting documents: ', error)
-            })
-            .finally(() => {
-                RNProgressHud.dismiss()
-            })
+        handleOnUpdateProduct(product)
     }
 
     const addImageToStorage = async (uri) => {
@@ -110,19 +91,26 @@ const EditProduct = ({ route }) => {
         return url
     }
 
-    const handleAddProduct = (product) => {
+    const handleOnUpdateProduct = (product) => {
         firestore()
             .collection('users')
             .doc(auth().currentUser.uid)
             .collection('products')
             .doc(barcode)
-            .set(product)
+            .set(
+                {
+                    ...product
+                },
+                { merge: true }
+            )
             .then(() => {
-                ToastAndroid.show('Thêm sản phẩm thành công', ToastAndroid.SHORT)
-                navigation.navigate('Home')
+                ToastAndroid.show('Cập nhật sản phẩm thành công', ToastAndroid.SHORT)
+                navigation.navigate('Products')
+                RNProgressHud.dismiss()
             })
             .catch((error) => {
                 console.log(error)
+                RNProgressHud.dismiss()
             })
     }
 
@@ -172,6 +160,7 @@ const EditProduct = ({ route }) => {
                 </View>
                 <View style={styles.viewProblems}>
                     <View style={styles.problems}>
+                        <Text style={styles.textTitle}>Tên sản phẩm:</Text>
                         <TextInput
                             style={styles.textProblems}
                             placeholder='Tên sản phẩm'
@@ -179,7 +168,8 @@ const EditProduct = ({ route }) => {
                             onChangeText={setName}
                             placeholderTextColor='#A9A9A9'
                         />
-                        <View style={styles.barCode}>
+                        <Text style={styles.textTitle}>Mã sản phẩm:</Text>
+                        <View style={styles.barCode} pointerEvents='none'>
                             <TextInput
                                 style={styles.textProblems1}
                                 placeholder='Mã sản phẩm'
@@ -187,43 +177,32 @@ const EditProduct = ({ route }) => {
                                 onChangeText={setBarcode}
                                 placeholderTextColor='#A9A9A9'
                             />
-                            <TouchableOpacity
-                                onPress={() => {
-                                    navigation.navigate('Scan', { screen: 'AddProduct' })
-                                }}
-                            >
-                                <Icon style={styles.iconImage} name='barcode-outline' />
-                            </TouchableOpacity>
                         </View>
                     </View>
                 </View>
                 <View style={styles.ViewProblems1}>
+                    <Text style={styles.textTitle}>Giá nhập:</Text>
+
                     <TextInput
-                        style={styles.textProblems2}
+                        style={styles.textProblems}
                         placeholder='Giá nhập'
                         value={priceCapital}
                         keyboardType='numeric'
                         onChangeText={setPriceCapital}
                         placeholderTextColor='#A9A9A9'
                     />
+                    <Text style={styles.textTitle}>Giá bán:</Text>
                     <TextInput
-                        style={styles.textProblems2}
+                        style={styles.textProblems}
                         placeholder='Giá bán'
                         keyboardType='numeric'
                         value={priceSale}
                         onChangeText={setPriceSale}
                         placeholderTextColor='#A9A9A9'
                     />
-                    <TextInput
-                        style={styles.textProblems2}
-                        placeholder='Số lượng sản phẩm'
-                        keyboardType='numeric'
-                        value={quantity}
-                        onChangeText={setQuantity}
-                        placeholderTextColor='#A9A9A9'
-                    />
                 </View>
                 <View style={styles.ViewProblems1}>
+                    <Text style={styles.textTitle}>Mô tả:</Text>
                     <View style={styles.problems}>
                         <TextInput
                             style={styles.textProblems}
@@ -241,7 +220,7 @@ const EditProduct = ({ route }) => {
                     handleOnSave()
                 }}
             >
-                <Text style={styles.textButton}>Lưu</Text>
+                <Text style={styles.textButton}>Cập nhật</Text>
             </TouchableOpacity>
             <ActionSheet
                 ref={_refActionSheet}
@@ -298,7 +277,8 @@ const styles = StyleSheet.create({
         borderBottomColor: '#E8E8E8',
         paddingHorizontal: 10,
         paddingVertical: 5,
-        margin: 10
+        margin: 10,
+        marginTop: 6
     },
     barCode: {
         flexDirection: 'row',
@@ -306,6 +286,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderBottomWidth: 1,
         borderBottomColor: '#E8E8E8',
+        backgroundColor: '#e5e5e5',
+        borderRadius: 10,
         marginHorizontal: 10,
         marginVertical: 5
     },
@@ -319,16 +301,6 @@ const styles = StyleSheet.create({
     problems1: {
         flexDirection: 'row',
         justifyContent: 'space-between'
-    },
-    textProblems2: {
-        color: '#666',
-        fontSize: 16,
-        paddingHorizontal: 10,
-        paddingVertical: 5,
-        marginVertical: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: '#E8E8E8',
-        marginHorizontal: 10
     },
     ViewProblems1: {
         backgroundColor: '#fff',
@@ -353,5 +325,11 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 16,
         fontWeight: 'bold'
+    },
+    textTitle: {
+        fontSize: 16,
+        color: '#000',
+        paddingHorizontal: 20,
+        marginTop: 10
     }
 })
