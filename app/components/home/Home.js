@@ -31,56 +31,56 @@ const listBody = [
         name: 'Tạo đơn',
         screen: 'AddOrders',
         icon: 'cart-plus',
-        color: '#000'
+        color: '#3C7BF4'
     },
     {
         id: 2,
         name: 'Sản phẩm',
         screen: 'Products',
-        icon: 'cube',
-        color: '#000'
+        icon: 'cubes',
+        color: '#E72929'
     },
     {
         id: 3,
         name: 'Kho hàng',
         screen: 'WareHouse',
         icon: 'warehouse',
-        color: '#000'
+        color: '#23874B'
     },
     {
         id: 4,
         name: 'Đơn Hàng',
         screen: 'Order',
-        icon: 'home',
-        color: '#000'
+        icon: 'shopping-basket',
+        color: '#79179B'
     },
     {
         id: 5,
-        name: 'Báo cáo',
+        name: 'Thống kê',
         screen: 'AddOrders',
-        icon: 'cart-plus',
-        color: '#000'
+        icon: 'chart-bar',
+        color: '#64A476'
     },
     {
         id: 6,
         name: 'Khách hàng',
         screen: 'Customer',
-        icon: 'cube',
-        color: '#000'
+        icon: 'user-alt',
+        color: '#531A8D'
     },
     {
         id: 7,
         name: 'Quà tặng',
         screen: 'WareHouse',
-        icon: 'warehouse',
-        color: '#000'
+        icon: 'gift',
+        color: '#227448'
     },
     {
         id: 8,
         name: 'Xem thêm',
         screen: 'Order',
-        icon: 'home',
-        color: '#000'
+        icon: 'ellipsis-h',
+        color: '#923131'
     }
 ]
 

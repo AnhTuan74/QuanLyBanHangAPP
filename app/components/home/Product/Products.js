@@ -47,7 +47,7 @@ const Products = () => {
     return (
         <View style={styles.container}>
             <Header />
-            {false ? (
+            {listProduct.length == 0 ? (
                 <View style={styles.noProducts}>
                     <Text style={styles.textNoProduct}>Chưa có sản phẩm</Text>
                     <TouchableOpacity

@@ -1,108 +1,236 @@
-import { StyleSheet, Text, View, TextInput, ScrollView, TouchableOpacity } from 'react-native'
-import React from 'react'
+import {
+    StyleSheet,
+    Text,
+    View,
+    TextInput,
+    ScrollView,
+    TouchableOpacity,
+    ToastAndroid,
+    Alert,
+    LogBox,
+    Image
+} from 'react-native'
+import React, { useState, useEffect, useRef } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons'
-const EditProduct = ({ navigation }) => {
+import { useNavigation } from '@react-navigation/native'
+import firestore from '@react-native-firebase/firestore'
+import HeaderAdd from './components/HeaderAdd'
+import ActionSheet from 'react-native-actionsheet'
+import ImagePicker from 'react-native-image-crop-picker'
+import storage from '@react-native-firebase/storage'
+import auth from '@react-native-firebase/auth'
+import RNProgressHud from 'progress-hud'
+
+LogBox.ignoreLogs(['Animated: `useNativeDriver`', 'componentWillReceiveProps'])
+
+const EditProduct = ({ route }) => {
+    const navigation = useNavigation()
+    const [name, setName] = useState('')
+    const [barcode, setBarcode] = useState('')
+    const [description, setDescription] = useState('')
+    const [image, setImage] = useState()
+    const [priceCapital, setPriceCapital] = useState('')
+    const [priceSale, setPriceSale] = useState('')
+    const [quantity, setQuantity] = useState('')
+
+    const _refActionSheet = useRef()
+
+    const onShowImageActionSheet = () => {
+        _refActionSheet.current?.show(true)
+    }
+
+    useEffect(() => {
+        setBarcode(route?.params?.barcode || '')
+    }, [route])
+
+    const handleOnSave = async () => {
+        if (!name) {
+            ToastAndroid.show('Vui lòng nhập tên sản phẩm', ToastAndroid.SHORT)
+            return
+        }
+        if (!barcode) {
+            ToastAndroid.show('Vui lòng nhập mã sản phẩm', ToastAndroid.SHORT)
+            return
+        }
+        if (!description) {
+            ToastAndroid.show('Vui lòng nhập mô tả sản phẩm', ToastAndroid.SHORT)
+            return
+        }
+        if (!priceCapital) {
+            ToastAndroid.show('Vui lòng nhập giá nhập', ToastAndroid.SHORT)
+            return
+        }
+        if (!priceSale) {
+            ToastAndroid.show('Vui lòng nhập giá bán', ToastAndroid.SHORT)
+            return
+        }
+        if (!image) {
+            ToastAndroid.show('Vui lòng chọn ảnh sản phẩm', ToastAndroid.SHORT)
+            return
+        }
+        if (!quantity) {
+            ToastAndroid.show('Vui lòng nhập số lượng', ToastAndroid.SHORT)
+            return
+        }
+        RNProgressHud.show()
+        let url = await addImageToStorage(image?.path)
+        const product = {
+            name,
+            barcode,
+            priceCapital,
+            priceSale,
+            description,
+            quantity,
+            image: url
+        }
+        firestore()
+            .collection('products')
+            .where('barcode', '==', barcode)
+            .get()
+            .then((querySnapshot) => {
+                if (querySnapshot.size > 0) {
+                    Alert.alert('Thông báo', 'Sản phẩm đã tồn tại')
+                } else {
+                    handleAddProduct(product)
+                }
+            })
+            .catch((error) => {
+                console.log('Error getting documents: ', error)
+            })
+            .finally(() => {
+                RNProgressHud.dismiss()
+            })
+    }
+
+    const addImageToStorage = async (uri) => {
+        const imageName = `${Date.now()}`
+        const imageRef = storage().ref(`images/${imageName}`)
+        await imageRef.putFile(uri)
+        let url = await storage().ref(`images/${imageName}`).getDownloadURL()
+        return url
+    }
+
+    const handleAddProduct = (product) => {
+        firestore()
+            .collection('users')
+            .doc(auth().currentUser.uid)
+            .collection('products')
+            .doc(barcode)
+            .set(product)
+            .then(() => {
+                ToastAndroid.show('Thêm sản phẩm thành công', ToastAndroid.SHORT)
+                navigation.navigate('Home')
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+    }
+
+    const openCamera = () => {
+        ImagePicker.openCamera({
+            mediaType: 'photo',
+            width: 1000,
+            height: 1000,
+            cropping: true
+        })
+            .then((image) => {
+                setImage(image)
+            })
+            .catch((err) => {})
+    }
+
+    const openLibrary = () => {
+        ImagePicker.openPicker({
+            mediaType: 'photo',
+            width: 1000,
+            height: 1000,
+            cropping: true
+        })
+            .then((image) => {
+                setImage(image)
+            })
+            .catch((err) => {})
+    }
+
+    const handlePickerImage = (index) => {
+        if (index == 0) {
+            openCamera()
+        } else if (index == 1) {
+            openLibrary()
+        }
+    }
+
     return (
         <View style={styles.container}>
-            <View
-                style={{
-                    padding: 25,
-                    backgroundColor: '#fff',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    borderBottomWidth: 1,
-                    borderBottomColor: '#E8E8E8'
-                }}
-            >
-                <Icon style={styles.icon} name='close-outline' />
-                <Text style={styles.text}>Sửa sản phẩm</Text>
-                <Icon style={styles.icon} name='checkmark-outline' />
-            </View>
+            <HeaderAdd title={'Sửa sản phẩm'} />
             <ScrollView>
-                <View style={styles.addImage}>
-                    <Icon style={styles.iconImage} name='camera-outline' />
+                <View style={styles.viewImage}>
+                    <TouchableOpacity style={styles.addImage} onPress={onShowImageActionSheet}>
+                        <Icon style={styles.iconImage} name='camera-outline' />
+                    </TouchableOpacity>
+                    <Image style={styles.image} source={{ uri: image?.path }} />
                 </View>
                 <View style={styles.viewProblems}>
                     <View style={styles.problems}>
                         <TextInput
                             style={styles.textProblems}
                             placeholder='Tên sản phẩm'
-                            placeholderTextColor={'#666'}
+                            value={name}
+                            onChangeText={setName}
+                            placeholderTextColor='#A9A9A9'
                         />
                         <View style={styles.barCode}>
                             <TextInput
                                 style={styles.textProblems1}
-                                placeholder='SKU'
-                                placeholderTextColor={'#666'}
+                                placeholder='Mã sản phẩm'
+                                value={barcode}
+                                onChangeText={setBarcode}
+                                placeholderTextColor='#A9A9A9'
                             />
-                            <Icon style={styles.iconImage} name='barcode-outline' />
-                        </View>
-                        <View style={styles.barCode}>
-                            <TextInput
-                                style={styles.textProblems1}
-                                placeholder='BarCode'
-                                placeholderTextColor={'#666'}
-                            />
-                            <Icon style={styles.iconImage} name='barcode-outline' />
-                        </View>
-                        <View style={styles.problems1}>
-                            <TextInput
-                                style={styles.textProblems2}
-                                placeholder='Khối lượng'
-                                placeholderTextColor={'#666'}
-                            />
-                            <TextInput
-                                style={styles.textProblems2}
-                                placeholder='Đơn vị tính'
-                                placeholderTextColor={'#666'}
-                            />
+                            <TouchableOpacity
+                                onPress={() => {
+                                    navigation.navigate('Scan', { screen: 'AddProduct' })
+                                }}
+                            >
+                                <Icon style={styles.iconImage} name='barcode-outline' />
+                            </TouchableOpacity>
                         </View>
                     </View>
                 </View>
                 <View style={styles.ViewProblems1}>
-                    <View style={styles.problems1}>
-                        <TextInput
-                            style={styles.textProblems2}
-                            placeholder='Tồn kho ban đầu'
-                            placeholderTextColor={'#666'}
-                        />
-                        <TextInput
-                            style={styles.textProblems2}
-                            placeholder='Giá vốn'
-                            placeholderTextColor={'#666'}
-                        />
-                    </View>
-                    <View style={styles.problems1}>
-                        <TextInput
-                            style={styles.textProblems2}
-                            placeholder='Giá bán lẻ              '
-                            placeholderTextColor={'#666'}
-                        />
-                        <TextInput
-                            style={styles.textProblems2}
-                            placeholder='Giá bán buôn'
-                            placeholderTextColor={'#666'}
-                        />
-                    </View>
-                    <View style={styles.problems1}>
-                        <TextInput
-                            style={styles.textProblems2}
-                            placeholder='Giá nhập        '
-                            placeholderTextColor={'#666'}
-                        />
-                    </View>
+                    <TextInput
+                        style={styles.textProblems2}
+                        placeholder='Giá nhập'
+                        value={priceCapital}
+                        keyboardType='numeric'
+                        onChangeText={setPriceCapital}
+                        placeholderTextColor='#A9A9A9'
+                    />
+                    <TextInput
+                        style={styles.textProblems2}
+                        placeholder='Giá bán'
+                        keyboardType='numeric'
+                        value={priceSale}
+                        onChangeText={setPriceSale}
+                        placeholderTextColor='#A9A9A9'
+                    />
+                    <TextInput
+                        style={styles.textProblems2}
+                        placeholder='Số lượng sản phẩm'
+                        keyboardType='numeric'
+                        value={quantity}
+                        onChangeText={setQuantity}
+                        placeholderTextColor='#A9A9A9'
+                    />
                 </View>
                 <View style={styles.ViewProblems1}>
                     <View style={styles.problems}>
                         <TextInput
                             style={styles.textProblems}
-                            placeholder='Danh mục sản phẩm'
-                            placeholderTextColor={'#666'}
-                        />
-                        <TextInput
-                            style={styles.textProblems}
                             placeholder='Mô tả'
-                            placeholderTextColor={'#666'}
+                            value={description}
+                            onChangeText={setDescription}
+                            placeholderTextColor='#A9A9A9'
                         />
                     </View>
                 </View>
@@ -110,11 +238,18 @@ const EditProduct = ({ navigation }) => {
             <TouchableOpacity
                 style={styles.button}
                 onPress={() => {
-                    navigation.navigate('Products')
+                    handleOnSave()
                 }}
             >
                 <Text style={styles.textButton}>Lưu</Text>
             </TouchableOpacity>
+            <ActionSheet
+                ref={_refActionSheet}
+                title={'Chọn ảnh'}
+                options={['Camera', 'Thư viện ảnh', 'Huỷ']}
+                cancelButtonIndex={2}
+                onPress={handlePickerImage}
+            />
         </View>
     )
 }
@@ -126,15 +261,9 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#F0F2F8'
     },
-    icon: {
-        color: '#666',
-        fontSize: 25
-    },
-    text: {
-        color: '#666',
-        fontSize: 14,
-        fontWeight: 'bold',
-        paddingHorizontal: 100
+    viewImage: {
+        flexDirection: 'row',
+        marginTop: 10
     },
     addImage: {
         backgroundColor: '#fff',
@@ -143,12 +272,17 @@ const styles = StyleSheet.create({
         width: 60,
         height: 60,
         alignItems: 'center',
-        marginTop: 10,
+
         marginHorizontal: 10
     },
     iconImage: {
         color: '#3C7BF4',
-        fontSize: 18
+        fontSize: 20
+    },
+    image: {
+        width: 60,
+        height: 60,
+        borderRadius: 10
     },
     viewProblems: {
         backgroundColor: '#fff',
@@ -159,13 +293,12 @@ const styles = StyleSheet.create({
     },
     textProblems: {
         color: '#666',
-        fontSize: 13,
+        fontSize: 16,
         borderBottomWidth: 1,
         borderBottomColor: '#E8E8E8',
         paddingHorizontal: 10,
         paddingVertical: 5,
-        marginHorizontal: 10,
-        marginVertical: 10
+        margin: 10
     },
     barCode: {
         flexDirection: 'row',
@@ -178,7 +311,7 @@ const styles = StyleSheet.create({
     },
     textProblems1: {
         color: '#666',
-        fontSize: 13,
+        fontSize: 16,
         paddingHorizontal: 10,
         paddingVertical: 5,
         marginVertical: 5
@@ -189,14 +322,13 @@ const styles = StyleSheet.create({
     },
     textProblems2: {
         color: '#666',
-        fontSize: 13,
+        fontSize: 16,
         paddingHorizontal: 10,
         paddingVertical: 5,
         marginVertical: 10,
         borderBottomWidth: 1,
         borderBottomColor: '#E8E8E8',
-        marginHorizontal: 10,
-        marginRight: 50
+        marginHorizontal: 10
     },
     ViewProblems1: {
         backgroundColor: '#fff',
@@ -219,7 +351,7 @@ const styles = StyleSheet.create({
     },
     textButton: {
         color: '#fff',
-        fontSize: 15,
+        fontSize: 16,
         fontWeight: 'bold'
     }
 })

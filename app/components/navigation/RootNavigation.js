@@ -20,6 +20,7 @@ import { setInfoUser } from '../../redux/userSlice'
 import WareHouse from './../home/wareHouse/WareHouse'
 import Customer from './../home/customer/Customer'
 import AddCustomer from './../home/customer/AddCustomer'
+import CustomerDetail from './../home/customer/CustomerDetail'
 
 const Stack = createNativeStackNavigator()
 
@@ -71,6 +72,7 @@ const RootNavigation = () => {
                 <Stack.Screen name='WareHouse' component={WareHouse} />
                 <Stack.Screen name='Customer' component={Customer} />
                 <Stack.Screen name='AddCustomer' component={AddCustomer} />
+                <Stack.Screen name='CustomerDetail' component={CustomerDetail} />
             </Stack.Navigator>
         </NavigationContainer>
     )

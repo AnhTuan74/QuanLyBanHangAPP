@@ -65,8 +65,19 @@ const Customer = () => {
                     </TouchableOpacity>
                 </View>
             </View>
-            {false ? (
-                <View></View>
+            {true ? (
+                <View style={styles.noProducts}>
+                    <Text style={styles.textNoProduct}>Chưa có khách hàng</Text>
+                    <TouchableOpacity
+                        style={styles.addProduct}
+                        onPress={() => {
+                            navigation.navigate('AddCustomer')
+                        }}
+                    >
+                        <Icon name='plus' size={13} color='#fff' />
+                        <Text style={styles.textAddProduct}>Thêm khách hàng</Text>
+                    </TouchableOpacity>
+                </View>
             ) : (
                 <View style={styles.listCustomer}>
                     <Text
@@ -216,5 +227,22 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#000',
         marginBottom: 5
+    },
+    textAddProduct: {
+        color: '#fff',
+        fontSize: 14,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        paddingLeft: 5
+    },
+    noProducts: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    textNoProduct: {
+        color: '#666',
+        fontSize: 18,
+        textAlign: 'center'
     }
 })

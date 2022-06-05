@@ -133,7 +133,7 @@ const AddOrders = () => {
                         <Text style={styles.text4}>Áp dụng khuyến mãi</Text>
                     </View>
                     {list.map((item, index) => (
-                        <View style={styles.Information2}>
+                        <View key={index} style={styles.Information2}>
                             <Text style={styles.text5}>{item.name}</Text>
                             <Text style={styles.text5}>{item.count}</Text>
                         </View>

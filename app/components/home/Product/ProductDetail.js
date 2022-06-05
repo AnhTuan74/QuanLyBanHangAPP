@@ -41,6 +41,7 @@ const ProductDetail = ({ route }) => {
                     backgroundColor: '#fff',
                     flexDirection: 'row',
                     alignItems: 'center',
+                    justifyContent: 'space-between',
                     borderBottomWidth: 1,
                     borderBottomColor: '#E8E8E8'
                 }}
@@ -65,7 +66,7 @@ const ProductDetail = ({ route }) => {
             </View>
             <View style={styles.viewInformation}>
                 <View style={styles.information}>
-                    <Text style={styles.textInformation}>Tên sản phẩm :{product.name}</Text>
+                    <Text style={styles.textInformation}>{product.name}</Text>
                 </View>
                 <View style={styles.information1}>
                     <Text style={styles.textInformation1}>SKU:{product.barcode}</Text>
@@ -109,7 +110,7 @@ const styles = StyleSheet.create({
     },
     icon: {
         color: '#666',
-        fontSize: 15
+        fontSize: 20
     },
     image: {
         width: 60,
@@ -118,7 +119,7 @@ const styles = StyleSheet.create({
     },
     text: {
         color: '#666',
-        fontSize: 14,
+        fontSize: 18,
         fontWeight: 'bold',
         paddingHorizontal: 100
     },
