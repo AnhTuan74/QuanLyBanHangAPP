@@ -64,7 +64,7 @@ const listBody = [
     {
         id: 6,
         name: 'Khách hàng',
-        screen: 'Products',
+        screen: 'Customer',
         icon: 'cube',
         color: '#000'
     },
@@ -121,7 +121,7 @@ const Home = () => {
                             navigation.navigate(item.screen)
                         }}
                     >
-                        <Icon name={item.icon} size={20} color={item.color} />
+                        <Icon name={item.icon} size={24} color={item.color} />
                         <Text style={styles.textOrder} numberOfLines={1}>
                             {item.name}
                         </Text>
@@ -201,7 +201,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingRight: 10,
         flexDirection: 'row',
-        flexWrap: 'wrap'
+        flexWrap: 'wrap',
+        marginTop: 15
     },
     itemContent: {
         alignItems: 'center',
@@ -215,7 +216,7 @@ const styles = StyleSheet.create({
     },
     textOrder: {
         color: '#666666',
-        fontSize: 12,
+        fontSize: 14,
         marginTop: 6,
         textAlign: 'center'
     },

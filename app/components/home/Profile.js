@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 14,
         fontWeight: 'bold',
-        paddingHorizontal: 80
+        alignItems: 'center'
     },
     viewInformation: {
         backgroundColor: '#fff',

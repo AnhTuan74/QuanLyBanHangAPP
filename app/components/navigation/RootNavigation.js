@@ -18,6 +18,8 @@ import { useDispatch } from 'react-redux'
 import StorageManager from '../../controller/StorageManager'
 import { setInfoUser } from '../../redux/userSlice'
 import WareHouse from './../home/wareHouse/WareHouse'
+import Customer from './../home/customer/Customer'
+import AddCustomer from './../home/customer/AddCustomer'
 
 const Stack = createNativeStackNavigator()
 
@@ -67,6 +69,8 @@ const RootNavigation = () => {
                 <Stack.Screen name='Order' component={Order} />
                 <Stack.Screen name='OrderDetail' component={OrderDetail} />
                 <Stack.Screen name='WareHouse' component={WareHouse} />
+                <Stack.Screen name='Customer' component={Customer} />
+                <Stack.Screen name='AddCustomer' component={AddCustomer} />
             </Stack.Navigator>
         </NavigationContainer>
     )
