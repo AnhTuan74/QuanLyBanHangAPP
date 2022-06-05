@@ -1,10 +1,38 @@
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
-import Icon from 'react-native-vector-icons/FontAwesome5'
+import Icon from 'react-native-vector-icons/Ionicons'
 import { useNavigation } from '@react-navigation/native'
+import firestore from '@react-native-firebase/firestore'
+import auth from '@react-native-firebase/auth'
+import RNProgressHud from 'progress-hud'
 
-const ProductDetail = () => {
+const ProductDetail = ({ route }) => {
+    const { product } = route?.params || {}
     const navigation = useNavigation()
+
+    const handleOnDeleteProduct = () => {
+        RNProgressHud.show()
+        const user = auth().currentUser
+        firestore()
+            .collection(`users/${user.uid}/products`)
+            .doc(product.id)
+            .delete()
+            .then(() => {
+                deleteProductSuccess()
+            })
+            .catch(() => {
+                RNProgressHud.dismiss()
+                alert('Có lỗi xảy ra')
+            })
+    }
+
+    const deleteProductSuccess = () => {
+        RNProgressHud.showSuccessWithStatus('Xóa sản phẩm thành công')
+        setTimeout(() => {
+            RNProgressHud.dismiss()
+            navigation.navigate('Products')
+        }, 1000)
+    }
     return (
         <View style={styles.container}>
             <View
@@ -18,7 +46,7 @@ const ProductDetail = () => {
                 }}
             >
                 <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <Icon style={styles.icon} name='times' />
+                    <Icon style={styles.icon} name='close' />
                 </TouchableOpacity>
                 <Text style={styles.text}>Chi tiết sản phẩm</Text>
                 <TouchableOpacity
@@ -26,61 +54,46 @@ const ProductDetail = () => {
                         navigation.navigate('EditProduct')
                     }}
                 >
-                    <Icon style={styles.icon} name='edit' />
+                    <Icon style={styles.icon} name='create-outline' />
                 </TouchableOpacity>
             </View>
-            <View style={styles.addImage}>
-                <Icon style={styles.iconImage} name='camera' />
+            <View style={styles.viewImage}>
+                <TouchableOpacity style={styles.addImage}>
+                    <Icon style={styles.iconImage} name='camera-outline' />
+                </TouchableOpacity>
+                <Image style={styles.image} source={{ uri: product.image }} />
             </View>
             <View style={styles.viewInformation}>
                 <View style={styles.information}>
-                    <Text style={styles.textInformation}>Tên sản phẩm</Text>
+                    <Text style={styles.textInformation}>Tên sản phẩm :{product.name}</Text>
                 </View>
                 <View style={styles.information1}>
-                    <Text style={styles.textInformation1}>SKU:</Text>
-                    <Text style={styles.textInformation1}>Mã</Text>
+                    <Text style={styles.textInformation1}>SKU:{product.barcode}</Text>
                 </View>
                 <View style={styles.information1}>
-                    <Text style={styles.textInformation1}>Barcode:</Text>
-                    <Text style={styles.textInformation1}>Mã</Text>
-                </View>
-                <View style={styles.information1}>
-                    <Text style={styles.textInformation1}>Khối lượng:</Text>
-                    <Text style={styles.textInformation1}>Mã</Text>
-                </View>
-                <View style={styles.information1}>
-                    <Text style={styles.textInformation1}>Đơn vị tính:</Text>
-                    <Text style={styles.textInformation1}>Mã</Text>
-                </View>
-                <View style={styles.information1}>
-                    <Text style={styles.textInformation1}>Kích thước</Text>
-                    <Text style={styles.textInformation1}>Mã</Text>
+                    <Text style={styles.textInformation1}>Barcode:{product.barcode}</Text>
                 </View>
             </View>
             <View style={styles.viewInformation}>
                 <View style={styles.information2}>
                     <Text style={styles.textInformation2}>Kho hàng</Text>
                     <View style={styles.info}>
-                        <Text style={styles.textInformation2}>Tồn kho:</Text>
-                        <Text style={styles.textInformation2}>Có thể bán:</Text>
+                        <Text style={styles.textInformation2}>Tồn kho:{product.quantity}</Text>
+                        <Text style={styles.textInformation2}>Có thể bán:{product.quantity}</Text>
                     </View>
                 </View>
                 <View style={styles.information3}>
                     <View style={styles.info2}>
                         <Text style={styles.textInformation3}>Giá bán lẻ</Text>
-                        <Text style={styles.textInformation3}>0</Text>
-                    </View>
-                    <View style={styles.info3}>
-                        <Text style={styles.textInformation3}>Giá bán buôn</Text>
-                        <Text style={styles.textInformation3}>0</Text>
+                        <Text style={styles.textInformation3}>{product.priceCapital}</Text>
                     </View>
                 </View>
                 <View style={styles.information4}>
                     <Text style={styles.textInformation4}>Giá nhập</Text>
-                    <Text style={styles.textInformation4}>0</Text>
+                    <Text style={styles.textInformation4}>{product.priceSale}</Text>
                 </View>
             </View>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.button} onPress={() => handleOnDeleteProduct()}>
                 <Text style={styles.textButton}>Xóa sản phẩm</Text>
             </TouchableOpacity>
         </View>
@@ -98,11 +111,20 @@ const styles = StyleSheet.create({
         color: '#666',
         fontSize: 15
     },
+    image: {
+        width: 60,
+        height: 60,
+        borderRadius: 10
+    },
     text: {
         color: '#666',
         fontSize: 14,
         fontWeight: 'bold',
         paddingHorizontal: 100
+    },
+    viewImage: {
+        flexDirection: 'row',
+        marginTop: 10
     },
     addImage: {
         backgroundColor: '#fff',
@@ -111,12 +133,16 @@ const styles = StyleSheet.create({
         width: 60,
         height: 60,
         alignItems: 'center',
-        marginTop: 10,
         marginHorizontal: 10
     },
     iconImage: {
         color: '#3C7BF4',
-        fontSize: 18
+        fontSize: 20
+    },
+    image: {
+        width: 60,
+        height: 60,
+        borderRadius: 10
     },
     viewInformation: {
         backgroundColor: '#fff',

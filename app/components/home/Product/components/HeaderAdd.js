@@ -1,25 +1,22 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import React from 'react'
-import Icon from 'react-native-vector-icons/FontAwesome5'
+import Icon from 'react-native-vector-icons/Ionicons'
 import { useNavigation } from '@react-navigation/native'
 
-const Header = () => {
+const HeaderAdd = ({ title }) => {
     const navigation = useNavigation()
-
     return (
         <View style={styles.header}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
-                <Icon size={15} name='arrow-left' color='#666' />
+                <Icon size={30} name='close-outline' color='black' />
             </TouchableOpacity>
-            <Text style={styles.text}>Sản phẩm</Text>
-            <TouchableOpacity onPress={() => navigation.navigate('AddProduct')}>
-                <Icon size={15} name='plus' color='#666' />
-            </TouchableOpacity>
+            <Text style={styles.text}>{title}</Text>
+            <Icon size={30} name='close' color='transparent' />
         </View>
     )
 }
 
-export default Header
+export default HeaderAdd
 
 const styles = StyleSheet.create({
     header: {
@@ -28,7 +25,9 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         backgroundColor: '#fff',
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
+        borderBottomWidth: 1,
+        borderBottomColor: '#E8E8E8'
     },
     icon: {
         fontSize: 25

@@ -14,7 +14,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { useNavigation } from '@react-navigation/native'
 import firestore from '@react-native-firebase/firestore'
-import Header from './components/Header'
+import HeaderAdd from './components/HeaderAdd'
 import ActionSheet from 'react-native-actionsheet'
 import ImagePicker from 'react-native-image-crop-picker'
 import storage from '@react-native-firebase/storage'
@@ -162,7 +162,7 @@ const AddProduct = ({ route }) => {
 
     return (
         <View style={styles.container}>
-            <Header title={'Thêm sản phẩm'} />
+            <HeaderAdd title={'Thêm sản phẩm'} />
             <ScrollView>
                 <View style={styles.viewImage}>
                     <TouchableOpacity style={styles.addImage} onPress={onShowImageActionSheet}>
