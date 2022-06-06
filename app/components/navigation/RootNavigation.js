@@ -23,6 +23,7 @@ import AddCustomer from './../home/customer/AddCustomer'
 import CustomerDetail from './../home/customer/CustomerDetail'
 import ImportWarehouse from './../home/wareHouse/ImportWarehouse'
 import MyTab from './../report/MyTab'
+import ChoiceProduct from '../home/Product/ChoiceProduct'
 
 const Stack = createNativeStackNavigator()
 
@@ -75,6 +76,7 @@ const RootNavigation = () => {
                 <Stack.Screen name='Customer' component={Customer} />
                 <Stack.Screen name='AddCustomer' component={AddCustomer} />
                 <Stack.Screen name='CustomerDetail' component={CustomerDetail} />
+                <Stack.Screen name='ChoiceProduct' component={ChoiceProduct} />
                 <Stack.Screen name='ImportWarehouse' component={ImportWarehouse} />
                 <Stack.Screen name='MyTab' component={MyTab} />
             </Stack.Navigator>
