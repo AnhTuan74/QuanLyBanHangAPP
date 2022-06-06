@@ -1,4 +1,13 @@
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, FlatList, Image } from 'react-native'
+import {
+    StyleSheet,
+    Text,
+    View,
+    TouchableOpacity,
+    TextInput,
+    FlatList,
+    Image,
+    ScrollView
+} from 'react-native'
 import React, { useState, useEffect } from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useNavigation } from '@react-navigation/native'
@@ -66,63 +75,82 @@ const WareHouse = () => {
                     </TouchableOpacity>
                 </View>
             </View>
-            {false ? (
-                <View style={styles.noProducts}>
-                    <Text style={styles.textNoProduct}>Chưa có sản phẩm</Text>
-                    <TouchableOpacity
-                        style={styles.addProduct}
-                        onPress={() => {
-                            navigation.navigate('AddProduct')
-                        }}
-                    >
-                        <Icon name='plus' size={13} color='#fff' />
-                        <Text style={styles.textAddProduct}>Thêm sản phẩm</Text>
-                    </TouchableOpacity>
-                </View>
-            ) : (
-                <View style={styles.listProduct}>
-                    <Text
-                        style={{
-                            fontSize: 15,
-                            padding: 10
-                        }}
-                    >
-                        3 sản phẩm
-                    </Text>
-                    <FlatList
-                        data={listProduct}
-                        keyExtractor={(item) => item.barcode}
-                        renderItem={({ item }) => (
-                            <View style={styles.itemProduct}>
-                                <View style={styles.viewImage}>
-                                    <Image
-                                        style={styles.image}
-                                        source={{
-                                            uri: 'https://th.bing.com/th/id/R.149244a480a45a0736cdba574ba9147e?rik=mYWnOVTopKTpCw&pid=ImgRaw&r=0'
-                                        }}
-                                    />
-                                </View>
-                                <View style={styles.viewInformation}>
-                                    <View>
-                                        <Text style={styles.nameProduct}>{item.name}</Text>
-                                        <Text style={styles.nameProduct}>{item.name}</Text>
-                                    </View>
-                                    <View>
-                                        <Text>123</Text>
-                                        <Text
-                                            style={{
-                                                color: '#3C7BF4'
+            <ScrollView style={{ flex: 1 }}>
+                {false ? (
+                    <View style={styles.noProducts}>
+                        <Text style={styles.textNoProduct}>Chưa có sản phẩm</Text>
+                        <TouchableOpacity
+                            style={styles.addProduct}
+                            onPress={() => {
+                                navigation.navigate('AddProduct')
+                            }}
+                        >
+                            <Icon name='plus' size={13} color='#fff' />
+                            <Text style={styles.textAddProduct}>Thêm sản phẩm</Text>
+                        </TouchableOpacity>
+                    </View>
+                ) : (
+                    <View style={styles.listProduct}>
+                        <Text
+                            style={{
+                                fontSize: 15,
+                                padding: 10
+                            }}
+                        >
+                            3 sản phẩm
+                        </Text>
+                        <FlatList
+                            data={listProduct}
+                            keyExtractor={(item) => item.barcode}
+                            renderItem={({ item }) => (
+                                <View style={styles.itemProduct}>
+                                    <View style={styles.viewImage}>
+                                        <Image
+                                            style={styles.image}
+                                            source={{
+                                                uri: 'https://th.bing.com/th/id/R.149244a480a45a0736cdba574ba9147e?rik=mYWnOVTopKTpCw&pid=ImgRaw&r=0'
                                             }}
-                                        >
-                                            Số lượng: 10
-                                        </Text>
+                                        />
+                                    </View>
+                                    <View style={styles.viewInformation}>
+                                        <View>
+                                            <Text style={styles.nameProduct}>{item.name}</Text>
+                                        </View>
+                                        <View>
+                                            <Text>Tồn kho:</Text>
+                                            <Text
+                                                style={{
+                                                    color: '#3C7BF4'
+                                                }}
+                                            >
+                                                {item.priceSale} VNĐ
+                                            </Text>
+                                        </View>
                                     </View>
                                 </View>
-                            </View>
-                        )}
-                    />
-                </View>
-            )}
+                            )}
+                        />
+                    </View>
+                )}
+            </ScrollView>
+            <View style={styles.viewButton}>
+                <TouchableOpacity
+                    style={{ ...styles.button, backgroundColor: '#B22222' }}
+                    onPress={() => {
+                        navigation.navigate('ImportWarehouse')
+                    }}
+                >
+                    <Text style={styles.textButton}>Xuất hàng</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => {
+                        navigation.navigate('ImportWarehouse')
+                    }}
+                >
+                    <Text style={styles.textButton}>Nhập hàng</Text>
+                </TouchableOpacity>
+            </View>
         </View>
     )
 }
@@ -244,5 +272,24 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#000',
         marginBottom: 5
+    },
+    viewButton: {
+        flexDirection: 'row',
+        paddingVertical: 10
+    },
+    button: {
+        backgroundColor: '#3C7BF4',
+        borderRadius: 10,
+        paddingVertical: 15,
+        paddingHorizontal: 20,
+        marginHorizontal: 10,
+        marginTop: 20,
+        flex: 1,
+        alignItems: 'center'
+    },
+    textButton: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold'
     }
 })
