@@ -106,7 +106,11 @@ const AddOrders = ({ route }) => {
                             }}
                         />
                         <Text style={styles.text3}>Đơn hàng của bạn chưa có sản phẩm nào!</Text>
-                        <TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => {
+                                navigation.navigate('ChoiceProduct')
+                            }}
+                        >
                             <Text style={styles.text4}>Chọn sản phẩm</Text>
                         </TouchableOpacity>
                     </View>
