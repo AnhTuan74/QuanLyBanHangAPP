@@ -55,16 +55,8 @@ const ImportWarehouse = () => {
                     </TouchableOpacity>
                 </View>
             </View>
-            <View style={styles.viewButton}>
-                <TouchableOpacity style={styles.button}>
-                    <Icon style={styles.iconAddProduct} name='plus' />
-                    <Text style={styles.textAddProduct}>Thêm sản phẩm</Text>
-                </TouchableOpacity>
-            </View>
-            <FlatList
-                data={listProduct}
-                keyExtractor={(item) => item.barcode}
-                renderItem={({ item }) => (
+            {false ? (
+                <View style={{ flex: 1 }}>
                     <View style={styles.itemProduct}>
                         <View style={styles.viewImage}>
                             <Image
@@ -76,11 +68,11 @@ const ImportWarehouse = () => {
                         </View>
                         <View style={styles.viewInformation}>
                             <View>
-                                <Text style={styles.nameProduct}>{item.name}</Text>
-                                <Text style={styles.nameProduct}>{item.name}</Text>
+                                <Text style={styles.nameProduct}></Text>
+                                <Text style={styles.nameProduct}></Text>
                             </View>
                             <View style={styles.viewAmount}>
-                                <Text>Tồn kho:{item.priceSale}</Text>
+                                <Text>Tồn kho</Text>
                                 <View style={styles.amount}>
                                     <TouchableOpacity>
                                         <Icon name='minus' />
@@ -95,8 +87,54 @@ const ImportWarehouse = () => {
                             </View>
                         </View>
                     </View>
-                )}
-            />
+                </View>
+            ) : (
+                <View style={{ flex: 1 }}>
+                    <View style={styles.viewButton}>
+                        <TouchableOpacity style={styles.button}>
+                            <Icon style={styles.iconAddProduct} name='plus' />
+                            <Text style={styles.textAddProduct}>Thêm sản phẩm</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <FlatList
+                        data={listProduct}
+                        keyExtractor={(item) => item.barcode}
+                        renderItem={({ item }) => (
+                            <View style={styles.itemProduct}>
+                                <View style={styles.viewImage}>
+                                    <Image
+                                        style={styles.image}
+                                        source={{
+                                            uri: 'https://th.bing.com/th/id/R.149244a480a45a0736cdba574ba9147e?rik=mYWnOVTopKTpCw&pid=ImgRaw&r=0'
+                                        }}
+                                    />
+                                </View>
+                                <View style={styles.viewInformation}>
+                                    <View>
+                                        <Text style={styles.nameProduct}>{item.name}</Text>
+                                        <Text style={styles.nameProduct}>{item.name}</Text>
+                                    </View>
+                                    <View style={styles.viewAmount}>
+                                        <Text>Tồn kho:{item.priceSale}</Text>
+                                        <View style={styles.amount}>
+                                            <TouchableOpacity>
+                                                <Icon name='minus' />
+                                            </TouchableOpacity>
+                                            <TouchableOpacity style={styles.buttonAmount}>
+                                                <Text style={styles.text2}>1</Text>
+                                            </TouchableOpacity>
+                                            <TouchableOpacity>
+                                                <Icon name='plus' />
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
+                                </View>
+                            </View>
+                        )}
+                    />
+                </View>
+            )}
             <View style={styles.viewFooter}>
                 <View style={styles.footer}>
                     <View style={styles.viewTextFooter}>
