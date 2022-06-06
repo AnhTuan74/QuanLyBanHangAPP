@@ -22,6 +22,7 @@ import Customer from './../home/customer/Customer'
 import AddCustomer from './../home/customer/AddCustomer'
 import CustomerDetail from './../home/customer/CustomerDetail'
 import ImportWarehouse from './../home/wareHouse/ImportWarehouse'
+import ChoiceProduct from '../home/Product/ChoiceProduct'
 
 const Stack = createNativeStackNavigator()
 
