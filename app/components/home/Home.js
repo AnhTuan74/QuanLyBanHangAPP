@@ -5,6 +5,7 @@ import { Avatar } from 'react-native-elements'
 import { useNavigation } from '@react-navigation/native'
 import { useSelector } from 'react-redux'
 import Header from './components/Header'
+import ReportHome from './components/ReportHome'
 
 const list = [
     {
@@ -91,27 +92,7 @@ const Home = () => {
     return (
         <ScrollView style={styles.container}>
             <Header />
-            <View style={styles.report}>
-                <View style={styles.viewReport}>
-                    <View
-                        style={{
-                            ...styles.itemReport,
-                            borderRightWidth: 1,
-                            borderRightColor: '#E8E8E8'
-                        }}
-                    >
-                        <Text style={styles.textItemReport}>Doanh thu hôm nay </Text>
-                        <Text style={styles.textItemPrice}>0đ </Text>
-                    </View>
-                    <View style={styles.itemReport}>
-                        <Text style={styles.textItemReport}>Đã giao </Text>
-                        <Text style={styles.textItemPrice}>0 </Text>
-                    </View>
-                </View>
-                <TouchableOpacity>
-                    <Text style={styles.textReport}>Báo cáo lãi lỗ</Text>
-                </TouchableOpacity>
-            </View>
+            <ReportHome />
             <View style={styles.viewContent}>
                 {listBody.map((item) => (
                     <TouchableOpacity
@@ -162,40 +143,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#F0F2F8'
-    },
-    report: {
-        backgroundColor: '#fff',
-        paddingVertical: 10,
-        borderRadius: 5,
-        marginHorizontal: 20,
-        marginTop: -20
-    },
-    textReport: {
-        color: '#000',
-        fontSize: 16,
-        textAlign: 'center',
-        marginTop: 10
-    },
-    viewReport: {
-        flexDirection: 'row',
-        paddingHorizontal: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: '#E8E8E8',
-        justifyContent: 'space-between',
-        paddingVertical: 14
-    },
-    itemReport: {
-        flex: 1
-    },
-    textItemReport: {
-        textAlign: 'center',
-        color: '#000',
-        paddingHorizontal: 10
-    },
-    textItemPrice: {
-        color: '#3C7BF4',
-        textAlign: 'center',
-        fontSize: 16
     },
     viewContent: {
         paddingHorizontal: 20,

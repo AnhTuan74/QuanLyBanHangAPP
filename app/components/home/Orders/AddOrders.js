@@ -16,6 +16,7 @@ import { formatPrice } from './../Product/Products'
 import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth'
 import RNProgressHud from 'progress-hud'
+import NoProduct from './components/NoProduct'
 
 const AddOrders = ({ route }) => {
     const navigation = useNavigation()
@@ -98,80 +99,76 @@ const AddOrders = ({ route }) => {
             <Header title='Tạo đơn hàng' icon='barcode' screen='AddOrders' />
             <ScrollView>
                 {listProduct.length == 0 ? (
-                    <View style={styles.pickProduct}>
-                        <Image
-                            style={styles.imageNoProduct}
-                            source={{
-                                uri: 'https://scontent.fdad3-4.fna.fbcdn.net/v/t1.15752-9/278540589_4997073913748529_122472978450654907_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=ae9488&_nc_ohc=4S0vsamRQgYAX-vNWSy&_nc_ht=scontent.fdad3-4.fna&oh=03_AVIl1J_zjkQSn6x6DFiuZupSJebHBndzUV1yKLDiN7hPEw&oe=62BA4C02'
-                            }}
-                        />
-                        <Text style={styles.text3}>Đơn hàng của bạn chưa có sản phẩm nào!</Text>
+                    <NoProduct />
+                ) : (
+                    <>
+                        <View style={styles.listProduct}>
+                            <Text style={styles.titleListProduct}>Danh sách sản phẩm</Text>
+                            {listProduct.map((item) => (
+                                <View style={styles.itemProduct} key={item.barcode}>
+                                    <Image
+                                        style={styles.image}
+                                        source={{
+                                            uri: item.image
+                                        }}
+                                    />
+                                    <View style={styles.viewInformation}>
+                                        <Text style={styles.nameProduct}>{item.name}</Text>
+                                        <View
+                                            style={{
+                                                flexDirection: 'row',
+                                                alignItems: 'center'
+                                            }}
+                                        >
+                                            <Text style={styles.priceCapital}>
+                                                {formatPrice(Number(item.priceSale))} VNĐ
+                                            </Text>
+                                        </View>
+                                    </View>
+                                    <View style={styles.viewCount}>
+                                        <TouchableOpacity
+                                            style={styles.btnAdd}
+                                            onPress={() => {
+                                                if (item.count > 1) {
+                                                    item.count--
+                                                    setListProduct([...listProduct])
+                                                } else if (item.count == 1) {
+                                                    setListProduct(
+                                                        listProduct.filter(
+                                                            (i) => i.barcode !== item.barcode
+                                                        )
+                                                    )
+                                                }
+                                            }}
+                                        >
+                                            <Icon name='minus' size={20} color='#000' />
+                                        </TouchableOpacity>
+                                        <Text style={styles.textCountProduct}>{item.count}</Text>
+                                        <TouchableOpacity
+                                            style={styles.btnAdd}
+                                            onPress={() => {
+                                                if (Number(item.quantity) > Number(item.count)) {
+                                                    item.count++
+                                                    setListProduct([...listProduct])
+                                                }
+                                            }}
+                                        >
+                                            <Icon name='plus' size={20} color='#000' />
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            ))}
+                        </View>
                         <TouchableOpacity
+                            style={styles.btnAddProduct}
                             onPress={() => {
                                 navigation.navigate('ChoiceProduct')
                             }}
                         >
-                            <Text style={styles.text4}>Chọn sản phẩm</Text>
+                            <Icon name='plus' size={20} color='#000' />
+                            <Text style={styles.textAddProduct}>Thêm</Text>
                         </TouchableOpacity>
-                    </View>
-                ) : (
-                    <View style={styles.listProduct}>
-                        <Text style={styles.titleListProduct}>Danh sách sản phẩm</Text>
-                        {listProduct.map((item) => (
-                            <View style={styles.itemProduct} key={item.barcode}>
-                                <Image
-                                    style={styles.image}
-                                    source={{
-                                        uri: item.image
-                                    }}
-                                />
-                                <View style={styles.viewInformation}>
-                                    <Text style={styles.nameProduct}>{item.name}</Text>
-                                    <View
-                                        style={{
-                                            flexDirection: 'row',
-                                            alignItems: 'center'
-                                        }}
-                                    >
-                                        <Text style={styles.priceCapital}>
-                                            {formatPrice(Number(item.priceSale))} VNĐ
-                                        </Text>
-                                    </View>
-                                </View>
-                                <View style={styles.viewCount}>
-                                    <TouchableOpacity
-                                        style={styles.btnAdd}
-                                        onPress={() => {
-                                            if (item.count > 1) {
-                                                item.count--
-                                                setListProduct([...listProduct])
-                                            } else if (item.count == 1) {
-                                                setListProduct(
-                                                    listProduct.filter(
-                                                        (i) => i.barcode !== item.barcode
-                                                    )
-                                                )
-                                            }
-                                        }}
-                                    >
-                                        <Icon name='minus' size={20} color='#000' />
-                                    </TouchableOpacity>
-                                    <Text style={styles.textCountProduct}>{item.count}</Text>
-                                    <TouchableOpacity
-                                        style={styles.btnAdd}
-                                        onPress={() => {
-                                            if (Number(item.quantity) > Number(item.count)) {
-                                                item.count++
-                                                setListProduct([...listProduct])
-                                            }
-                                        }}
-                                    >
-                                        <Icon name='plus' size={20} color='#000' />
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                        ))}
-                    </View>
+                    </>
                 )}
                 <View style={{ ...styles.totalPrice, marginTop: 20 }}>
                     <Text style={styles.textTotalPrice}>Tổng tiền:</Text>
@@ -228,28 +225,6 @@ const styles = StyleSheet.create({
         fontSize: 14,
         paddingHorizontal: 10,
         paddingVertical: 5
-    },
-    pickProduct: {
-        backgroundColor: '#fff',
-        padding: 20,
-        borderBottomWidth: 1,
-        borderBottomColor: '#E8E8E8'
-    },
-    imageNoProduct: {
-        width: 150,
-        height: 100,
-        resizeMode: 'contain',
-        alignSelf: 'center'
-    },
-    text3: {
-        color: '#666',
-        fontSize: 14,
-        textAlign: 'center'
-    },
-    text4: {
-        color: '#3C7BF4',
-        fontSize: 14,
-        textAlign: 'center'
     },
     viewInformation: {
         flex: 1,
@@ -363,5 +338,20 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         paddingHorizontal: 20,
         paddingBottom: 10
+    },
+    btnAddProduct: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 10,
+        borderRadius: 20,
+        alignSelf: 'flex-end',
+        backgroundColor: '#3c7bf4',
+        margin: 10
+    },
+    textAddProduct: {
+        fontSize: 16,
+        color: '#fff',
+        fontWeight: 'bold',
+        marginHorizontal: 10
     }
 })
