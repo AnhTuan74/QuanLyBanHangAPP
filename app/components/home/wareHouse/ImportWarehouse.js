@@ -145,31 +145,25 @@ const ImportWarehouse = ({ route }) => {
                                             style={styles.buttonAmount}
                                             value={item.addWareHouse.toString()}
                                             onChangeText={(text) => {
+                                                item.addWareHouse = parseInt(text)
+                                                setListProduct([...listProduct])
+                                            }}
+                                        />
+                                    </TouchableOpacity>
                                     <TouchableOpacity
                                         onPress={() => {
                                             item.addWareHouse++
-                        </View>
-                            <Text style={styles.textAddProduct}>Thêm sản phẩm</Text>
-                            <View style={styles.itemProduct}>
-                                </View>
-                                        <View style={styles.amount}>
-                                            <TouchableOpacity>
-                                                <Icon name='minus' />
-                                            </TouchableOpacity>
-                                            <TouchableOpacity style={styles.buttonAmount}>
-                                                <Text style={styles.text2}>1</Text>
-                                            </TouchableOpacity>
-                                            <TouchableOpacity>
-                                                <Icon name='plus' />
-                                            </TouchableOpacity>
-                                        </View>
-                                    </View>
+                                            setListProduct([...listProduct])
+                                        }}
+                                    >
+                                        <Icon name='plus' />
+                                    </TouchableOpacity>
                                 </View>
                             </View>
-                        )}
-                    />
-                </View>
-            )}
+                        </View>
+                    </View>
+                )}
+            />
             <View style={styles.viewFooter}>
                 <View style={styles.footer}>
                     <View style={styles.viewTextFooter}>
