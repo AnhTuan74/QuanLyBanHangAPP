@@ -2,11 +2,12 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs'
 import Home from './../home/Home'
-import Report from './../report/Report'
 import Barcode from './../barcode/Barcode'
 import Profile from './../home/Profile'
 import Icon from 'react-native-vector-icons/Ionicons'
 import Scan from './../scan/Scan'
+import ProfitAndLoss from './../report/ProfitAndLoss'
+import Report from './../report/Report'
 
 const Tab = createMaterialBottomTabNavigator()
 

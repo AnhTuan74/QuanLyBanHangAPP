@@ -53,6 +53,7 @@ const AddOrders = ({ route }) => {
             RNProgressHud.dismiss()
         }
     }
+
     useEffect(() => {
         findProduct()
     }, [route])
@@ -78,7 +79,7 @@ const AddOrders = ({ route }) => {
             listProduct,
             totalPrice: totalPrice(),
             status: 'Hoàn thành',
-            createdAt: new Date()
+            createdAt: new Date().getTime()
         }
         firestore()
             .collection(`users/${user.uid}/orders`)

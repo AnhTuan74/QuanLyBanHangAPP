@@ -1,32 +1,45 @@
-import { StyleSheet, Text, View, TouchableOpacity, TextInput } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, FlatList } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useNavigation } from '@react-navigation/native'
+import firestore from '@react-native-firebase/firestore'
+import auth from '@react-native-firebase/auth'
+import RNProgressHud from 'progress-hud'
+import { formatPrice } from '../Product/Products'
+import { format } from 'date-fns'
+
 const Order = () => {
     const navigation = useNavigation()
-    const [listProduct, setListProduct] = useState([
-        {
-            name: '11111',
-            barcode: '1111',
-            priceCapital: '1000',
-            priceSale: '2000',
-            description: 'Moo ta'
-        },
-        {
-            name: '2222',
-            barcode: '2222',
-            priceCapital: '1000',
-            priceSale: '2000',
-            description: 'Moo ta'
-        },
-        {
-            name: '3333',
-            barcode: '3333',
-            priceCapital: '1000',
-            priceSale: '2000',
-            description: 'Moo ta'
-        }
-    ])
+    const [totalCount, setTotalCount] = useState(0)
+    const [listOrder, setListOrder] = useState([])
+
+    const getListsOrder = async () => {
+        RNProgressHud.show()
+        const user = await auth().currentUser
+        const ref = firestore().collection(`users/${user.uid}/orders`)
+        const snapshot = await ref.get()
+        const list = []
+        setTotalCount(snapshot.size)
+        snapshot.forEach((doc) => {
+            list.push({
+                id: doc.id,
+                ...doc.data()
+            })
+        })
+        setListOrder(list)
+        RNProgressHud.dismiss()
+    }
+
+    useEffect(() => {
+        getListsOrder()
+    }, [])
+
+    useEffect(() => {
+        navigation.addListener('focus', () => {
+            getListsOrder()
+        })
+    }, [])
+
     return (
         <View style={styles.container}>
             <View
@@ -70,8 +83,8 @@ const Order = () => {
                     </TouchableOpacity>
                 </View>
             </View>
-            <Text style={styles.text2}>1 đơn hàng</Text>
-            {true ? (
+            <Text style={styles.text2}>{totalCount} đơn hàng</Text>
+            {listOrder.length == 0 ? (
                 <View style={styles.noProducts}>
                     <Text style={styles.textNoProduct}>Chưa có đơn hàng</Text>
                     <TouchableOpacity
@@ -85,62 +98,61 @@ const Order = () => {
                     </TouchableOpacity>
                 </View>
             ) : (
-                <TouchableOpacity
-                    onPress={() => {
-                        navigation.navigate('OrderDetail')
-                    }}
-                >
-                    <View style={styles.viewOrder}>
-                        <View style={styles.textOder1}>
-                            <Text
-                                style={{
-                                    fontSize: 15,
-                                    fontWeight: 'bold',
-                                    color: '#333',
-                                    marginBottom: 5
-                                }}
-                            >
-                                DON00001
-                            </Text>
-                            <Text
-                                style={{
-                                    fontSize: 12,
-                                    color: '#666',
-                                    marginBottom: 5
-                                }}
-                            >
-                                Khách lẻ
-                            </Text>
-                            <Text
-                                style={{
-                                    fontSize: 12,
-                                    color: '#666'
-                                }}
-                            >
-                                DON00001
-                            </Text>
-                        </View>
-                        <View style={styles.textOder2}>
-                            <Text
-                                style={{
-                                    fontSize: 15,
-                                    color: '#666',
-                                    marginBottom: 5
-                                }}
-                            >
-                                20,000
-                            </Text>
-                            <Text
-                                style={{
-                                    fontSize: 12,
-                                    color: '#666'
-                                }}
-                            >
-                                Hoàn thành
-                            </Text>
-                        </View>
-                    </View>
-                </TouchableOpacity>
+                <FlatList
+                    data={listOrder}
+                    keyExtractor={(item) => item.id}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity
+                            onPress={() => {
+                                navigation.navigate('OrderDetail', { data: item })
+                            }}
+                        >
+                            <View style={styles.viewOrder}>
+                                <View style={styles.textOder1}>
+                                    <Text
+                                        style={{
+                                            fontSize: 15,
+                                            fontWeight: 'bold',
+                                            color: '#333',
+                                            marginBottom: 5
+                                        }}
+                                    >
+                                        {item.id}
+                                    </Text>
+                                    <Text
+                                        style={{
+                                            fontSize: 15,
+                                            color: '#333',
+                                            marginBottom: 5
+                                        }}
+                                    >
+                                        {item?.createdAt &&
+                                            format(item.createdAt, 'dd/MM/yyyy HH:mm')}
+                                    </Text>
+                                </View>
+                                <View style={styles.textOder2}>
+                                    <Text
+                                        style={{
+                                            fontSize: 15,
+                                            color: '#666',
+                                            marginBottom: 5
+                                        }}
+                                    >
+                                        {formatPrice(item.totalPrice)} VNĐ
+                                    </Text>
+                                    <Text
+                                        style={{
+                                            fontSize: 12,
+                                            color: '#666'
+                                        }}
+                                    >
+                                        Hoàn thành
+                                    </Text>
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                    )}
+                />
             )}
         </View>
     )

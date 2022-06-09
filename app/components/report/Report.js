@@ -1,10 +1,15 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import HeaderAdd from './../home/Product/components/HeaderAdd'
 import MyTab from './MyTab'
+import HeaderAdd from './../home/Product/components/HeaderAdd'
 
 const Report = () => {
-    return <View style={styles.container}></View>
+    return (
+        <View style={styles.container}>
+            <HeaderAdd title='Báo cáo' />
+            <MyTab />
+        </View>
+    )
 }
 
 export default Report
