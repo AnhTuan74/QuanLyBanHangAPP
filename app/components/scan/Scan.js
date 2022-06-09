@@ -24,11 +24,13 @@ const Scan = () => {
     const isScanning = useRef(true)
     const screen = useRef(route?.params?.screen)
     console.log('screen', screen.current)
+    //quét barcode
     const _onBarCodeRead = (event) => {
         try {
             if (!isScanning.current) {
                 return
             }
+            //lấy mã trả về màn hình
             if (screen.current == 'AddProduct') {
                 navigation.navigate('AddProduct', {
                     barcode: event?.data
