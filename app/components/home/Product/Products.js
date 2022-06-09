@@ -65,6 +65,7 @@ const Products = () => {
                     <Text style={styles.textTitle}>{totalCount} sản phẩm</Text>
                     <FlatList
                         data={listProduct}
+                        showsVerticalScrollIndicator={false}
                         keyExtractor={(item) => item.barcode}
                         renderItem={({ item }) => (
                             <TouchableOpacity
@@ -106,6 +107,18 @@ const Products = () => {
                     />
                 </View>
             )}
+            {listProduct.length != 0 && (
+                <View style={styles.viewButton}>
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={() => {
+                            navigation.navigate('ImportWarehouse')
+                        }}
+                    >
+                        <Text style={styles.textButton}>Nhập hàng</Text>
+                    </TouchableOpacity>
+                </View>
+            )}
         </View>
     )
 }
@@ -116,6 +129,9 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#F0F2F8'
+    },
+    listProduct: {
+        flex: 1
     },
     icon: {
         color: '#666',
@@ -197,5 +213,23 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#000',
         marginBottom: 5
+    },
+    viewButton: {
+        flexDirection: 'row',
+        paddingVertical: 10
+    },
+    button: {
+        backgroundColor: '#3C7BF4',
+        borderRadius: 10,
+        paddingVertical: 14,
+        paddingHorizontal: 20,
+        marginHorizontal: 20,
+        flex: 1,
+        alignItems: 'center'
+    },
+    textButton: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold'
     }
 })

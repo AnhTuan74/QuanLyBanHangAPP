@@ -1,149 +1,190 @@
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, FlatList, Image } from 'react-native'
-
+import {
+    StyleSheet,
+    Text,
+    View,
+    TouchableOpacity,
+    TextInput,
+    FlatList,
+    Image,
+    ToastAndroid
+} from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import React, { useState, useEffect } from 'react'
+import { useNavigation } from '@react-navigation/native'
+import firestore from '@react-native-firebase/firestore'
+import auth from '@react-native-firebase/auth'
+import RNProgressHud from 'progress-hud'
+import { formatPrice } from './../Product/ChoiceProduct'
+import Header from './../Product/components/Header'
 
-const ImportWarehouse = () => {
-    const [listProduct, setListProduct] = useState([
-        {
-            name: '11111',
-            barcode: '1111',
-            priceCapital: '1000',
-            priceSale: '2000',
-            description: 'Moo ta'
-        },
-        {
-            name: '2222',
-            barcode: '2222',
-            priceCapital: '1000',
-            priceSale: '2000',
-            description: 'Moo ta'
-        },
-        {
-            name: '3333',
-            barcode: '3333',
-            priceCapital: '1000',
-            priceSale: '2000',
-            description: 'Moo ta'
+const ImportWarehouse = ({ route }) => {
+    const navigation = useNavigation()
+    const [listProduct, setListProduct] = useState([])
+
+    const getListsProduct = async () => {
+        RNProgressHud.show()
+        const user = await auth().currentUser
+        const ref = firestore().collection(`users/${user.uid}/products`)
+        const snapshot = await ref.get()
+        const list = []
+        snapshot.forEach((doc) => {
+            list.push({
+                id: doc.id,
+                ...doc.data(),
+                addWareHouse: 0
+            })
+        })
+        setListProduct(list)
+        RNProgressHud.dismiss()
+    }
+
+    useEffect(() => {
+        getListsProduct()
+    }, [])
+
+    const findProduct = async () => {
+        let barcodeProduct = route?.params?.barcode
+        if (barcodeProduct) {
+            if (listProduct.some((item) => item.barcode == barcodeProduct)) {
+                let product = listProduct.find((item) => item.barcode == barcodeProduct)
+                product.addWareHouse = product.addWareHouse + 1
+                setListProduct([
+                    product,
+                    ...listProduct.filter((item) => item.barcode != barcodeProduct)
+                ])
+            } else {
+                ToastAndroid.show('Không tìm thấy sản phẩm', ToastAndroid.SHORT)
+            }
         }
-    ])
+    }
+    useEffect(() => {
+        if (route?.params?.barcode) {
+            findProduct()
+        }
+    }, [route])
+
+    const handleOnImportWare = async () => {
+        RNProgressHud.show()
+        const user = await auth().currentUser
+        Promise.all(
+            listProduct.map((item) => {
+                if (item.addWareHouse > 0) {
+                    return firestore()
+                        .collection(`users/${user.uid}/products`)
+                        .doc(item.id)
+                        .update({
+                            quantity: Number(item.quantity) + Number(item.addWareHouse)
+                        })
+                }
+            })
+        )
+            .then(() => {
+                firestore()
+                    .collection(`users/${user.uid}/warehouseReceipt`)
+                    .doc(`DON${(Math.random() + 1).toString(36).substring(7)}`)
+                    .set({
+                        createdAt: new Date().getTime(),
+                        listProduct: listProduct.filter((item) => item.addWareHouse > 0),
+                        total: listProduct.reduce(
+                            (total, item) => total + item.addWareHouse * item.priceCapital,
+                            0
+                        )
+                    })
+                ToastAndroid.show('Nhập kho thành công', ToastAndroid.SHORT)
+                navigation.navigate('Products')
+            })
+            .catch(() => {
+                ToastAndroid.show('Lỗi khi nhập kho', ToastAndroid.SHORT)
+            })
+            .finally(() => {
+                RNProgressHud.dismiss()
+            })
+
+        RNProgressHud.dismiss()
+    }
+
     return (
         <View style={styles.container}>
-            <View
-                style={{
-                    padding: 15,
-                    backgroundColor: '#fff',
-                    borderBottomWidth: 1,
-                    borderBottomColor: '#E8E8E8',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between'
-                }}
-            >
-                <Icon style={styles.icon} name='arrow-left' />
-                <View style={styles.look}>
-                    <TouchableOpacity>
-                        <Icon style={styles.icon1} name='search' />
-                    </TouchableOpacity>
-                    <TextInput
-                        style={styles.text1}
-                        placeholder='Tìm kiếm'
-                        placeholderTextColor={'#BDBDBD'}
-                    />
-                    <TouchableOpacity>
-                        <Icon style={styles.icon1} name='barcode' />
-                    </TouchableOpacity>
-                </View>
-            </View>
-            {false ? (
-                <View style={{ flex: 1 }}>
+            <Header screen='ImportWarehouse' title='Kho Hàng' icon={'barcode'} />
+            <FlatList
+                data={listProduct}
+                showsVerticalScrollIndicator={false}
+                keyExtractor={(item) => item.barcode}
+                renderItem={({ item }) => (
                     <View style={styles.itemProduct}>
                         <View style={styles.viewImage}>
                             <Image
                                 style={styles.image}
                                 source={{
-                                    uri: 'https://th.bing.com/th/id/R.149244a480a45a0736cdba574ba9147e?rik=mYWnOVTopKTpCw&pid=ImgRaw&r=0'
+                                    uri: item.image
                                 }}
                             />
                         </View>
                         <View style={styles.viewInformation}>
                             <View>
-                                <Text style={styles.nameProduct}></Text>
-                                <Text style={styles.nameProduct}></Text>
+                                <Text style={styles.nameProduct}>{item.name}</Text>
+                                <Text style={styles.nameProduct}>
+                                    {formatPrice(item.priceCapital)} VNĐ
+                                </Text>
                             </View>
                             <View style={styles.viewAmount}>
-                                <Text>Tồn kho</Text>
+                                <Text>Tồn kho:{item.quantity}</Text>
                                 <View style={styles.amount}>
-                                    <TouchableOpacity>
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            if (item.addWareHouse > 0) {
+                                                item.addWareHouse--
+                                                setListProduct([...listProduct])
+                                            }
+                                        }}
+                                    >
                                         <Icon name='minus' />
                                     </TouchableOpacity>
                                     <TouchableOpacity style={styles.buttonAmount}>
-                                        <Text style={styles.text2}>1</Text>
+                                        <TextInput
+                                            style={styles.buttonAmount}
+                                            value={item.addWareHouse.toString()}
+                                            onChangeText={(text) => {
+                                                item.addWareHouse = parseInt(text)
+                                                setListProduct([...listProduct])
+                                            }}
+                                        />
                                     </TouchableOpacity>
-                                    <TouchableOpacity>
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            item.addWareHouse++
+                                            setListProduct([...listProduct])
+                                        }}
+                                    >
                                         <Icon name='plus' />
                                     </TouchableOpacity>
                                 </View>
                             </View>
                         </View>
                     </View>
-                </View>
-            ) : (
-                <View style={{ flex: 1 }}>
-                    <View style={styles.viewButton}>
-                        <TouchableOpacity style={styles.button}>
-                            <Icon style={styles.iconAddProduct} name='plus' />
-                            <Text style={styles.textAddProduct}>Thêm sản phẩm</Text>
-                        </TouchableOpacity>
-                    </View>
-
-                    <FlatList
-                        data={listProduct}
-                        keyExtractor={(item) => item.barcode}
-                        renderItem={({ item }) => (
-                            <View style={styles.itemProduct}>
-                                <View style={styles.viewImage}>
-                                    <Image
-                                        style={styles.image}
-                                        source={{
-                                            uri: 'https://th.bing.com/th/id/R.149244a480a45a0736cdba574ba9147e?rik=mYWnOVTopKTpCw&pid=ImgRaw&r=0'
-                                        }}
-                                    />
-                                </View>
-                                <View style={styles.viewInformation}>
-                                    <View>
-                                        <Text style={styles.nameProduct}>{item.name}</Text>
-                                        <Text style={styles.nameProduct}>{item.name}</Text>
-                                    </View>
-                                    <View style={styles.viewAmount}>
-                                        <Text>Tồn kho:{item.priceSale}</Text>
-                                        <View style={styles.amount}>
-                                            <TouchableOpacity>
-                                                <Icon name='minus' />
-                                            </TouchableOpacity>
-                                            <TouchableOpacity style={styles.buttonAmount}>
-                                                <Text style={styles.text2}>1</Text>
-                                            </TouchableOpacity>
-                                            <TouchableOpacity>
-                                                <Icon name='plus' />
-                                            </TouchableOpacity>
-                                        </View>
-                                    </View>
-                                </View>
-                            </View>
-                        )}
-                    />
-                </View>
-            )}
+                )}
+            />
             <View style={styles.viewFooter}>
                 <View style={styles.footer}>
                     <View style={styles.viewTextFooter}>
                         <Text style={{ ...styles.textFooter, fontSize: 16, fontWeight: 'bold' }}>
-                            SL:
+                            SL: {listProduct.reduce((total, item) => total + item.addWareHouse, 0)}{' '}
+                            sản phẩm
                         </Text>
-                        <Text style={styles.textFooter}>1 sản phẩm</Text>
+                        <Text style={styles.textFooter}>
+                            Tổng chi:{' '}
+                            {formatPrice(
+                                listProduct.reduce(
+                                    (total, item) => total + item.addWareHouse * item.priceCapital,
+                                    0
+                                )
+                            )}
+                        </Text>
                     </View>
-                    <TouchableOpacity style={styles.buttonFooter}>
+                    <TouchableOpacity
+                        style={styles.buttonFooter}
+                        onPress={() => handleOnImportWare()}
+                    >
                         <Text style={styles.textButtonFooter}>Tiếp tục</Text>
                     </TouchableOpacity>
                 </View>
@@ -158,60 +199,10 @@ const styles = StyleSheet.create({
     container: {
         flex: 1
     },
-    text1: {
-        // borderColor: '#E8E8E8',
-        // backgroundColor: '#F6F6F6',
-        borderRadius: 5,
-        flex: 1,
-        marginHorizontal: 16,
-        paddingLeft: 16,
-        color: '#000'
-    },
-    look: {
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-        borderColor: '#E8E8E8',
-        backgroundColor: '#F6F6F6',
-        justifyContent: 'space-between',
-        marginHorizontal: 10,
-        borderRadius: 20,
-        paddingHorizontal: 20,
-        marginVertical: 10,
-        marginTop: 15
-    },
     icon: {
         color: '#666',
         fontSize: 18,
         paddingRight: 20
-    },
-    button: {
-        backgroundColor: '#3C7BF4',
-        borderRadius: 20,
-        marginTop: 15,
-        paddingVertical: 10,
-        alignSelf: 'flex-end',
-        marginRight: 20,
-        flexDirection: 'row',
-        alignSelf: 'center',
-        alignItems: 'center',
-        paddingHorizontal: 20
-    },
-    viewButton: {
-        padding: 15,
-        backgroundColor: '#fff',
-        borderBottomWidth: 1,
-        borderBottomColor: '#E8E8E8'
-    },
-    iconAddProduct: {
-        color: '#fff',
-        fontSize: 18
-    },
-    textAddProduct: {
-        color: '#fff',
-        fontSize: 18,
-        fontWeight: 'bold',
-        paddingLeft: 10
     },
     image: {
         width: 50,
@@ -249,6 +240,8 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#E8E8E8',
         borderRadius: 10,
+        padding: 0,
+        textAlign: 'center',
         width: 40,
         height: 20,
         marginHorizontal: 5,

@@ -39,6 +39,10 @@ const Scan = () => {
                 navigation.navigate('AddOrders', {
                     barcode: event?.data
                 })
+            } else if (screen.current == 'ImportWarehouse') {
+                navigation.navigate('ImportWarehouse', {
+                    barcode: event?.data
+                })
             }
             isScanning.current = false
         } catch (error) {

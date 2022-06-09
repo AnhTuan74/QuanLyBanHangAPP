@@ -20,10 +20,12 @@ const Header = ({ title = 'Sản phẩm', screen, icon = 'plus', dataProduct }) 
                         navigation.navigate('EditProduct', { product: dataProduct })
                     } else if (screen == 'AddOrders') {
                         navigation.navigate('Scan', { screen: 'AddOrders' })
+                    } else if (screen == 'ImportWarehouse') {
+                        navigation.navigate('Scan', { screen: 'ImportWarehouse' })
                     }
                 }}
             >
-                <Icon size={20} name={icon} color='#666' />
+                <Icon size={23} name={icon} color='#666' />
             </TouchableOpacity>
         </View>
     )
