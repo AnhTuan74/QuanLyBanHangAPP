@@ -14,12 +14,11 @@ const ReportHome = () => {
 
     const getTodayRevenue = async () => {
         // RNProgressHud.show()
-        // .where('createdAt', '>=', new Date().setHours(0, 0, 0, 0))
+
         const user = await auth().currentUser
         const ref = firestore().collection(`users/${user.uid}/orders`)
-        const snapshot = await ref.get()
+        const snapshot = await ref.where('createdAt', '>=', new Date().setHours(0, 0, 0, 0)).get()
         let revenue = 0
-        console.log('createdAt', 1654562563874, new Date().setHours(0, 0, 0, 0))
         setTodayOrder(snapshot.size)
         snapshot.forEach((doc) => {
             revenue += doc.data().totalPrice
@@ -28,8 +27,11 @@ const ReportHome = () => {
         RNProgressHud.dismiss()
     }
     useEffect(() => {
-        getTodayRevenue()
+        navigation.addListener('focus', () => {
+            getTodayRevenue()
+        })
     }, [])
+
     return (
         <View style={styles.report}>
             <View style={styles.viewReport}>

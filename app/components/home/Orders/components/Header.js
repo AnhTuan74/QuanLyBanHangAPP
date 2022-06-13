@@ -8,7 +8,7 @@ const Header = ({ title = 'Chi tiết đơn hàng' }) => {
 
     return (
         <View style={styles.header}>
-            <TouchableOpacity onPress={() => navigation.navigate('TabBarNavigation')}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
                 <Icon size={20} name='arrow-left' color='#666' />
             </TouchableOpacity>
             <Text style={styles.text}>{title}</Text>

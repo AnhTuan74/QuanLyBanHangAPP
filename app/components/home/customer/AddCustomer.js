@@ -5,14 +5,94 @@ import {
     ScrollView,
     TouchableOpacity,
     Image,
-    TextInput
+    TextInput,
+    ToastAndroid
 } from 'react-native'
-import React from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import HeaderAdd from './../Product/components/HeaderAdd'
 import { useNavigation } from '@react-navigation/native'
+import firestore from '@react-native-firebase/firestore'
+import ActionSheet from 'react-native-actionsheet'
+import ImagePicker from 'react-native-image-crop-picker'
+import storage from '@react-native-firebase/storage'
+import auth from '@react-native-firebase/auth'
+import RNProgressHud from 'progress-hud'
 
-const AddCustomer = () => {
+const AddCustomer = ({ route }) => {
     const navigation = useNavigation()
+    const [name, setName] = useState('')
+    const [phone, setPhone] = useState('')
+    const [email, setEmail] = useState('')
+    const [address, setAddress] = useState('')
+
+    const _refActionSheet = useRef()
+
+    // const onShowImageActionSheet = () => {
+    //     _refActionSheet.current?.show(true)
+    // }
+    useEffect(() => {
+        setPhone(route?.params?.phone || '')
+    }, [route])
+
+    const handleOnSave = async () => {
+        if (!name) {
+            ToastAndroid.show('Vui lòng nhập tên khách hàng', ToastAndroid.SHORT)
+            return
+        }
+        if (!phone) {
+            ToastAndroid.show('Vui lòng nhập số điện thoại', ToastAndroid.SHORT)
+            return
+        }
+        if (!email) {
+            ToastAndroid.show('Vui lòng nhập email', ToastAndroid.SHORT)
+            return
+        }
+        if (!address) {
+            ToastAndroid.show('Vui lòng nhập địa chỉ', ToastAndroid.SHORT)
+            return
+        }
+        RNProgressHud.show()
+        // let url = await addImageToStorage(image?.path)
+        const customer = {
+            name,
+            phone,
+            email,
+            address
+        }
+        firestore()
+            .collection('customers')
+            .where('phone', '==', phone)
+            .get()
+            .then((querySnapshot) => {
+                if (querySnapshot.size > 0) {
+                    Alert.alert('Thông báo', 'Khách hàng đã tồn tại')
+                } else {
+                    handleAddCustomer(customer)
+                }
+            })
+            .catch((error) => {
+                console.log('Error getting documents: ', error)
+            })
+            .finally(() => {
+                RNProgressHud.dismiss()
+            })
+    }
+    const handleAddCustomer = (customer) => {
+        firestore()
+            .collection('users')
+            .doc(auth().currentUser.uid)
+            .collection('customers')
+            .doc(phone)
+            .set(customer)
+            .then(() => {
+                ToastAndroid.show('Thêm khách hàng thành công', ToastAndroid.SHORT)
+                navigation.navigate('Home')
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+    }
+
     return (
         <View style={styles.container}>
             <HeaderAdd title={'Thêm khách hàng'} />
@@ -22,12 +102,16 @@ const AddCustomer = () => {
                         <TextInput
                             style={styles.textProblems}
                             placeholder='Tên khách hàng'
+                            value={name}
+                            onChangeText={setName}
                             placeholderTextColor='#A9A9A9'
                         />
                         <View style={styles.barCode}>
                             <TextInput
                                 style={styles.textProblems1}
                                 placeholder='Số điện thoại'
+                                value={phone}
+                                onChangeText={setPhone}
                                 keyboardType='numeric'
                                 placeholderTextColor='#A9A9A9'
                             />
@@ -36,6 +120,8 @@ const AddCustomer = () => {
                             <TextInput
                                 style={styles.textProblems1}
                                 placeholder='Email'
+                                value={email}
+                                onChangeText={setEmail}
                                 placeholderTextColor='#A9A9A9'
                             />
                         </View>
@@ -43,6 +129,8 @@ const AddCustomer = () => {
                             <TextInput
                                 style={styles.textProblems1}
                                 placeholder='Địa chỉ'
+                                value={address}
+                                onChangeText={setAddress}
                                 placeholderTextColor='#A9A9A9'
                             />
                         </View>
@@ -52,7 +140,7 @@ const AddCustomer = () => {
             <TouchableOpacity
                 style={styles.button}
                 onPress={() => {
-                    navigation.navigate('CustomerDetail')
+                    handleOnSave()
                 }}
             >
                 <Text style={styles.textButton}>Lưu</Text>
