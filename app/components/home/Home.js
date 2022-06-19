@@ -44,7 +44,7 @@ const listBody = [
     {
         id: 3,
         name: 'Kho hàng',
-        screen: 'WareHouse',
+        screen: 'ChoiceCustomer',
         icon: 'warehouse',
         color: '#23874B'
     },
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     },
     textOrder: {
         color: '#666666',
-        fontSize: 14,
+        fontSize: 13,
         marginTop: 6,
         textAlign: 'center'
     },

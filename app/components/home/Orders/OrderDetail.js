@@ -1,10 +1,46 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
-import React from 'react'
+import { useNavigation } from '@react-navigation/native'
+import firestore from '@react-native-firebase/firestore'
+import auth from '@react-native-firebase/auth'
+import RNProgressHud from 'progress-hud'
+import React, { useState, useEffect } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons'
 import Header from './components/Header'
+import { format } from 'date-fns'
+
+export const formatPrice = (price) => {
+    return price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')
+}
 
 const OrderDetail = ({ route }) => {
-    const order = route?.params?.order
+    const order = route?.params?.data || {}
+    console.log(order)
+    const navigation = useNavigation()
+    const [listProduct, setListProduct] = useState(route?.params?.data?.listProduct || [])
+
+    const handleOnDeleteProduct = () => {
+        RNProgressHud.show()
+        const user = auth().currentUser
+        firestore()
+            .collection(`users/${user.uid}/orders`)
+            .doc(order.id)
+            .delete()
+            .then(() => {
+                deleteProductSuccess()
+            })
+            .catch(() => {
+                RNProgressHud.dismiss()
+                alert('Có lỗi xảy ra')
+            })
+    }
+
+    const deleteProductSuccess = () => {
+        RNProgressHud.showSuccessWithStatus('Xóa đơn hàng thành công')
+        setTimeout(() => {
+            RNProgressHud.dismiss()
+            navigation.goBack()
+        }, 1000)
+    }
 
     return (
         <View style={styles.container}>
@@ -20,50 +56,49 @@ const OrderDetail = ({ route }) => {
                 >
                     Sản phẩm
                 </Text>
-                <View
-                    style={{
-                        flexDirection: 'row',
-                        alignItems: 'center'
-                    }}
-                >
-                    <View style={styles.imageProducts}>
-                        <Image
-                            style={styles.image}
-                            source={{
-                                uri: 'https://th.bing.com/th/id/R.149244a480a45a0736cdba574ba9147e?rik=mYWnOVTopKTpCw&pid=ImgRaw&r=0'
-                            }}
-                        />
-                    </View>
-                    <View style={styles.informationProducts}>
-                        <Text style={{}}>Áo Hoodie</Text>
-                        <Text style={{ marginTop: 5 }}>SKU:PNV001</Text>
-                        <Text style={{ marginTop: 5 }}>250,000</Text>
-                    </View>
-                    <View style={styles.informationProducts1}>
-                        <Text
+
+                {listProduct.length > 0 &&
+                    listProduct.map((product, index) => (
+                        <View
+                            key={index}
                             style={{
-                                fontSize: 15,
-                                fontWeight: 'bold',
-                                color: '#000'
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                marginBottom: 10
                             }}
                         >
-                            250,000
-                        </Text>
-                    </View>
-                </View>
+                            <View style={styles.imageProducts}>
+                                <Image
+                                    style={styles.image}
+                                    source={{
+                                        uri: product.image
+                                    }}
+                                />
+                            </View>
+                            <View style={styles.informationProducts}>
+                                <Text style={{}}>{product.name}</Text>
+                                <Text style={{ marginTop: 5 }}>
+                                    {formatPrice(product.priceSale)}
+                                </Text>
+                            </View>
+                            <View style={styles.informationProducts1}>
+                                <Text
+                                    style={{
+                                        fontSize: 15,
+                                        fontWeight: 'bold',
+                                        color: '#000'
+                                    }}
+                                >
+                                    {formatPrice(product.priceSale)} VNĐ
+                                </Text>
+                            </View>
+                        </View>
+                    ))}
             </View>
             <View style={styles.viewAbate}>
                 <View style={styles.Abate}>
                     <Text>Tổng tiền hàng</Text>
-                    <Text>250,000</Text>
-                </View>
-                <View style={styles.Abate}>
-                    <Text>Thuế</Text>
-                    <Text>0</Text>
-                </View>
-                <View style={styles.Abate}>
-                    <Text>Chiết khấu</Text>
-                    <Text>0</Text>
+                    <Text>{formatPrice(order.totalPrice)} VNĐ</Text>
                 </View>
                 <View style={styles.Abate}>
                     <Text>Phí giao hàng</Text>
@@ -82,7 +117,7 @@ const OrderDetail = ({ route }) => {
                             fontWeight: 'bold'
                         }}
                     >
-                        250,000
+                        {formatPrice(order.totalPrice)} VNĐ
                     </Text>
                 </View>
             </View>
@@ -116,7 +151,7 @@ const OrderDetail = ({ route }) => {
                         >
                             Tiền mặt
                         </Text>
-                        <Text>24/4/2022</Text>
+                        <Text>{format(order.createdAt, 'dd/MM/yyyy HH:mm')}</Text>
                     </View>
                     <View style={styles.Price3}>
                         <Text
@@ -124,12 +159,12 @@ const OrderDetail = ({ route }) => {
                                 fontWeight: 'bold'
                             }}
                         >
-                            250,000
+                            {formatPrice(order.totalPrice)} VNĐ
                         </Text>
                     </View>
                 </View>
             </View>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.button} onPress={() => handleOnDeleteProduct()}>
                 <Text style={styles.textButton}>Xóa đơn hàng</Text>
             </TouchableOpacity>
         </View>

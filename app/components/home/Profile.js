@@ -130,9 +130,8 @@ const styles = StyleSheet.create({
     },
     text: {
         color: '#fff',
-        fontSize: 14,
-        fontWeight: 'bold',
-        alignItems: 'center'
+        fontSize: 16,
+        fontWeight: 'bold'
     },
     viewInformation: {
         backgroundColor: '#fff',
@@ -190,7 +189,7 @@ const styles = StyleSheet.create({
     },
     textProblems: {
         color: '#000',
-        fontSize: 14
+        fontSize: 16
     },
     textProblems1: {
         color: '#000',

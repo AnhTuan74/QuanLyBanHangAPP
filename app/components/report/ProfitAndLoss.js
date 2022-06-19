@@ -1,25 +1,108 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View, TouchableOpacity, Image, FlatList, Dimensions } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import firestore from '@react-native-firebase/firestore'
+import auth from '@react-native-firebase/auth'
+import RNProgressHud from 'progress-hud'
+import { formatPrice } from './../home/Product/Products'
 
+const list = [
+    {
+        id: 1,
+        name: 'Hôm nay',
+        type: 'today'
+    },
+    {
+        id: 2,
+        name: 'Hôm qua',
+        type: 'yesterday'
+    },
+    {
+        id: 3,
+        name: 'Tháng này',
+        type: 'thisMonth'
+    },
+    {
+        id: 4,
+        name: 'Tháng trước',
+        type: 'lastMonth'
+    }
+]
 const ProfitAndLoss = () => {
+    const [report, setReport] = useState({
+        sell: 0,
+        cost: 0
+    })
+
+    const [selected, setSelected] = useState(list[0])
+
+    const getCC = async () => {
+        const user = auth().currentUser
+        let ref = firestore().collection(`users/${user.uid}/orders`)
+        if (selected.type === 'today') {
+            var snapshot = await ref.where('createdAt', '>=', new Date().setHours(0, 0, 0, 0)).get()
+        } else if (selected.type === 'yesterday') {
+            var snapshot = await ref
+                .where('createdAt', '>=', new Date().setHours(0, 0, 0, 0) - 24 * 60 * 60 * 1000)
+                .where('createdAt', '<', new Date().setHours(0, 0, 0, 0))
+                .get()
+        } else if (selected.type === 'thisMonth') {
+            console.log('thisMonth')
+            var snapshot = await ref
+                .where(
+                    'createdAt',
+                    '>=',
+                    new Date().setHours(0, 0, 0, 0) - 30 * 24 * 60 * 60 * 1000
+                )
+                .get()
+        } else if (selected.type === 'lastMonth') {
+            var snapshot = await ref
+                .where(
+                    'createdAt',
+                    '>=',
+                    new Date().setHours(0, 0, 0, 0) -
+                        30 * 24 * 60 * 60 * 1000 -
+                        30 * 24 * 60 * 60 * 1000
+                )
+                .where('createdAt', '<', new Date().setHours(0, 0, 0, 0) - 30 * 24 * 60 * 60 * 1000)
+                .get()
+        } else {
+            var snapshot = await ref.get()
+        }
+        let sell = 0,
+            cost = 0
+        snapshot.forEach((doc) => {
+            cost += doc.data().totalCost
+            sell += doc.data().totalPrice
+        })
+        setReport({
+            cost,
+            sell
+        })
+    }
+    useEffect(() => {
+        getCC()
+    }, [selected])
     return (
         <View style={styles.container}>
             <View style={styles.viewButtonDate}>
-                <TouchableOpacity style={styles.buttonDate}>
-                    <Text style={styles.textButtonDate}>Hôm nay</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.buttonDate}>
-                    <Text style={styles.textButtonDate}>Hôm nay</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.buttonDate}>
-                    <Text style={styles.textButtonDate}>Hôm nay</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.buttonDate}>
-                    <Text style={styles.textButtonDate}>Hôm nay</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.buttonDate}>
-                    <Text style={styles.textButtonDate}>Hôm nay</Text>
-                </TouchableOpacity>
+                <FlatList
+                    data={list}
+                    horizontal
+                    renderItem={({ item }) => (
+                        <TouchableOpacity
+                            style={{
+                                ...styles.buttonDate,
+                                backgroundColor: selected.type == item.type ? 'blue' : '#fff'
+                            }}
+                            onPress={() => {
+                                setSelected(item)
+                            }}
+                        >
+                            <Text style={styles.textButtonDate}>{item.name}</Text>
+                        </TouchableOpacity>
+                    )}
+                    keyExtractor={(item) => item.id.toString()}
+                />
             </View>
             {false ? (
                 <View style={styles.viewImage}>
@@ -41,14 +124,22 @@ const ProfitAndLoss = () => {
                     <View style={styles.profit}>
                         <Text style={styles.textProfit}>Lợi nhuận</Text>
                         <Text style={{ ...styles.textProfit, fontSize: 30, color: '#3C7BF4' }}>
-                            13.000 VNĐ
+                            {formatPrice(report.sell - report.cost)} VNĐ
                         </Text>
                     </View>
                     <View style={styles.reportDetail}>
                         <Text style={styles.textReportDetail}>Chi tiết báo cáo</Text>
                         <View style={styles.turnover}>
                             <Text style={styles.textTurnover}>Doanh thu</Text>
-                            <Text style={{ ...styles.textTurnover, color: '#3C7BF4' }}>25.000</Text>
+                            <Text style={{ ...styles.textTurnover, color: '#3C7BF4' }}>
+                                {formatPrice(report.sell)} VNĐ
+                            </Text>
+                        </View>
+                        <View style={styles.turnover}>
+                            <Text style={styles.textTurnover}>Giá vốn</Text>
+                            <Text style={{ ...styles.textTurnover, color: '#DC143C' }}>
+                                {formatPrice(report.cost)} VNĐ
+                            </Text>
                         </View>
                     </View>
                 </View>
@@ -65,14 +156,17 @@ const styles = StyleSheet.create({
     },
     viewButtonDate: {
         flexDirection: 'row',
-        justifyContent: 'space-around',
         marginTop: 10
     },
     buttonDate: {
         backgroundColor: '#fff',
         borderRadius: 5,
-        paddingHorizontal: 10,
+        width: (Dimensions.get('window').width - 50) / 4,
+        height: 40,
         paddingVertical: 5,
+        marginLeft: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
         borderWidth: 1,
         borderColor: '#E8E8E8'
     },

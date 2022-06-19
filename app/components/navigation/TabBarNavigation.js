@@ -14,6 +14,7 @@ const Tab = createMaterialBottomTabNavigator()
 const TabBarNavigation = () => {
     return (
         <Tab.Navigator
+            barStyle={{ backgroundColor: '#3C7BF4' }}
             screenOptions={({ route }) => ({
                 headerShown: false,
 

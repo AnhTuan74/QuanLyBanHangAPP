@@ -21,6 +21,7 @@ import NoProduct from './components/NoProduct'
 const AddOrders = ({ route }) => {
     const navigation = useNavigation()
     const [listProduct, setListProduct] = useState([])
+    const [customer, setCustomer] = useState()
 
     const findProduct = async () => {
         let barcodeProduct = route?.params?.barcode
@@ -57,6 +58,9 @@ const AddOrders = ({ route }) => {
 
     useEffect(() => {
         findProduct()
+        if (route?.params?.customer) {
+            setCustomer(route?.params?.customer)
+        }
     }, [route])
 
     const totalPrice = () => {
@@ -65,11 +69,16 @@ const AddOrders = ({ route }) => {
         }, 0)
     }
 
+    const totalCost = () => {
+        return listProduct.reduce((total, item) => {
+            return total + Number(item.priceCapital) * item.count
+        }, 0)
+    }
     const creatOrderSuccess = (order) => {
         RNProgressHud.showSuccessWithStatus('Tạo đơn hàng thành công')
         setTimeout(() => {
             RNProgressHud.dismiss()
-            navigation.navigate('OrderDetail', { order })
+            navigation.navigate('OrderDetail', { data: order })
         }, 1000)
     }
 
@@ -79,9 +88,11 @@ const AddOrders = ({ route }) => {
         let order = {
             listProduct,
             totalPrice: totalPrice(),
+            totalCost: totalCost(),
             status: 'Hoàn thành',
             createdAt: new Date().getTime()
         }
+
         firestore()
             .collection(`users/${user.uid}/orders`)
             .doc(`DON${(Math.random() + 1).toString(36).substring(7)}`)
@@ -142,7 +153,7 @@ const AddOrders = ({ route }) => {
                                                 }
                                             }}
                                         >
-                                            <Icon name='minus' size={20} color='#000' />
+                                            <Icon name='minus' size={20} color='#666' />
                                         </TouchableOpacity>
                                         <Text style={styles.textCountProduct}>{item.count}</Text>
                                         <TouchableOpacity
@@ -154,7 +165,7 @@ const AddOrders = ({ route }) => {
                                                 }
                                             }}
                                         >
-                                            <Icon name='plus' size={20} color='#000' />
+                                            <Icon name='plus' size={20} color='#666' />
                                         </TouchableOpacity>
                                     </View>
                                 </View>
@@ -166,18 +177,54 @@ const AddOrders = ({ route }) => {
                                 navigation.navigate('ChoiceProduct')
                             }}
                         >
-                            <Icon name='plus' size={20} color='#000' />
+                            <Icon name='plus' size={20} color='#fff' />
                             <Text style={styles.textAddProduct}>Thêm</Text>
                         </TouchableOpacity>
                     </>
                 )}
-                <View style={{ ...styles.totalPrice, marginTop: 20 }}>
-                    <Text style={styles.textTotalPrice}>Tổng tiền:</Text>
-                    <Text style={styles.countTotalPrice}>{formatPrice(totalPrice())} VNĐ</Text>
-                </View>
-                <View style={styles.totalPrice}>
-                    <Text style={styles.textTotalPrice}>Phí giao:</Text>
-                    <Text style={styles.countTotalPrice}>0 VNĐ</Text>
+                <TouchableOpacity
+                    onPress={() => {
+                        navigation.navigate('Customer', {
+                            screen: 'AddOrders'
+                        })
+                    }}
+                >
+                    <View style={styles.viewCustomer}>
+                        <Text style={styles.textCustomer}>Khách hàng</Text>
+                        <View style={styles.addCustomer}>
+                            <Icon
+                                style={styles.iconCustomer}
+                                name='user'
+                                size={20}
+                                color='#3c7bf4'
+                            />
+                            {!customer ? (
+                                <Text style={styles.textAddCustomer}>Thêm khách hàng</Text>
+                            ) : (
+                                <Text
+                                    style={{
+                                        fontSize: 16,
+                                        marginLeft: 10,
+                                        fontWeight: 'bold',
+                                        color: '#3c7bf4'
+                                    }}
+                                >
+                                    {' '}
+                                    {customer.name}
+                                </Text>
+                            )}
+                        </View>
+                    </View>
+                </TouchableOpacity>
+                <View style={styles.viewAbate}>
+                    <View style={{ ...styles.totalPrice, marginTop: 20 }}>
+                        <Text style={styles.textTotalPrice}>Tổng tiền:</Text>
+                        <Text style={styles.countTotalPrice}>{formatPrice(totalPrice())} VNĐ</Text>
+                    </View>
+                    <View style={styles.totalPrice}>
+                        <Text style={styles.textTotalPrice}>Phí giao:</Text>
+                        <Text style={styles.countTotalPrice}>0 VNĐ</Text>
+                    </View>
                 </View>
             </ScrollView>
             <View style={styles.footer}>
@@ -299,7 +346,7 @@ const styles = StyleSheet.create({
     },
     textTotalPrice: {
         fontSize: 18,
-        color: '#000',
+        color: '#666',
         flex: 1,
         fontWeight: 'bold'
     },
@@ -354,5 +401,31 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontWeight: 'bold',
         marginHorizontal: 10
+    },
+    viewAbate: {
+        backgroundColor: '#fff',
+        marginTop: 15,
+        paddingVertical: 10
+    },
+    viewCustomer: {
+        padding: 20,
+        backgroundColor: '#fff',
+        marginTop: 15
+    },
+    addCustomer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: 5
+    },
+    textAddCustomer: {
+        fontSize: 16,
+        color: '#3c7bf4',
+        marginHorizontal: 10
+    },
+    textCustomer: {
+        fontSize: 16,
+        color: '#666',
+        fontWeight: 'bold',
+        marginBottom: 5
     }
 })

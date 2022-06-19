@@ -5,9 +5,7 @@ import { useNavigation } from '@react-navigation/native'
 import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth'
 import RNProgressHud from 'progress-hud'
-
-const Customer = ({ route }) => {
-    console.log(route?.params?.screen)
+const ChoiceCustomer = () => {
     const navigation = useNavigation()
     const [totalCount, setTotalCount] = useState(0)
     const [listCustomer, setListCustomer] = useState([])
@@ -107,12 +105,8 @@ const Customer = ({ route }) => {
                             <TouchableOpacity
                                 style={styles.itemCustomer}
                                 onPress={() => {
-                                    if (route?.params?.screen == 'AddOrders') {
-                                        navigation.navigate('AddOrders', { customer: item })
-                                        return
-                                    }
-                                    navigation.navigate('CustomerDetail', {
-                                        customer: item
+                                    navigation.navigate('AddOrders', {
+                                        phone: item.phone
                                     })
                                 }}
                             >
@@ -133,7 +127,7 @@ const Customer = ({ route }) => {
     )
 }
 
-export default Customer
+export default ChoiceCustomer
 
 const styles = StyleSheet.create({
     container: {
