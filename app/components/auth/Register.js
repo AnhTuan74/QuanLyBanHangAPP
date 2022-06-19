@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native'
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, Linking } from 'react-native'
 import React, { useState } from 'react'
 import { CheckBox } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -114,13 +114,40 @@ const Register = () => {
                     <Text style={styles.textHide}>Hiện</Text>
                 </TouchableOpacity>
             </View>
-            <CheckBox
-                containerStyle={styles.checkBox}
-                center
-                title='Tôi đồng ý với các điều khoản sử dụng dịch vụ'
-                checked={check1}
-                onPress={() => setCheck1(!check1)}
-            />
+            <View
+                style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    paddingVertical: 20,
+                    paddingRight: 10
+                }}
+            >
+                <CheckBox
+                    containerStyle={styles.checkBox}
+                    center
+                    checked={check1}
+                    onPress={() => setCheck1(!check1)}
+                />
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        flex: 1,
+                        flexWrap: 'wrap'
+                    }}
+                >
+                    <Text>Tôi đồng ý với các </Text>
+                    <TouchableOpacity
+                        onPress={() => {
+                            Linking.openURL(
+                                'https://pages.flycricket.io/quan-ly-ban-hang/terms.html'
+                            )
+                        }}
+                    >
+                        <Text style={{ color: 'blue' }}> Điểu Khoản sử dụng dịch vụ</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
             <TouchableOpacity style={styles.button} onPress={() => handleOnClickRegister()}>
                 <Text style={styles.textButton}>Đăng ký</Text>
             </TouchableOpacity>
@@ -209,10 +236,11 @@ const styles = StyleSheet.create({
     checkBox: {
         borderWidth: 0,
         backgroundColor: '#fff',
-        marginTop: 20,
         marginHorizontal: 16,
         borderRadius: 5,
-        paddingLeft: 20
+        paddingLeft: 20,
+        padding: 0,
+        margin: 0
     },
     text1: {
         color: '#3C7BF4',

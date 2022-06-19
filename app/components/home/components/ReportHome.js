@@ -14,7 +14,6 @@ const ReportHome = () => {
 
     const getTodayRevenue = async () => {
         // RNProgressHud.show()
-
         const user = await auth().currentUser
         const ref = firestore().collection(`users/${user.uid}/orders`)
         const snapshot = await ref.where('createdAt', '>=', new Date().setHours(0, 0, 0, 0)).get()
