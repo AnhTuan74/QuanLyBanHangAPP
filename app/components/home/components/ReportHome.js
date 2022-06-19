@@ -50,7 +50,11 @@ const ReportHome = () => {
                     <Text style={styles.textItemPrice}>{todayOrder}</Text>
                 </View>
             </View>
-            <TouchableOpacity>
+            <TouchableOpacity
+                onPress={() => {
+                    navigation.navigate('Report')
+                }}
+            >
                 <Text style={styles.textReport}>Báo cáo lãi lỗ</Text>
             </TouchableOpacity>
         </View>
@@ -87,7 +91,8 @@ const styles = StyleSheet.create({
     textItemReport: {
         textAlign: 'center',
         color: '#000',
-        paddingHorizontal: 10
+        paddingHorizontal: 10,
+        fontSize: 16
     },
     textItemPrice: {
         color: '#3C7BF4',

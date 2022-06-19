@@ -44,7 +44,7 @@ const listBody = [
     {
         id: 3,
         name: 'Kho hàng',
-        screen: 'ChoiceCustomer',
+        screen: 'ImportWarehouse',
         icon: 'warehouse',
         color: '#23874B'
     },

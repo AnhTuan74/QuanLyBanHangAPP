@@ -90,7 +90,8 @@ const AddOrders = ({ route }) => {
             totalPrice: totalPrice(),
             totalCost: totalCost(),
             status: 'Hoàn thành',
-            createdAt: new Date().getTime()
+            createdAt: new Date().getTime(),
+            customer
         }
 
         firestore()
@@ -108,7 +109,7 @@ const AddOrders = ({ route }) => {
 
     return (
         <View style={styles.container}>
-            <Header title='Tạo đơn hàng' icon='barcode' screen='AddOrders' />
+            <Header title='Tạo đơn hàng' icon='barcode-outline' screen='AddOrders' />
             <ScrollView>
                 {listProduct.length == 0 ? (
                     <NoProduct />

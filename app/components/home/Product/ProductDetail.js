@@ -48,7 +48,7 @@ const ProductDetail = ({ route }) => {
                 screen='productDetail'
                 title='Chi tiết sản phẩm'
                 dataProduct={product}
-                icon='edit'
+                icon='create-outline'
             />
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={styles.viewImage}>
@@ -192,20 +192,7 @@ const styles = StyleSheet.create({
     problems3: {
         flexDirection: 'row'
     },
-    button: {
-        backgroundColor: '#3C7BF4',
-        marginHorizontal: 16,
-        borderRadius: 15,
-        height: 51,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginVertical: 20
-    },
-    textButton: {
-        color: '#fff',
-        fontSize: 16,
-        fontWeight: 'bold'
-    },
+
     textTitle: {
         fontSize: 16,
         color: '#000',
@@ -221,7 +208,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginVertical: 20,
         width: 153,
-        alignContent: 'center',
+        alignSelf: 'center',
         borderWidth: 1,
         borderColor: '#f44'
     },

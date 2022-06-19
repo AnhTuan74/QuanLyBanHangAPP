@@ -71,9 +71,7 @@ const Profile = () => {
             <View
                 style={{
                     padding: 30,
-                    backgroundColor: '#3C7BF4',
-                    flexDirection: 'row',
-                    alignItems: 'center'
+                    backgroundColor: '#3C7BF4'
                 }}
             >
                 <Text style={styles.text}>Thông tin cá nhân</Text>
@@ -130,8 +128,9 @@ const styles = StyleSheet.create({
     },
     text: {
         color: '#fff',
-        fontSize: 16,
-        fontWeight: 'bold'
+        fontSize: 18,
+        fontWeight: 'bold',
+        alignSelf: 'center'
     },
     viewInformation: {
         backgroundColor: '#fff',
@@ -148,18 +147,18 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20
     },
     text1: {
-        fontSize: 14,
+        fontSize: 16,
         fontWeight: 'bold',
         color: '#000',
         marginVertical: 2
     },
     text2: {
-        fontSize: 14,
+        fontSize: 16,
         color: '#666666',
         marginVertical: 2
     },
     text3: {
-        fontSize: 14,
+        fontSize: 16,
         color: '#3C7BF4',
         marginVertical: 2
     },
@@ -193,6 +192,6 @@ const styles = StyleSheet.create({
     },
     textProblems1: {
         color: '#000',
-        fontSize: 14
+        fontSize: 16
     }
 })

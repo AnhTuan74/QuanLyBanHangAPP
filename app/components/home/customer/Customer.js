@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native'
 import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth'
 import RNProgressHud from 'progress-hud'
+import Header from './../Product/components/Header'
 
 const Customer = ({ route }) => {
     console.log(route?.params?.screen)
@@ -41,41 +42,7 @@ const Customer = ({ route }) => {
 
     return (
         <View style={styles.container}>
-            <View
-                style={{
-                    padding: 25,
-                    backgroundColor: '#fff',
-                    borderBottomWidth: 1,
-                    borderBottomColor: '#E8E8E8'
-                }}
-            >
-                <View style={styles.viewHeader}>
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <Icon style={styles.icon} name='arrow-left' />
-                    </TouchableOpacity>
-                    <Text style={styles.text}>Khách hàng</Text>
-                    <TouchableOpacity
-                        onPress={() => {
-                            navigation.navigate('AddCustomer')
-                        }}
-                    >
-                        <Icon style={styles.icon} name='plus' />
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.look}>
-                    <TouchableOpacity>
-                        <Icon style={styles.icon1} name='search' />
-                    </TouchableOpacity>
-                    <TextInput
-                        style={styles.text1}
-                        placeholder='Tìm kiếm'
-                        placeholderTextColor={'#BDBDBD'}
-                    />
-                    <TouchableOpacity>
-                        <Icon style={styles.icon1} name='barcode' />
-                    </TouchableOpacity>
-                </View>
-            </View>
+            <Header title='Khách hàng' screen='customer' icon='add-circle-outline' />
             {listCustomer.length == 0 ? (
                 <View style={styles.noProducts}>
                     <Text style={styles.textNoProduct}>Chưa có khách hàng</Text>

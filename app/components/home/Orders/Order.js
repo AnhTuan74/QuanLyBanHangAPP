@@ -7,6 +7,7 @@ import auth from '@react-native-firebase/auth'
 import RNProgressHud from 'progress-hud'
 import { formatPrice } from '../Product/Products'
 import { format } from 'date-fns'
+import Header from './../Product/components/Header'
 
 const Order = () => {
     const navigation = useNavigation()
@@ -42,47 +43,7 @@ const Order = () => {
 
     return (
         <View style={styles.container}>
-            <View
-                style={{
-                    padding: 25,
-                    backgroundColor: '#fff',
-                    borderBottomWidth: 1,
-                    borderBottomColor: '#E8E8E8'
-                }}
-            >
-                <View style={styles.viewHeader}>
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <Icon style={styles.icon} name='arrow-left' />
-                    </TouchableOpacity>
-                    <Text style={styles.text}>Đơn hàng</Text>
-                    <TouchableOpacity>
-                        <Icon
-                            style={styles.icon}
-                            name='plus'
-                            onPress={() => {
-                                navigation.navigate('AddOrders')
-                            }}
-                        />
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.look}>
-                    <TouchableOpacity>
-                        <Icon style={styles.icon1} name='search' />
-                    </TouchableOpacity>
-                    <TextInput
-                        style={styles.text1}
-                        placeholder='Tìm kiếm'
-                        placeholderTextColor={'#BDBDBD'}
-                    />
-                    <TouchableOpacity
-                        onPress={() => {
-                            navigation.navigate('Scan')
-                        }}
-                    >
-                        <Icon style={styles.icon1} name='barcode' />
-                    </TouchableOpacity>
-                </View>
-            </View>
+            <Header title='Đơn hàng' screen='order' icon='add-circle-outline' />
             <Text style={styles.text2}>{totalCount} đơn hàng</Text>
             {listOrder.length == 0 ? (
                 <View style={styles.noProducts}>

@@ -197,7 +197,8 @@ export default ImportWarehouse
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        backgroundColor: '#F0F2F8'
     },
     icon: {
         color: '#666',
@@ -222,7 +223,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         flexDirection: 'row',
         borderBottomWidth: 1,
-        borderBottomColor: '#E8E8E8'
+        borderBottomColor: '#E8E8E8',
+        marginTop: 10
     },
     viewInformation: {
         flex: 1,
@@ -266,7 +268,7 @@ const styles = StyleSheet.create({
     },
     textFooter: {
         color: '#666',
-        fontSize: 14,
+        fontSize: 16,
 
         paddingHorizontal: 10
     },

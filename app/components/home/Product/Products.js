@@ -7,6 +7,7 @@ import storage from '@react-native-firebase/storage'
 import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth'
 import RNProgressHud from 'progress-hud'
+import Search from './components/Search'
 
 export const formatPrice = (price) => {
     return price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')
@@ -44,9 +45,16 @@ const Products = () => {
         })
     }, [])
 
+    // const handleOnSearch = (search) => {
+    //     const list = listProduct.filter((item) => {
+    //         return item.name.toLowerCase().includes(search.toLowerCase())
+    //     })
+    //     setListProduct(list)
+    // }
     return (
         <View style={styles.container}>
             <Header screen='product' />
+            <Search />
             {listProduct.length == 0 ? (
                 <View style={styles.noProducts}>
                     <Text style={styles.textNoProduct}>Chưa có sản phẩm</Text>

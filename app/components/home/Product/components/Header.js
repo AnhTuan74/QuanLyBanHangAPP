@@ -1,15 +1,15 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import React from 'react'
-import Icon from 'react-native-vector-icons/FontAwesome5'
+import Icon from 'react-native-vector-icons/Ionicons'
 import { useNavigation } from '@react-navigation/native'
 
-const Header = ({ title = 'Sản phẩm', screen, icon = 'plus', dataProduct }) => {
+const Header = ({ title = 'Sản phẩm', screen, icon = 'add', dataProduct }) => {
     const navigation = useNavigation()
 
     return (
         <View style={styles.header}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
-                <Icon size={20} name='arrow-left' color='#666' />
+                <Icon size={20} name='arrow-back-outline' color='#666' />
             </TouchableOpacity>
             <Text style={styles.text}>{title}</Text>
             <TouchableOpacity
@@ -22,6 +22,10 @@ const Header = ({ title = 'Sản phẩm', screen, icon = 'plus', dataProduct }) 
                         navigation.navigate('Scan', { screen: 'AddOrders' })
                     } else if (screen == 'ImportWarehouse') {
                         navigation.navigate('Scan', { screen: 'ImportWarehouse' })
+                    } else if (screen == 'customer') {
+                        navigation.navigate('AddCustomer')
+                    } else if (screen == 'order') {
+                        navigation.navigate('AddOrders')
                     }
                 }}
             >

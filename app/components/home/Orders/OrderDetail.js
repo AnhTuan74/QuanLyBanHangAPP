@@ -76,15 +76,17 @@ const OrderDetail = ({ route }) => {
                                 />
                             </View>
                             <View style={styles.informationProducts}>
-                                <Text style={{}}>{product.name}</Text>
-                                <Text style={{ marginTop: 5 }}>
+                                <Text style={{ fontSize: 16, color: '#3C7BF4' }}>
+                                    {product.name}
+                                </Text>
+                                <Text style={{ marginTop: 5, fontSize: 16, color: '#f44' }}>
                                     {formatPrice(product.priceSale)}
                                 </Text>
                             </View>
                             <View style={styles.informationProducts1}>
                                 <Text
                                     style={{
-                                        fontSize: 15,
+                                        fontSize: 16,
                                         fontWeight: 'bold',
                                         color: '#000'
                                     }}
@@ -95,26 +97,36 @@ const OrderDetail = ({ route }) => {
                         </View>
                     ))}
             </View>
+            <View style={styles.customer}>
+                <Text style={{ ...styles.textCustomer, fontWeight: 'bold' }}>
+                    {order?.customer?.name}
+                </Text>
+                <Text style={{ ...styles.textCustomer, color: '#3C7BF4' }}>
+                    {order?.customer?.phone}
+                </Text>
+            </View>
             <View style={styles.viewAbate}>
                 <View style={styles.Abate}>
-                    <Text>Tổng tiền hàng</Text>
-                    <Text>{formatPrice(order.totalPrice)} VNĐ</Text>
+                    <Text style={styles.textPrice}>Tổng tiền hàng</Text>
+                    <Text style={styles.textPrice}>{formatPrice(order.totalPrice)} VNĐ</Text>
                 </View>
                 <View style={styles.Abate}>
-                    <Text>Phí giao hàng</Text>
-                    <Text>0</Text>
+                    <Text style={styles.textPrice}>Phí giao hàng</Text>
+                    <Text style={styles.textPrice}>0</Text>
                 </View>
                 <View style={styles.Abate}>
                     <Text
                         style={{
-                            fontWeight: 'bold'
+                            fontWeight: 'bold',
+                            fontSize: 16
                         }}
                     >
                         Khách hàng phải trả
                     </Text>
                     <Text
                         style={{
-                            fontWeight: 'bold'
+                            fontWeight: 'bold',
+                            fontSize: 16
                         }}
                     >
                         {formatPrice(order.totalPrice)} VNĐ
@@ -127,7 +139,7 @@ const OrderDetail = ({ route }) => {
                     <Text
                         style={{
                             fontWeight: 'bold',
-                            fontSize: 15,
+                            fontSize: 16,
                             marginLeft: 10
                         }}
                     >
@@ -146,7 +158,8 @@ const OrderDetail = ({ route }) => {
                         <Text
                             style={{
                                 fontWeight: 'bold',
-                                marginBottom: 5
+                                marginBottom: 5,
+                                fontSize: 16
                             }}
                         >
                             Tiền mặt
@@ -156,7 +169,9 @@ const OrderDetail = ({ route }) => {
                     <View style={styles.Price3}>
                         <Text
                             style={{
-                                fontWeight: 'bold'
+                                fontWeight: 'bold',
+                                marginBottom: 5,
+                                fontSize: 16
                             }}
                         >
                             {formatPrice(order.totalPrice)} VNĐ
@@ -184,7 +199,7 @@ const styles = StyleSheet.create({
     },
     text: {
         color: '#666',
-        fontSize: 14,
+        fontSize: 16,
         fontWeight: 'bold',
         paddingHorizontal: 100
     },
@@ -244,6 +259,18 @@ const styles = StyleSheet.create({
     },
     textButton: {
         color: '#f44',
-        fontSize: 15
+        fontSize: 16
+    },
+    customer: {
+        padding: 20,
+        backgroundColor: '#fff',
+        marginTop: 20
+    },
+    textCustomer: {
+        fontSize: 16,
+        marginBottom: 5
+    },
+    textPrice: {
+        fontSize: 16
     }
 })

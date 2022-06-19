@@ -79,7 +79,8 @@ export default CustomerDetail
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        backgroundColor: '#F0F2F8'
     },
     icon: {
         color: '#666',
