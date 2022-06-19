@@ -1,4 +1,12 @@
-import { StyleSheet, Text, View, TouchableOpacity, Alert, ToastAndroid } from 'react-native'
+import {
+    StyleSheet,
+    Text,
+    View,
+    TouchableOpacity,
+    Alert,
+    ToastAndroid,
+    Linking
+} from 'react-native'
 import React from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { Avatar } from 'react-native-elements'
@@ -26,7 +34,7 @@ const list = [
         name: 'Chính sách bảo mật'
     },
     {
-        id: 4,
+        id: 5,
         name: 'Giải quyết khiếu nại'
     }
 ]
@@ -66,6 +74,21 @@ const Profile = () => {
         dispatch(setInfoUser(null))
     }
 
+    const handleOnClickItem = (item) => {
+        switch (item.id) {
+            case 1:
+                Linking.openURL('mailto:anhtuan.qt1106@gmail.com')
+                break
+            case 4:
+                Linking.openURL('https://pages.flycricket.io/quan-ly-ban-hang/privacy.html')
+                break
+            case 5:
+                Linking.openURL('mailto:anhtuan.qt1106@gmail.com')
+                break
+            default:
+                break
+        }
+    }
     return (
         <View style={styles.container}>
             <View
@@ -95,7 +118,7 @@ const Profile = () => {
                 </View>
             </View>
             {list.map((item, index) => (
-                <TouchableOpacity key={index}>
+                <TouchableOpacity key={index} onPress={() => handleOnClickItem(item)}>
                     <View style={styles.problem}>
                         <Text style={styles.textProblems}>{item.name}</Text>
                         <Icon style={styles.iconHandling} name='angle-right' size={15} />
