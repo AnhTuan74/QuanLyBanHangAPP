@@ -1,26 +1,19 @@
 import { StyleSheet, Text, View, TouchableOpacity, TextInput, FlatList, Image } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome5'
-import { useNavigation } from '@react-navigation/native'
-import Header from './components/Header'
-import storage from '@react-native-firebase/storage'
+import HeaderAdd from './components/HeaderAdd'
+import FormSearch from './FormSearch'
 import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth'
 import RNProgressHud from 'progress-hud'
-import Search from './components/Search'
+import { formatPrice } from './Products'
 
-export const formatPrice = (price) => {
-    return price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')
-}
-
-const Products = ({ route }) => {
-    const navigation = useNavigation()
+const SearchProducts = () => {
+    const [valueSearch, setValueSearch] = useState('')
     const [totalCount, setTotalCount] = useState(0)
     const [listProduct, setListProduct] = useState([])
-    const [valueSearch, setValueSearch] = useState('')
 
     const getListsProduct = async () => {
-        RNProgressHud.show()
         const user = await auth().currentUser
         const ref = firestore().collection(`users/${user.uid}/products`)
         const snapshot = await ref.get()
@@ -33,47 +26,17 @@ const Products = ({ route }) => {
             })
         })
         setListProduct(list)
-        RNProgressHud.dismiss()
     }
 
     useEffect(() => {
         getListsProduct()
     }, [])
 
-    useEffect(() => {
-        navigation.addListener('focus', () => {
-            getListsProduct()
-        })
-    }, [])
-
-    const findProduct = () => {
-        const res = firestore()
-            .collection(`users/${auth().currentUser.uid}/products`)
-            .where('barcode', '==', route?.params?.barcode)
-            .get()
-        res.then((snapshot) => {
-            if (snapshot.empty) {
-                alert('Không tìm thấy sản phẩm')
-            } else {
-                snapshot.forEach((doc) => {
-                    navigation.navigate('ProductDetail', {
-                        product: {
-                            id: doc.id,
-                            ...doc.data()
-                        }
-                    })
-                    return
-                })
-            }
-        })
-    }
-    useEffect(() => {
-        if (route?.params?.barcode) {
-            findProduct()
-        }
-    }, [route])
-
     const handleOnSearch = (search) => {
+        if (!search) {
+            getListsProduct()
+            return
+        }
         const list = listProduct.filter((item) => {
             return item.name.toLowerCase().includes(search.toLowerCase())
         })
@@ -82,20 +45,15 @@ const Products = ({ route }) => {
 
     return (
         <View style={styles.container}>
-            <Header screen='product' />
-            <Search />
+            <HeaderAdd title='Tìm kiếm sản phẩm' />
+            <FormSearch
+                valueSearch={valueSearch}
+                setValueSearch={setValueSearch}
+                handleOnSearch={handleOnSearch}
+            />
             {listProduct.length == 0 ? (
                 <View style={styles.noProducts}>
-                    <Text style={styles.textNoProduct}>Chưa có sản phẩm</Text>
-                    <TouchableOpacity
-                        style={styles.addProduct}
-                        onPress={() => {
-                            navigation.navigate('AddProduct')
-                        }}
-                    >
-                        <Icon name='plus' size={13} color='#fff' />
-                        <Text style={styles.textAddProduct}>Thêm sản phẩm</Text>
-                    </TouchableOpacity>
+                    <Text style={styles.textNoProduct}>Không có sản phẩm nào</Text>
                 </View>
             ) : (
                 <View style={styles.listProduct}>
@@ -144,23 +102,11 @@ const Products = ({ route }) => {
                     />
                 </View>
             )}
-            {listProduct.length != 0 && (
-                <View style={styles.viewButton}>
-                    <TouchableOpacity
-                        style={styles.button}
-                        onPress={() => {
-                            navigation.navigate('ImportWarehouse')
-                        }}
-                    >
-                        <Text style={styles.textButton}>Nhập hàng</Text>
-                    </TouchableOpacity>
-                </View>
-            )}
         </View>
     )
 }
 
-export default Products
+export default SearchProducts
 
 const styles = StyleSheet.create({
     container: {

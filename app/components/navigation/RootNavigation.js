@@ -25,6 +25,7 @@ import ImportWarehouse from './../home/wareHouse/ImportWarehouse'
 import ChoiceProduct from '../home/Product/ChoiceProduct'
 import ProfitAndLoss from './../report/ProfitAndLoss'
 import Report from './../report/Report'
+import SearchProducts from '../home/Product/SearchProducts'
 
 const Stack = createNativeStackNavigator()
 
@@ -80,6 +81,7 @@ const RootNavigation = () => {
                 <Stack.Screen name='ChoiceProduct' component={ChoiceProduct} />
                 <Stack.Screen name='ImportWarehouse' component={ImportWarehouse} />
                 <Stack.Screen name='Report' component={Report} />
+                <Stack.Screen name='SearchProducts' component={SearchProducts} />
             </Stack.Navigator>
         </NavigationContainer>
     )

@@ -6,37 +6,30 @@ import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth'
 import RNProgressHud from 'progress-hud'
 
-const Search = ({ valueSearch, setValueSearch, handleOnSearch }) => {
+const FormSearch = ({ valueSearch, setValueSearch, handleOnSearch }) => {
     const navigation = useNavigation()
 
     return (
-        <TouchableOpacity
-            style={styles.look}
-            onPress={() => {
-                navigation.navigate('SearchProducts')
-            }}
-        >
+        <View style={styles.look}>
             <Icon style={styles.icon1} name='search' />
-            <View
-                pointerEvents='none'
-                style={{
-                    height: 46
+            <TextInput
+                onBlur={() => {
+                    handleOnSearch(valueSearch)
                 }}
-            >
-                <TextInput
-                    onBlur={() => {
-                        handleOnSearch(valueSearch)
-                    }}
-                    onEndEditing={() => {
-                        handleOnSearch(valueSearch)
-                    }}
-                    value={valueSearch}
-                    onChangeText={(text) => setValueSearch(text)}
-                    style={styles.text1}
-                    placeholder='Tìm kiếm'
-                    placeholderTextColor={'#BDBDBD'}
-                />
-            </View>
+                onEndEditing={() => {
+                    handleOnSearch(valueSearch)
+                }}
+                value={valueSearch}
+                onChangeText={(text) => {
+                    setValueSearch(text)
+                    if (!text) {
+                        handleOnSearch('')
+                    }
+                }}
+                style={styles.text1}
+                placeholder='Nhập tên sản phẩm'
+                placeholderTextColor={'#BDBDBD'}
+            />
             <TouchableOpacity
                 onPress={() => {
                     navigation.navigate('Scan', {
@@ -46,11 +39,11 @@ const Search = ({ valueSearch, setValueSearch, handleOnSearch }) => {
             >
                 <Icon style={styles.icon1} name='barcode' />
             </TouchableOpacity>
-        </TouchableOpacity>
+        </View>
     )
 }
 
-export default Search
+export default FormSearch
 
 const styles = StyleSheet.create({
     container: {
