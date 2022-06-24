@@ -14,6 +14,7 @@ import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth'
 import RNProgressHud from 'progress-hud'
 import Header from './components/Header'
+import { formatPrice } from './Products'
 
 const ProductDetail = ({ route }) => {
     const { product } = route?.params || {}

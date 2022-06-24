@@ -1,23 +1,23 @@
 import { StyleSheet, Text, View, TouchableOpacity, TextInput, FlatList, Image } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome5'
-import HeaderAdd from './components/HeaderAdd'
-import FormSearch from './FormSearch'
 import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth'
 import RNProgressHud from 'progress-hud'
 import { formatPrice } from './Products'
+import HeaderAdd from './../Product/components/HeaderAdd'
+import FormSearch from './../Product/FormSearch'
 import { useNavigation } from '@react-navigation/native'
 
-const SearchProducts = () => {
+const SearchCustomer = () => {
     const navigation = useNavigation()
     const [valueSearch, setValueSearch] = useState('')
     const [totalCount, setTotalCount] = useState(0)
-    const [listProduct, setListProduct] = useState([])
+    const [listCustomer, setListCustomer] = useState([])
 
-    const getListsProduct = async () => {
+    const getListsCustomer = async () => {
         const user = await auth().currentUser
-        const ref = firestore().collection(`users/${user.uid}/products`)
+        const ref = firestore().collection(`users/${user.uid}/customers`)
         const snapshot = await ref.get()
         const list = []
         setTotalCount(snapshot.size)
@@ -27,76 +27,78 @@ const SearchProducts = () => {
                 ...doc.data()
             })
         })
-        setListProduct(list)
+        setListCustomer(list)
     }
 
     useEffect(() => {
-        getListsProduct()
+        getListsCustomer()
     }, [])
 
     const handleOnSearch = (search) => {
         if (!search) {
-            getListsProduct()
+            getListsCustomer()
             return
         }
-        const list = listProduct.filter((item) => {
-            return item.name.toLowerCase().includes(search.toLowerCase())
+        const list = listCustomer.filter((item) => {
+            return (
+                item.name.toLowerCase().includes(search.toLowerCase()) ||
+                item.phone.toLowerCase().includes(search.toLowerCase())
+            )
         })
-        setListProduct(list)
+        setListCustomer(list)
     }
 
     return (
         <View style={styles.container}>
-            <HeaderAdd title='Tìm kiếm sản phẩm' />
+            <HeaderAdd title='Tìm kiếm khách hàng' />
             <FormSearch
                 valueSearch={valueSearch}
                 setValueSearch={setValueSearch}
                 handleOnSearch={handleOnSearch}
+                isShowBarcode={false}
             />
-            {listProduct.length == 0 ? (
+            {listCustomer.length == 0 ? (
                 <View style={styles.noProducts}>
-                    <Text style={styles.textNoProduct}>Không có sản phẩm nào</Text>
+                    <Text style={styles.textNoProduct}>Chưa có khách hàng</Text>
+                    <TouchableOpacity
+                        style={styles.addProduct}
+                        onPress={() => {
+                            navigation.navigate('AddCustomer')
+                        }}
+                    >
+                        <Icon name='plus' size={13} color='#fff' />
+                        <Text style={styles.textAddProduct}>Thêm khách hàng</Text>
+                    </TouchableOpacity>
                 </View>
             ) : (
-                <View style={styles.listProduct}>
-                    <Text style={styles.textTitle}>{totalCount} sản phẩm</Text>
+                <View style={styles.listCustomer}>
+                    <Text
+                        style={{
+                            fontSize: 15,
+                            padding: 10
+                        }}
+                    >
+                        {totalCount} khách hàng
+                    </Text>
                     <FlatList
-                        data={listProduct}
+                        data={listCustomer}
                         showsVerticalScrollIndicator={false}
-                        keyExtractor={(item) => item.barcode}
+                        keyExtractor={(item) => item.phone}
                         renderItem={({ item }) => (
                             <TouchableOpacity
-                                style={styles.itemProduct}
+                                style={styles.itemCustomer}
                                 onPress={() => {
-                                    navigation.navigate('ProductDetail', {
-                                        product: item
+                                    navigation.navigate('CustomerDetail', {
+                                        customer: item
                                     })
                                 }}
                             >
-                                <Image
-                                    style={styles.image}
-                                    source={{
-                                        uri: item.image
-                                    }}
-                                />
-                                <View style={styles.viewInformation}>
-                                    <Text style={styles.nameProduct}>{item.name}</Text>
-                                    <View
-                                        style={{
-                                            flexDirection: 'row',
-                                            alignItems: 'center'
-                                        }}
-                                    >
-                                        <Text style={styles.priceCapital}>
-                                            {formatPrice(item.priceSale)} VNĐ
-                                        </Text>
-                                        <Text
-                                            style={{
-                                                color: '#3C7BF4'
-                                            }}
-                                        >
-                                            Tồn kho: {item.quantity}
-                                        </Text>
+                                <View style={styles.itemProduct}>
+                                    <View style={styles.viewInformation}>
+                                        <Text style={styles.nameCustomer}>{item.name}</Text>
+                                        <View style={{}}>
+                                            <Text style={styles.phoneNumber}>{item.phone}</Text>
+                                        </View>
                                     </View>
                                 </View>
                             </TouchableOpacity>
@@ -108,7 +110,7 @@ const SearchProducts = () => {
     )
 }
 
-export default SearchProducts
+export default SearchCustomer
 
 const styles = StyleSheet.create({
     container: {
@@ -216,5 +218,15 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 16,
         fontWeight: 'bold'
+    },
+    nameCustomer: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#000',
+        marginBottom: 5
+    },
+    phoneNumber: {
+        fontSize: 16,
+        color: '#3C7BF4'
     }
 })

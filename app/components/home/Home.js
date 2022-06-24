@@ -88,7 +88,12 @@ const listBody = [
 const Home = () => {
     const navigation = useNavigation()
     const infoUser = useSelector((state) => state.user.data)
-
+    const handleOnClickItem = (item) => {
+        if (item.id == 7 || item.id == 8) {
+            return
+        }
+        navigation.navigate(item.screen)
+    }
     return (
         <ScrollView style={styles.container}>
             <Header />
@@ -99,7 +104,7 @@ const Home = () => {
                         key={item.id}
                         style={styles.itemContent}
                         onPress={() => {
-                            navigation.navigate(item.screen)
+                            handleOnClickItem(item)
                         }}
                     >
                         <Icon name={item.icon} size={24} color={item.color} />

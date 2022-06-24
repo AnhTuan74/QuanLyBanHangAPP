@@ -5,7 +5,8 @@ import {
     TouchableOpacity,
     Image,
     TextInput,
-    ScrollView
+    ScrollView,
+    Alert
 } from 'react-native'
 
 import React, { useState, useEffect } from 'react'
@@ -83,6 +84,10 @@ const AddOrders = ({ route }) => {
     }
 
     const handleOnCreatOrdersProduct = () => {
+        if (!customer) {
+            Alert.alert('Thông báo', 'Vui lòng chọn khách hàng')
+            return
+        }
         RNProgressHud.show()
         let user = auth().currentUser
         let order = {
@@ -147,7 +152,7 @@ const AddOrders = ({ route }) => {
                                                     setListProduct([...listProduct])
                                                 } else if (item.count == 1) {
                                                     setListProduct(
-                                                        listProduct.filter(
+                                                        listProduct.ficolter(
                                                             (i) => i.barcode !== item.barcode
                                                         )
                                                     )

@@ -76,9 +76,16 @@ const OrderDetail = ({ route }) => {
                                 />
                             </View>
                             <View style={styles.informationProducts}>
-                                <Text style={{ fontSize: 16, color: '#3C7BF4' }}>
-                                    {product.name}
-                                </Text>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <Text
+                                        style={{ fontSize: 16, color: '#3C7BF4', paddingRight: 5 }}
+                                    >
+                                        {product.name}
+                                    </Text>
+                                    <Text style={{ fontSize: 16, color: '#3C7BF4' }}>
+                                        ({product.count})
+                                    </Text>
+                                </View>
                                 <Text style={{ marginTop: 5, fontSize: 16, color: '#f44' }}>
                                     {formatPrice(product.priceSale)}
                                 </Text>
@@ -91,7 +98,7 @@ const OrderDetail = ({ route }) => {
                                         color: '#000'
                                     }}
                                 >
-                                    {formatPrice(product.priceSale)} VNĐ
+                                    {formatPrice(product.priceSale * product.count)} VNĐ
                                 </Text>
                             </View>
                         </View>
@@ -215,7 +222,7 @@ const styles = StyleSheet.create({
     },
     informationProducts: {
         flex: 1,
-        marginLeft: 5
+        marginLeft: 10
     },
     viewAbate: {
         padding: 20,

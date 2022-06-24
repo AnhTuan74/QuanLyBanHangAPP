@@ -83,7 +83,7 @@ const Products = ({ route }) => {
     return (
         <View style={styles.container}>
             <Header screen='product' />
-            <Search />
+            <Search screen='SearchProducts' />
             {listProduct.length == 0 ? (
                 <View style={styles.noProducts}>
                     <Text style={styles.textNoProduct}>Chưa có sản phẩm</Text>

@@ -123,12 +123,16 @@ const ImportWarehouse = ({ route }) => {
                         <View style={styles.viewInformation}>
                             <View>
                                 <Text style={styles.nameProduct}>{item.name}</Text>
-                                <Text style={styles.nameProduct}>
+                                <Text
+                                    style={{ ...styles.nameProduct, color: '#f44', fontSize: 14 }}
+                                >
                                     {formatPrice(item.priceCapital)} VNĐ
                                 </Text>
                             </View>
                             <View style={styles.viewAmount}>
-                                <Text>Tồn kho:{item.quantity}</Text>
+                                <Text style={{ fontSize: 16, color: '#3C7BF4' }}>
+                                    Tồn kho:{item.quantity}
+                                </Text>
                                 <View style={styles.amount}>
                                     <TouchableOpacity
                                         onPress={() => {
@@ -276,5 +280,9 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 16,
         fontWeight: 'bold'
+    },
+    nameProduct: {
+        fontSize: 16,
+        color: '#3c7bf4'
     }
 })

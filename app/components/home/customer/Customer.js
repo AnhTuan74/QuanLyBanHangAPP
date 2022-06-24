@@ -6,6 +6,7 @@ import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth'
 import RNProgressHud from 'progress-hud'
 import Header from './../Product/components/Header'
+import Search from './../Product/components/Search'
 
 const Customer = ({ route }) => {
     console.log(route?.params?.screen)
@@ -43,6 +44,7 @@ const Customer = ({ route }) => {
     return (
         <View style={styles.container}>
             <Header title='Khách hàng' screen='customer' icon='add-circle-outline' />
+            <Search screen='SearchCustomer' />
             {listCustomer.length == 0 ? (
                 <View style={styles.noProducts}>
                     <Text style={styles.textNoProduct}>Chưa có khách hàng</Text>
@@ -235,11 +237,5 @@ const styles = StyleSheet.create({
     phoneNumber: {
         fontSize: 16,
         color: '#3C7BF4'
-    },
-    nameCustomer: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#000',
-        marginBottom: 5
     }
 })

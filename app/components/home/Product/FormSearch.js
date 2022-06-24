@@ -6,7 +6,7 @@ import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth'
 import RNProgressHud from 'progress-hud'
 
-const FormSearch = ({ valueSearch, setValueSearch, handleOnSearch }) => {
+const FormSearch = ({ valueSearch, setValueSearch, handleOnSearch, isShowBarcode = true }) => {
     const navigation = useNavigation()
 
     return (
@@ -30,15 +30,19 @@ const FormSearch = ({ valueSearch, setValueSearch, handleOnSearch }) => {
                 placeholder='Nhập tên sản phẩm'
                 placeholderTextColor={'#BDBDBD'}
             />
-            <TouchableOpacity
-                onPress={() => {
-                    navigation.navigate('Scan', {
-                        screen: 'Products'
-                    })
-                }}
-            >
-                <Icon style={styles.icon1} name='barcode' />
-            </TouchableOpacity>
+            {isShowBarcode ? (
+                <TouchableOpacity
+                    onPress={() => {
+                        navigation.navigate('Scan', {
+                            screen: 'Products'
+                        })
+                    }}
+                >
+                    <Icon style={styles.icon1} name='barcode' />
+                </TouchableOpacity>
+            ) : (
+                <View />
+            )}
         </View>
     )
 }

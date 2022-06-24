@@ -12,7 +12,13 @@ const Header = ({ title = 'Chi tiết đơn hàng' }) => {
                 <Icon size={20} name='arrow-left' color='#666' />
             </TouchableOpacity>
             <Text style={styles.text}>{title}</Text>
-            <Icon size={20} name={'home'} color='transparent' />
+            <TouchableOpacity
+                onPress={() => {
+                    navigation.navigate('Home')
+                }}
+            >
+                <Icon size={20} name={'home'} color='#666' />
+            </TouchableOpacity>
         </View>
     )
 }

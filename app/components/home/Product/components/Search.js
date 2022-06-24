@@ -6,14 +6,14 @@ import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth'
 import RNProgressHud from 'progress-hud'
 
-const Search = ({ valueSearch, setValueSearch, handleOnSearch }) => {
+const Search = ({ valueSearch, setValueSearch, handleOnSearch, screen }) => {
     const navigation = useNavigation()
 
     return (
         <TouchableOpacity
             style={styles.look}
             onPress={() => {
-                navigation.navigate('SearchProducts')
+                navigation.navigate(screen)
             }}
         >
             <Icon style={styles.icon1} name='search' />
@@ -37,15 +37,19 @@ const Search = ({ valueSearch, setValueSearch, handleOnSearch }) => {
                     placeholderTextColor={'#BDBDBD'}
                 />
             </View>
-            <TouchableOpacity
-                onPress={() => {
-                    navigation.navigate('Scan', {
-                        screen: 'Products'
-                    })
-                }}
-            >
-                <Icon style={styles.icon1} name='barcode' />
-            </TouchableOpacity>
+            {screen == 'SearchProducts' ? (
+                <TouchableOpacity
+                    onPress={() => {
+                        navigation.navigate('Scan', {
+                            screen: 'Products'
+                        })
+                    }}
+                >
+                    <Icon style={styles.icon1} name='barcode' />
+                </TouchableOpacity>
+            ) : (
+                <View />
+            )}
         </TouchableOpacity>
     )
 }
